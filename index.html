@@ -139,7 +139,47 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
       <div class="path-card" onclick="startQuizWith('tech')">
         <div class="path-icon">💻</div>
         <h3>Tech / SWE</h3>
-        <p>Breaking into software engineering</p>
+        <p>Coding to FAANG offer</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('nursing')">
+        <div class="path-icon">👩‍⚕️</div>
+        <h3>Nursing / NP</h3>
+        <p>BSN through Nurse Practitioner</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('pa')">
+        <div class="path-icon">🏥</div>
+        <h3>Physician Assistant</h3>
+        <p>PA school preparation</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('dent')">
+        <div class="path-icon">🦷</div>
+        <h3>Dentistry</h3>
+        <p>DAT prep to dental school</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('mba')">
+        <div class="path-icon">🎓</div>
+        <h3>MBA</h3>
+        <p>GMAT to top business school</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('datasci')">
+        <div class="path-icon">📊</div>
+        <h3>Data Science / ML</h3>
+        <p>Analytics to ML engineer</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('pm')">
+        <div class="path-icon">🎯</div>
+        <h3>Product Management</h3>
+        <p>Break into PM at top tech</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('cpa')">
+        <div class="path-icon">🧮</div>
+        <h3>CPA / Accounting</h3>
+        <p>CPA exam to Big 4</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('phd')">
+        <div class="path-icon">🔬</div>
+        <h3>PhD / Grad School</h3>
+        <p>Research to academia or industry</p>
       </div>
     </div>
   </section>
@@ -280,6 +320,48 @@ const QUESTIONS = {
     {q: 'Are you willing to relocate for the program?', opts: ['Yes, anywhere','Prefer East Coast/DC','Prefer Midwest','Only if necessary']},
     {q: 'Have you taken A&P and Calculus?', opts: ['Neither','One of them','Both','Plus statistics too']},
   ],
+  nursing: [
+    {q: 'What nursing level are you targeting?', opts: ['BSN (Bachelor\'s)','Direct-entry MSN','Nurse Practitioner (NP)','DNP (Doctorate)']},
+    {q: 'Do you have any healthcare experience?', opts: ['None','CNA/MA certification','Volunteering','Working in healthcare']},
+    {q: 'Preferred specialty?', opts: ['Emergency/Critical Care','Pediatrics','Psych/Mental Health','Family/Primary Care','Not sure']},
+  ],
+  pa: [
+    {q: 'Patient care hours?', opts: ['None yet','Under 500','500-2000','Over 2000']},
+    {q: 'Have you taken prerequisites?', opts: ['None','Some started','Most done','All complete']},
+    {q: 'GRE status?', opts: ['Haven\'t started','Studying now','Already taken','Program doesn\'t require it']},
+  ],
+  dent: [
+    {q: 'DAT preparation status?', opts: ['Haven\'t started','Studying now','Scheduled','Already taken']},
+    {q: 'Dental shadowing hours?', opts: ['None','Under 50','50-100','Over 100']},
+    {q: 'Manual dexterity experience?', opts: ['None specific','Art/sculpting','Lab work','Dental assisting']},
+  ],
+  mba: [
+    {q: 'Years of work experience?', opts: ['0-2 years','3-5 years','6-8 years','9+ years']},
+    {q: 'GMAT/GRE status?', opts: ['Haven\'t started','Studying','Scheduled','Already taken']},
+    {q: 'Target program tier?', opts: ['M7 (HBS, Wharton, Stanford)','T15','T25','Any ranked program']},
+    {q: 'Post-MBA goal?', opts: ['Consulting','Finance/PE','Tech PM','Entrepreneurship','Career switch']},
+  ],
+  datasci: [
+    {q: 'Math/stats background?', opts: ['Minimal','Some coursework','Strong (linear algebra, stats)','Advanced (grad-level)']},
+    {q: 'Programming experience?', opts: ['None','Basic Python','Intermediate','Advanced']},
+    {q: 'Target role?', opts: ['Data Analyst','Data Scientist','ML Engineer','Research Scientist']},
+  ],
+  pm: [
+    {q: 'Current role?', opts: ['Student','Engineer/Developer','Designer','Business/Marketing','Other']},
+    {q: 'Target company?', opts: ['FAANG','Growth-stage startup','Enterprise SaaS','Any PM role']},
+    {q: 'Technical depth?', opts: ['Non-technical','Somewhat technical','Very technical (can code)']},
+  ],
+  cpa: [
+    {q: 'Accounting coursework?', opts: ['None','Some courses','Accounting degree','150 credits met']},
+    {q: 'Target employer?', opts: ['Big 4 (Deloitte, PwC, EY, KPMG)','Mid-size firm','Industry/Corporate','Own practice']},
+    {q: 'CPA exam status?', opts: ['Haven\'t started','Studying','Passed some sections','All 4 passed']},
+  ],
+  phd: [
+    {q: 'Field?', opts: ['STEM (Bio, Chem, Physics, CS)','Social Sciences','Humanities','Engineering']},
+    {q: 'Research experience?', opts: ['None','1 semester','1-2 years','Publications']},
+    {q: 'Goal after PhD?', opts: ['Tenure-track professor','Industry research','Consulting','Not sure']},
+    {q: 'GRE status?', opts: ['Not required by programs','Haven\'t taken','Already taken','Programs waiving it']},
+  ],
 };
 
 let quizPath = '';
@@ -386,6 +468,94 @@ function generateRoadmap() {
       ],
       resources: ['Neetcode.io (free roadmap)','LeetCode','freeCodeCamp','The Odin Project','Cracking the Coding Interview'],
       schedule: 'Mon-Fri: 2hr coding + 1hr LeetCode. Weekends: project work.',
+    },
+    nursing: {
+      title: 'Your Nursing / NP Roadmap',
+      phases: [
+        {name:'Prerequisites',duration:'Months 1-6',items:['Complete A&P I & II','Microbiology','Chemistry','Nutrition','Statistics','Developmental Psychology']},
+        {name:'BSN Program',duration:'Months 7-30',items:['Apply to ABSN or traditional BSN programs','Clinical rotations (med-surg, OB, peds, psych, community)','Pass HESI exit exam','Build relationships with preceptors','Maintain 3.0+ GPA']},
+        {name:'NCLEX & First Job',duration:'Months 30-34',items:['Register for NCLEX-RN','Study with UWorld + Archer','Pass NCLEX (first attempt!)','Apply to new grad residency programs','Get 1-2 years bedside experience']},
+        {name:'NP Program (if pursuing)',duration:'Months 36-60',items:['Apply to MSN/DNP programs','Choose specialty (FNP, ACNP, PMHNP, etc)','Complete 500+ clinical hours','Pass national certification exam','Apply for state NP license']},
+      ],
+      resources: ['UWorld NCLEX','Archer NCLEX Review','RegisteredNurseRN (YouTube)','Nurse Sarah (YouTube)','r/nursing'],
+      schedule: 'During BSN: full-time coursework + clinicals. Study 2-3hrs/day outside class.',
+    },
+    pa: {
+      title: 'Your Physician Assistant Roadmap',
+      phases: [
+        {name:'Prerequisites & PCE',duration:'Months 1-12',items:['Complete Bio, Chem, A&P, Micro, Stats, Psych','Accumulate patient care experience (PCE) — aim for 2000+ hours','CNA, EMT, MA, or scribe positions','GPA: target 3.5+ overall, 3.5+ science','Shadow PAs in multiple settings']},
+        {name:'Application Prep',duration:'Months 10-16',items:['Take GRE if required by programs','Write personal statement','Get 3 strong recommendation letters','CASPA application preparation','Research programs (match prereqs to your coursework)']},
+        {name:'Apply (CASPA)',duration:'Months 16-20',items:['Submit CASPA early (April-June for most programs)','Complete supplemental applications','Prepare for MMI and traditional interviews','Decision by October-December','Deposit to hold seat']},
+        {name:'PA School',duration:'Months 22-48',items:['Didactic year (classroom intensive)','Clinical year (rotations in all specialties)','Pass PANCE (board exam)','Apply for state license','Start practicing!']},
+      ],
+      resources: ['The PA Platform','PA Forum','CASPA application guide','PA School Finder','r/prephysicianassistant'],
+      schedule: 'While building PCE: work clinical job 30-40hrs + study/prereqs around it.',
+    },
+    dent: {
+      title: 'Your Dentistry Roadmap',
+      phases: [
+        {name:'Prerequisites',duration:'Months 1-8',items:['Bio I & II + Labs','Gen Chem I & II + Labs','Organic Chemistry I & II + Labs','Physics I & II','Biochemistry','English/Writing courses']},
+        {name:'DAT Prep & Shadowing',duration:'Months 6-12',items:['Begin DAT preparation (3-4 months intensive)','Shadow dentists: 100+ hours across specialties','Target DAT: 20+ AA (competitive)','Volunteer in dental clinics','Manual dexterity practice (wax carving, sculpting)']},
+        {name:'Application (AADSAS)',duration:'Months 12-18',items:['Write personal statement (why dentistry specifically)','Get 3-4 recommendations (1 science, 1 dentist minimum)','Submit AADSAS June-September','Complete secondary applications','Interview prep (behavioral + manual dexterity tests)']},
+        {name:'Dental School',duration:'Months 20-68',items:['D1-D2: Didactic + simulation lab','D3-D4: Clinical rotations + patient care','Board exams (NBDE Part I & II or INBDE)','Specialty residency applications (if pursuing)','State licensure exam']},
+      ],
+      resources: ['DAT Bootcamp','DAT Booster','Student Doctor Network (SDN)','Dental Admission Test guide','r/predental'],
+      schedule: 'During DAT prep: 4-6 hours/day. During school: all-day + evening study.',
+    },
+    mba: {
+      title: 'Your MBA Roadmap',
+      phases: [
+        {name:'Foundation',duration:'Months 1-4',items:['Research target programs and fit','Calculate your profile competitiveness','Identify recommenders (2-3 professional)','Start GMAT/GRE prep','Build your career narrative (why MBA, why now)']},
+        {name:'GMAT/GRE Prep',duration:'Months 3-8',items:['Target: 720+ GMAT for M7, 700+ for T15','Practice 3-4 times per week','Take 5+ full practice exams','Consider retake if below target','Register for exam 2 months before app deadline']},
+        {name:'Application',duration:'Months 8-14',items:['Write essays (2-4 per school, highly personal)','Brief recommenders with specific stories','Apply Round 1 (Sept) or Round 2 (Jan)','Complete video essays / assessments if required','Submit to 5-8 programs']},
+        {name:'Interview & Decide',duration:'Months 14-18',items:['Behavioral interview prep (your story, why MBA, goals)','School-specific research for each interview','Negotiate scholarships','Compare offers','Commit by April deposit deadline']},
+      ],
+      resources: ['GMAT Club','Poets & Quants','ClearAdmit','MBA Data Guru','r/MBA'],
+      schedule: 'GMAT: 2hrs/day for 3 months. Essays: 10-15 hours per school.',
+    },
+    datasci: {
+      title: 'Your Data Science Roadmap',
+      phases: [
+        {name:'Foundations',duration:'Months 1-4',items:['Python programming (Pandas, NumPy, Matplotlib)','Statistics & Probability (Khan Academy or MIT OCW)','SQL fundamentals','Linear Algebra basics','Jupyter notebooks + Git']},
+        {name:'Core Skills',duration:'Months 4-8',items:['Machine Learning (Andrew Ng Coursera or fast.ai)','Scikit-learn, XGBoost, neural networks','Data visualization (Tableau or advanced Matplotlib)','A/B testing and experimental design','Complete 3-5 end-to-end projects']},
+        {name:'Portfolio & Specialization',duration:'Months 8-12',items:['Build portfolio website with project writeups','Kaggle competitions (get a bronze+ medal)','Specialize: NLP, Computer Vision, or RecSys','Contribute to open-source ML projects','Write blog posts explaining your work']},
+        {name:'Job Search',duration:'Months 10-14',items:['Apply to 50+ data roles','Practice case studies and take-home assignments','SQL + Python coding interviews','Statistics and ML theory questions','Negotiate offer (data roles pay $100-200k+)']},
+      ],
+      resources: ['Andrew Ng ML (Coursera)','fast.ai','Kaggle','StatQuest (YouTube)','r/datascience'],
+      schedule: 'Mon-Fri: 2hr learning + 1hr project work. Weekends: Kaggle/portfolio.',
+    },
+    pm: {
+      title: 'Your Product Management Roadmap',
+      phases: [
+        {name:'Learn PM Fundamentals',duration:'Months 1-3',items:['Read Cracking the PM Interview + Inspired','Learn product frameworks (RICE, Jobs-to-be-Done)','Understand metrics (DAU, retention, funnel)','Study product teardowns (Lenny\'s Newsletter)','Build side project to practice product thinking']},
+        {name:'Build Credentials',duration:'Months 3-8',items:['Ship a product (even small — Chrome extension, app)','Get PM-adjacent experience at current job','Write product specs and PRDs','Practice product sense and estimation questions','Conduct user research interviews']},
+        {name:'Network & Apply',duration:'Months 6-12',items:['Coffee chats with PMs (30+)','Attend product meetups / events','Apply to APM programs (Google, Meta, etc)','Apply to PM roles at startups (lower bar)','Tailor resume to PM format (impact-driven)']},
+        {name:'Interview & Land',duration:'Months 10-14',items:['Product sense questions (improve X product)','Analytical/metric questions','Execution questions (prioritization)','Behavioral (leadership, ambiguity)','Negotiate offer']},
+      ],
+      resources: ['Cracking the PM Interview','Inspired (Marty Cagan)','Lenny\'s Newsletter','Exponent PM prep','Lewis Lin\'s PM book'],
+      schedule: 'Mon-Fri: 1hr reading + 1hr practice. Weekends: side project + networking.',
+    },
+    cpa: {
+      title: 'Your CPA / Accounting Roadmap',
+      phases: [
+        {name:'Education (150 Credits)',duration:'Months 1-12',items:['Complete accounting degree or equivalent coursework','Reach 150 credit hours (required for CPA)','Key courses: Financial, Managerial, Audit, Tax, Cost','Maintain 3.0+ GPA','Consider MAcc program for extra credits']},
+        {name:'CPA Exam Prep',duration:'Months 10-18',items:['Choose review course (Becker, Roger, Surgent)','Study plan: one section at a time','FAR (hardest, do first) → AUD → REG → BEC','Target: 75+ on each section','18-month window to pass all 4']},
+        {name:'Experience & License',duration:'Months 12-24',items:['Get hired at Big 4, mid-size, or corporate','Accumulate 1-2 years supervised experience','Complete ethics exam (state-specific)','Apply for CPA license','Consider specialization (Tax, Audit, Advisory)']},
+        {name:'Career Growth',duration:'Months 24-48',items:['Senior associate (2-3 years)','Manager (4-6 years)','Consider industry exit (CFO track, FP&A)','Partner track if staying in public accounting','CPA opens doors to consulting, IB, FP&A']},
+      ],
+      resources: ['Becker CPA Review','Roger CPA Review','r/Accounting','Another71.com','CPA Exam Guy (YouTube)'],
+      schedule: 'During CPA prep: 3-4hrs/day, 6 days/week for 4-6 months per section.',
+    },
+    phd: {
+      title: 'Your PhD / Graduate School Roadmap',
+      phases: [
+        {name:'Research Experience',duration:'Months 1-12',items:['Join a research lab (volunteer or paid)','Build relationship with PI (future recommender)','Learn research methods specific to your field','Present at undergraduate symposiums','Aim for publication or conference presentation']},
+        {name:'Application Prep',duration:'Months 10-16',items:['Identify 8-12 target programs + advisors','Take GRE if required (many programs waiving)','Write statement of purpose (research-focused)','Secure 3 strong recommendation letters','Contact potential advisors before applying']},
+        {name:'Apply & Interview',duration:'Months 14-20',items:['Submit applications (Dec-Jan for most STEM)','Interview/visit days (Jan-March)','Present your research confidently','Ask about funding, advisor style, lab culture','Decision by April 15 (STEM standard)']},
+        {name:'PhD Program',duration:'Months 22-82',items:['Year 1-2: Coursework + rotations + qualifying exam','Year 2-3: Define dissertation topic','Year 3-5: Research + publish + teach','Year 5-6: Write dissertation + defend','Job market: postdoc, industry, or teaching']},
+      ],
+      resources: ['PhD Comics','r/GradSchool','The Professor Is In','How to Get a PhD (book)','GradCafe (results)'],
+      schedule: 'During PhD: full-time research. Before: 10-15 hrs/week in lab + coursework.',
     },
     caa: {
       title: 'Your CAA (Anesthesiologist Assistant) Roadmap',
