@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Roadmap — A Personalized Path for Following Your Dreams</title>
+<meta name="description" content="Get a personalized career roadmap built just for you. Pre-med, pre-law, finance, consulting — answer a few questions and get your complete plan.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);color:#fff;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(37,99,235,.15) 0%,transparent 50%),radial-gradient(circle at 70% 80%,rgba(124,58,237,.1) 0%,transparent 50%)}
+.hero h1{font-size:clamp(2.5em,6vw,4.5em);font-weight:900;letter-spacing:-.02em;margin-bottom:12px;background:linear-gradient(135deg,#fff,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .tagline{font-size:clamp(1em,2.5vw,1.4em);color:#94a3b8;max-width:600px;margin:0 auto 32px;line-height:1.6}
+.hero .cta{display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:1.1em;font-weight:700;border-radius:12px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(37,99,235,.4)}
+.hero .cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(37,99,235,.5)}
+.hero .sub-cta{display:block;margin-top:16px;color:#64748b;font-size:.88em}
+
+/* Paths Section */
+.paths{padding:80px 20px;max-width:1100px;margin:0 auto;text-align:center}
+.paths h2{font-size:2em;font-weight:800;margin-bottom:12px}
+.paths .subtitle{color:#64748b;margin-bottom:40px;font-size:1.1em}
+.path-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.path-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:28px 20px;text-align:center;transition:all .2s;cursor:pointer}
+.path-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08);border-color:#2563eb}
+.path-card .path-icon{font-size:2.5em;margin-bottom:12px}
+.path-card h3{font-size:1.1em;color:#1e293b;margin-bottom:6px}
+.path-card p{font-size:.85em;color:#64748b}
+
+/* Features */
+.features{padding:80px 20px;background:#fff}
+.features-inner{max-width:1100px;margin:0 auto;text-align:center}
+.features h2{font-size:2em;font-weight:800;margin-bottom:40px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;text-align:left}
+.feat-card{padding:24px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0}
+.feat-card h4{font-size:1em;color:#1e293b;margin-bottom:6px}
+.feat-card p{font-size:.88em;color:#64748b;line-height:1.6}
+
+/* Pricing */
+.pricing{padding:80px 20px;max-width:900px;margin:0 auto;text-align:center}
+.pricing h2{font-size:2em;font-weight:800;margin-bottom:40px}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:768px){.price-grid{grid-template-columns:1fr}}
+.price-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px 28px;text-align:center}
+.price-card.featured{border-color:#2563eb;box-shadow:0 4px 20px rgba(37,99,235,.15);position:relative}
+.price-card.featured::before{content:'POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;padding:4px 16px;border-radius:20px;font-size:.72em;font-weight:700}
+.price-card h3{font-size:1.3em;color:#1e293b;margin-bottom:8px}
+.price-card .price{font-size:2.5em;font-weight:800;color:#2563eb;margin:12px 0}
+.price-card .price span{font-size:.4em;color:#64748b;font-weight:400}
+.price-card ul{list-style:none;padding:0;margin:16px 0;text-align:left}
+.price-card li{padding:6px 0;font-size:.9em;color:#475569}
+.price-card li::before{content:'✓ ';color:#2563eb;font-weight:700}
+.price-card .price-btn{display:block;padding:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;margin-top:20px;transition:transform .2s}
+.price-card .price-btn:hover{transform:translateY(-2px)}
+.price-card .price-btn.free{background:#f1f5f9;color:#475569}
+
+/* Footer */
+.footer{padding:40px 20px;background:#0f172a;color:#64748b;text-align:center;font-size:.85em}
+.footer a{color:#93c5fd}
+
+/* Questionnaire */
+.quiz-page{display:none;min-height:100vh;padding:60px 20px;max-width:700px;margin:0 auto}
+.quiz-page.active{display:block}
+.quiz-page h2{font-size:1.8em;font-weight:800;color:#1e293b;margin-bottom:8px}
+.quiz-page p{color:#64748b;margin-bottom:24px}
+.quiz-option{display:block;width:100%;padding:16px 20px;margin:8px 0;border:2px solid #e2e8f0;border-radius:12px;background:#fff;color:#1e293b;font-size:1em;text-align:left;cursor:pointer;transition:all .15s}
+.quiz-option:hover{border-color:#2563eb;background:#eff6ff}
+.quiz-option.selected{border-color:#2563eb;background:#eff6ff;font-weight:600}
+.quiz-nav{display:flex;gap:12px;margin-top:24px}
+.quiz-nav button{padding:12px 28px;border-radius:10px;font-size:1em;font-weight:600;cursor:pointer;border:none}
+.quiz-nav .next-btn{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
+.quiz-nav .back-btn{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.quiz-progress{height:4px;background:#e2e8f0;border-radius:2px;margin-bottom:24px}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:2px;transition:width .3s}
+</style>
+</head>
+<body>
+
+<!-- LANDING PAGE -->
+<div id="landing">
+  <section class="hero">
+    <h1>Roadmap</h1>
+    <p class="tagline">A personalized path for following your dreams. Answer a few questions, get a complete interactive plan built just for you.</p>
+    <a href="#" class="cta" onclick="event.preventDefault();startQuiz()">Build My Roadmap — Free</a>
+    <span class="sub-cta">No signup required. Takes 2 minutes.</span>
+  </section>
+
+  <section class="paths">
+    <h2>Choose Your Path</h2>
+    <p class="subtitle">We build personalized roadmaps for ambitious people in every field</p>
+    <div class="path-grid">
+      <div class="path-card" onclick="startQuizWith('premed')">
+        <div class="path-icon">🩺</div>
+        <h3>Pre-Med → MD/DO</h3>
+        <p>Post-bacc through medical school applications</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('caa')">
+        <div class="path-icon">💉</div>
+        <h3>Pre-Med → CAA</h3>
+        <p>Certified Anesthesiologist Assistant path</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('prelaw')">
+        <div class="path-icon">⚖️</div>
+        <h3>Pre-Law → Law School</h3>
+        <p>LSAT prep through law school applications</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('ib')">
+        <div class="path-icon">📈</div>
+        <h3>Investment Banking</h3>
+        <p>Breaking into IB from any background</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('consulting')">
+        <div class="path-icon">💼</div>
+        <h3>Management Consulting</h3>
+        <p>MBB and beyond — case prep to offer</p>
+      </div>
+      <div class="path-card" onclick="startQuizWith('tech')">
+        <div class="path-icon">💻</div>
+        <h3>Tech / SWE</h3>
+        <p>Breaking into software engineering</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="features-inner">
+      <h2>What You Get</h2>
+      <div class="feat-grid">
+        <div class="feat-card">
+          <h4>📋 Personalized Timeline</h4>
+          <p>A month-by-month plan tailored to your specific situation, background, and goals.</p>
+        </div>
+        <div class="feat-card">
+          <h4>📅 Weekly Schedules</h4>
+          <p>Know exactly what to do every day. Color-coded blocks for classes, study, ECs, and free time.</p>
+        </div>
+        <div class="feat-card">
+          <h4>🎮 Study Games & Tools</h4>
+          <p>Flashcards, quizzes, survival mode — all adaptive to your performance.</p>
+        </div>
+        <div class="feat-card">
+          <h4>📊 Analytics Dashboard</h4>
+          <p>Track your progress with charts, streaks, and smart suggestions.</p>
+        </div>
+        <div class="feat-card">
+          <h4>🏆 XP & Achievements</h4>
+          <p>Level up as you complete tasks. Unlock badges. Make progress feel like a game.</p>
+        </div>
+        <div class="feat-card">
+          <h4>🧠 ADHD-Friendly</h4>
+          <p>Built for brains that need structure. Pomodoro timer, focus sounds, one-thing prompts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing">
+    <h2>Simple Pricing</h2>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Free</h3>
+        <div class="price">$0<span>/forever</span></div>
+        <ul>
+          <li>Personalized roadmap & timeline</li>
+          <li>Weekly schedule builder</li>
+          <li>Basic study tools</li>
+          <li>Progress tracking</li>
+          <li>Ad-supported</li>
+        </ul>
+        <a href="#" class="price-btn free" onclick="event.preventDefault();startQuiz()">Get Started Free</a>
+      </div>
+      <div class="price-card featured">
+        <h3>Pro</h3>
+        <div class="price">$9.99<span>/month</span></div>
+        <ul>
+          <li>Everything in Free</li>
+          <li>Ad-free experience</li>
+          <li>Advanced study games & whiteboard</li>
+          <li>Interview simulator</li>
+          <li>MCAT/LSAT score predictor</li>
+          <li>School database & career comparison</li>
+          <li>Analytics dashboard</li>
+          <li>Export to PDF</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="price-btn" onclick="event.preventDefault();alert('Stripe checkout coming soon!')">Start Pro — 7 Day Free Trial</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2026 Roadmap. Built by <a href="#">David Tashjian</a>. A personalized path for following your dreams.</p>
+  </footer>
+</div>
+
+<!-- QUESTIONNAIRE -->
+<div id="quiz-container"></div>
+
+<script>
+// Questionnaire engine
+const QUESTIONS = {
+  common: [
+    {q: 'What best describes your current situation?', opts: ['Current college student','Recent graduate','Career changer','Gap year']},
+    {q: 'Do you have ADHD or feel you need extra structure?', opts: ['Yes, diagnosed','I think so, undiagnosed','No, but I like structure','No']},
+    {q: 'What is your biggest concern about this path?', opts: ['Time management','Financial cost','Academic difficulty','Not sure where to start']},
+    {q: 'How would you describe your study style?', opts: ['Visual learner (videos, diagrams)','Active learner (practice problems)','Reading/writing','I don\'t know yet']},
+  ],
+  premed: [
+    {q: 'What type of medical program are you targeting?', opts: ['MD (allopathic)','DO (osteopathic)','Both MD and DO','Not sure yet']},
+    {q: 'Have you completed any science prerequisites?', opts: ['None yet','Some (1-2 courses)','Most of them','All of them']},
+    {q: 'When are you planning to take the MCAT?', opts: ['This year','Next year','2+ years from now','Haven\'t thought about it']},
+    {q: 'Do you have clinical experience?', opts: ['None','Some volunteering','Shadowing only','Paid clinical work (CNA/EMT/etc)']},
+  ],
+  prelaw: [
+    {q: 'When are you planning to take the LSAT?', opts: ['This year','Next year','2+ years from now','Haven\'t decided']},
+    {q: 'What type of law interests you?', opts: ['Corporate/Business','Criminal','Public Interest','Intellectual Property','Not sure']},
+    {q: 'What is your current GPA range?', opts: ['3.8+','3.5-3.79','3.0-3.49','Below 3.0']},
+  ],
+  ib: [
+    {q: 'What year are you in school?', opts: ['Freshman','Sophomore','Junior','Senior/Graduate']},
+    {q: 'Do you have any finance experience?', opts: ['None','Finance clubs/competitions','Internship(s)','Full-time experience']},
+    {q: 'Target bank tier?', opts: ['Bulge bracket (GS, MS, JPM)','Elite boutique (Evercore, Lazard)','Middle market','Any that will hire me']},
+  ],
+};
+
+let quizPath = '';
+let quizStep = 0;
+let quizAnswers = {};
+
+function startQuiz() { startQuizWith(''); }
+function startQuizWith(path) {
+  quizPath = path;
+  quizStep = 0;
+  quizAnswers = {path: path};
+  document.getElementById('landing').style.display = 'none';
+  renderQuizStep();
+}
+
+function renderQuizStep() {
+  const qs = [...QUESTIONS.common, ...(QUESTIONS[quizPath]||[])];
+  const container = document.getElementById('quiz-container');
+  
+  if (quizStep >= qs.length) {
+    // Done — generate roadmap
+    container.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px"><div><h2 style="font-size:2em;margin-bottom:12px">🎉 Your Roadmap is Ready!</h2><p style="color:#64748b;margin-bottom:24px">Based on your answers, we\'ve built a personalized plan. This is your MVP demo — the full version will generate a complete interactive roadmap.</p><button onclick="location.reload()" style="padding:14px 32px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-size:1em;font-weight:600;cursor:pointer">Back to Home</button></div></div>';
+    return;
+  }
+
+  const q = qs[quizStep];
+  const pct = ((quizStep+1)/qs.length)*100;
+  
+  container.innerHTML = '<div class="quiz-page active">' +
+    '<div class="quiz-progress"><div class="quiz-progress-fill" style="width:'+pct+'%"></div></div>' +
+    '<h2>'+q.q+'</h2>' +
+    '<p>Question '+(quizStep+1)+' of '+qs.length+'</p>' +
+    q.opts.map((o,i) => '<button class="quiz-option" onclick="selectQuizOpt(this,'+quizStep+',\''+o.replace(/'/g,"\\'")+'\')">' + o + '</button>').join('') +
+    '<div class="quiz-nav">' +
+    (quizStep > 0 ? '<button class="back-btn" onclick="quizStep--;renderQuizStep()">Back</button>' : '') +
+    '<button class="next-btn" onclick="quizNext()">Next →</button>' +
+    '</div></div>';
+}
+
+function selectQuizOpt(btn, step, answer) {
+  document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  quizAnswers['q'+step] = answer;
+}
+
+function quizNext() {
+  quizStep++;
+  renderQuizStep();
+}
+</script>
+</body>
+</html>
