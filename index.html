@@ -32,6 +32,49 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
 .faq-a{padding:0 24px 18px;color:#64748b;font-size:.9em;line-height:1.7;display:none}
 .faq-item.open .faq-a{display:block}
 
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;background:rgba(15,23,42,.97);backdrop-filter:blur(12px);z-index:50;padding:14px 32px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.06)}
+nav .logo{font-size:1.2em;font-weight:800;color:#fff;text-decoration:none}
+nav .nav-links{margin-left:auto;display:flex;gap:20px;align-items:center}
+nav .nav-links a{color:#94a3b8;text-decoration:none;font-size:.88em;transition:color .15s}
+nav .nav-links a:hover{color:#fff}
+nav .nav-cta{padding:7px 18px;background:#2563eb;color:#fff!important;border-radius:8px;font-weight:600}
+@media(max-width:768px){nav .nav-links a:not(.nav-cta){display:none}}
+html{scroll-behavior:smooth}
+
+/* How it works */
+.steps-section{padding:80px 20px;max-width:1100px;margin:0 auto;text-align:center}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px;margin-top:40px}
+.step{padding:24px}
+.step-num{width:48px;height:48px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2em;font-weight:800;margin:0 auto 16px}
+.step h3{margin-bottom:8px;font-size:1.1em}
+.step p{color:#64748b;font-size:.92em;line-height:1.6}
+
+/* Progress bar */
+.rm-progress{background:#e2e8f0;height:8px;border-radius:4px;margin:16px 0;overflow:hidden}
+.rm-progress-fill{height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:4px;transition:width .5s}
+.rm-pct{text-align:center;font-size:.85em;font-weight:700;color:#2563eb;margin-bottom:8px}
+body.dark .rm-progress{background:#334155}
+
+/* Phase colors */
+.rm-phase{border-left:4px solid #2563eb;transition:all .2s}
+.rm-phase:nth-child(4n+1){border-left-color:#2563eb}
+.rm-phase:nth-child(4n+2){border-left-color:#7c3aed}
+.rm-phase:nth-child(4n+3){border-left-color:#059669}
+.rm-phase:nth-child(4n){border-left-color:#d97706}
+body.dark .rm-phase{background:#1e293b;border-color:#334155}
+body.dark .rm-phase h3{color:#e2e8f0}
+body.dark .rm-phase p{color:#94a3b8}
+body.dark .rm-item{color:#cbd5e1;border-bottom-color:#334155}
+
+/* Better ad slots */
+.ad-slot{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center;margin:16px 0;font-size:.8em;color:#94a3b8}
+body.dark .ad-slot{background:#1e293b;border-color:#334155}
+
+/* Scroll animation */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
 /* Hero */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);color:#fff;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(37,99,235,.15) 0%,transparent 50%),radial-gradient(circle at 70% 80%,rgba(124,58,237,.1) 0%,transparent 50%)}
@@ -101,6 +144,17 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
 </head>
 <body>
 
+<nav>
+  <a href="#" class="logo" onclick="event.preventDefault();location.reload()">&#127758; Roadmap</a>
+  <div class="nav-links">
+    <a href="#paths">Paths</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+    <a href="#" class="nav-cta" onclick="event.preventDefault();startQuiz()">Get Started</a>
+  </div>
+</nav>
+
 <!-- LANDING PAGE -->
 <div id="landing">
   <section class="hero">
@@ -108,9 +162,24 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
     <p class="tagline">A personalized path for following your dreams. Answer a few questions, get a complete interactive plan built just for you.</p>
     <a href="#" class="cta" onclick="event.preventDefault();startQuiz()">Build My Roadmap — Free</a>
     <span class="sub-cta">No signup required. Takes 2 minutes.</span>
+    <div style="display:flex;gap:40px;margin-top:48px;justify-content:center;flex-wrap:wrap">
+      <div style="text-align:center"><div style="font-size:1.8em;font-weight:800">14</div><div style="font-size:.78em;color:#64748b">Career Paths</div></div>
+      <div style="text-align:center"><div style="font-size:1.8em;font-weight:800">2 min</div><div style="font-size:.78em;color:#64748b">Setup Time</div></div>
+      <div style="text-align:center"><div style="font-size:1.8em;font-weight:800">100%</div><div style="font-size:.78em;color:#64748b">Free to Start</div></div>
+    </div>
   </section>
 
-  <section class="paths">
+  <section class="steps-section fade-in">
+    <h2 style="font-size:2em;font-weight:800">How It Works</h2>
+    <p style="color:#64748b;margin-top:8px">Three steps to your personalized plan</p>
+    <div class="steps-grid">
+      <div class="step"><div class="step-num">1</div><h3>Choose Your Path</h3><p>Select your career goal from 14 paths.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>Answer Questions</h3><p>Tell us about your background and goals. Takes 2 minutes.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Get Your Roadmap</h3><p>Receive a personalized plan with timeline, tools, and resources.</p></div>
+    </div>
+  </section>
+
+  <section class="paths fade-in" id="paths">
     <h2>Choose Your Path</h2>
     <p class="subtitle">We build personalized roadmaps for ambitious people in every field</p>
     <div class="path-grid">
@@ -187,7 +256,7 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
     </div>
   </section>
 
-  <section class="features">
+  <section class="features fade-in" id="features">
     <div class="features-inner">
       <h2>What You Get</h2>
       <div class="feat-grid">
@@ -228,7 +297,7 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
     </div>
   </section>
 
-  <section class="pricing">
+  <section class="pricing fade-in" id="pricing">
     <h2>Simple Pricing</h2>
     <div class="price-grid">
       <div class="price-card">
@@ -262,7 +331,7 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
     </div>
   </section>
 
-  <section class="faq-section">
+  <section class="faq-section fade-in" id="faq">
     <h2 style="font-size:2em;font-weight:800;text-align:center;margin-bottom:32px">FAQ</h2>
     <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is it really free?<span>+</span></div><div class="faq-a">Yes. The basic roadmap with timeline and progress tracking is 100% free forever. Pro adds premium tools and removes ads.</div></div>
     <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Do I need to create an account?<span>+</span></div><div class="faq-a">No. Your progress saves in your browser automatically. No email, no password needed.</div></div>
@@ -575,13 +644,24 @@ function generateRoadmap() {
 
   const data = pathData[path] || pathData.premed;
 
-  let html = '<div style="max-width:900px;margin:0 auto;padding:40px 20px">';
+  let totalTasks = 0, checkedTasks = 0;
+  data.phases.forEach((phase,i) => { phase.items.forEach((item,j) => { totalTasks++; if(localStorage.getItem('rm_'+path+'_'+i+'_'+j)==='1') checkedTasks++; }); });
+  const pct = totalTasks > 0 ? Math.round((checkedTasks/totalTasks)*100) : 0;
+
+  let html = '<div style="max-width:900px;margin:0 auto;padding:60px 20px 40px">';
+  
+  // Back button
+  html += '<button onclick="location.reload()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 16px;color:#64748b;cursor:pointer;font-size:.85em;margin-bottom:16px">&larr; Back to Home</button>';
   
   // Ad placement (top)
-  html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin-bottom:20px;font-size:.78em;color:#94a3b8">Ad space — <a href="#" onclick="event.preventDefault();alert(\'Upgrade to Pro to remove ads! $9.99/mo\')">Remove ads with Pro →</a></div>';
+  html += '<div class="ad-slot">Sponsored &mdash; <a href="#" onclick="event.preventDefault();alert(\'Upgrade to Pro to remove ads! $9.99/mo\')" style="color:#2563eb">Go Pro for ad-free &rarr;</a></div>';
 
   html += '<h1 style="font-size:2.2em;font-weight:900;margin-bottom:8px">'+data.title+'</h1>';
-  html += '<p style="color:#64748b;margin-bottom:24px">Personalized based on your answers. Bookmark this page — your progress saves automatically.</p>';
+  html += '<p style="color:#64748b;margin-bottom:12px">Personalized based on your answers. Your progress saves automatically.</p>';
+  
+  // Progress bar
+  html += '<div class="rm-pct">'+pct+'% Complete</div>';
+  html += '<div class="rm-progress"><div class="rm-progress-fill" id="rm-prog-fill" style="width:'+pct+'%"></div></div>';
 
   // ADHD tip if applicable
   if (hasADHD) {
@@ -598,8 +678,8 @@ function generateRoadmap() {
 
   // Phases
   data.phases.forEach((phase, i) => {
-    html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin:14px 0">';
-    html += '<h3 style="font-size:1.1em;color:#1e293b;margin:0 0 4px">Phase '+(i+1)+': '+phase.name+'</h3>';
+    html += '<div class="rm-phase" style="background:var(--card,#fff);border:1px solid var(--border,#e2e8f0);border-radius:12px;padding:20px 24px;margin:14px 0">';
+    html += '<h3 style="font-size:1.1em;margin:0 0 4px">Phase '+(i+1)+': '+phase.name+'</h3>';
     html += '<p style="font-size:.85em;color:#64748b;margin:0 0 12px">'+phase.duration+'</p>';
     html += '<ul style="padding-left:1.2em">';
     phase.items.forEach((item,j) => {
@@ -679,6 +759,12 @@ function fcShow(){
   if(at){at.textContent=fcCards[fcIdx].a;at.style.display='none';}
 }
 if(fcCards.length)setTimeout(fcShow,500);
+
+// Scroll animation observer
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
