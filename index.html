@@ -243,8 +243,7 @@ function renderQuizStep() {
   const container = document.getElementById('quiz-container');
   
   if (quizStep >= qs.length) {
-    // Done — generate roadmap
-    container.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px"><div><h2 style="font-size:2em;margin-bottom:12px">🎉 Your Roadmap is Ready!</h2><p style="color:#64748b;margin-bottom:24px">Based on your answers, we\'ve built a personalized plan. This is your MVP demo — the full version will generate a complete interactive roadmap.</p><button onclick="location.reload()" style="padding:14px 32px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-size:1em;font-weight:600;cursor:pointer">Back to Home</button></div></div>';
+    generateRoadmap();
     return;
   }
 
@@ -271,6 +270,111 @@ function selectQuizOpt(btn, step, answer) {
 function quizNext() {
   quizStep++;
   renderQuizStep();
+}
+
+// === ROADMAP GENERATION ENGINE ===
+function generateRoadmap() {
+  const path = quizPath || 'premed';
+  const hasADHD = (quizAnswers.q1||'').toLowerCase().includes('yes') || (quizAnswers.q1||'').includes('think so');
+  const container = document.getElementById('quiz-container');
+  
+  const pathData = {
+    premed: {
+      title: 'Your Pre-Med Roadmap',
+      phases: [
+        {name:'Foundation',duration:'Months 1-6',items:['Complete prerequisite courses (Bio, Chem, Physics, Orgo)','Begin clinical volunteering','Start shadowing physicians','Join pre-health organizations']},
+        {name:'Building',duration:'Months 7-12',items:['Continue coursework (Biochem, A&P, upper levels)','Build clinical hours (150+ target)','Develop research experience','Begin MCAT content review']},
+        {name:'MCAT Prep',duration:'Months 13-16',items:['Full-time MCAT preparation','Practice exams weekly','Target: 510+ for MD, 500+ for DO','Maintain minimal ECs']},
+        {name:'Application',duration:'Months 17-22',items:['Write personal statement','Complete AMCAS/AACOMAS','Submit secondaries within 2 weeks','Prepare for interviews']},
+      ],
+      resources: ['Khan Academy MCAT','Anki flashcards','AAMC official materials','Jack Westin CARS'],
+    },
+    prelaw: {
+      title: 'Your Pre-Law Roadmap',
+      phases: [
+        {name:'Foundation',duration:'Months 1-4',items:['Research law school requirements','Identify target schools','Begin building your resume','Start reading legal publications']},
+        {name:'LSAT Prep',duration:'Months 5-10',items:['Enroll in LSAT prep course or self-study','Take diagnostic test','Practice 4-5 days/week','Take 10+ practice tests']},
+        {name:'Application Prep',duration:'Months 11-14',items:['Write personal statement','Secure 2-3 recommendation letters','Build school list (reach/target/safety)','Complete diversity statement if applicable']},
+        {name:'Apply & Interview',duration:'Months 15-20',items:['Submit applications early (Sept-Nov)','Complete optional essays','Prepare for interviews','Negotiate scholarships']},
+      ],
+      resources: ['7Sage LSAT','LSAT Demon','PowerScore Bibles','r/LSAT subreddit'],
+    },
+    ib: {
+      title: 'Your Investment Banking Roadmap',
+      phases: [
+        {name:'Foundation',duration:'Months 1-3',items:['Learn accounting fundamentals (free courses)','Build financial modeling skills','Start networking on LinkedIn','Join finance clubs']},
+        {name:'Technical Prep',duration:'Months 4-8',items:['Master DCF, LBO, merger models','Complete Wall Street Prep or BIWS','Practice 400 technicals','Attend info sessions']},
+        {name:'Networking & Recruiting',duration:'Months 9-14',items:['Coffee chats (30+ bankers)','Apply to summer analyst programs','Perfect your pitch/story','Mock interviews']},
+        {name:'Interview & Offer',duration:'Months 15-18',items:['Superday preparation','Technical + behavioral practice','Negotiate offers','Prepare for start date']},
+      ],
+      resources: ['Wall Street Prep','Breaking Into Wall Street','Mergers & Inquisitions','WSO forums'],
+    },
+    consulting: {
+      title: 'Your Consulting Roadmap',
+      phases: [
+        {name:'Foundation',duration:'Months 1-3',items:['Learn case interview framework','Start reading business cases','Build resume with leadership experiences','Research target firms']},
+        {name:'Case Prep',duration:'Months 4-8',items:['Practice 50+ cases with partners','Master market sizing','Develop structured thinking','Mock interviews weekly']},
+        {name:'Networking',duration:'Months 9-12',items:['Attend firm events','Coffee chats with consultants','Apply through campus recruiting or experienced hire','Perfect your resume']},
+        {name:'Interview & Offer',duration:'Months 13-16',items:['First round interviews','Final round (case + behavioral)','Negotiate offer','Prepare for start date']},
+      ],
+      resources: ['Case in Point','Victor Cheng videos','PrepLounge','Management Consulted'],
+    },
+  };
+
+  const data = pathData[path] || pathData.premed;
+
+  let html = '<div style="max-width:900px;margin:0 auto;padding:40px 20px">';
+  
+  // Ad placement (top)
+  html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin-bottom:20px;font-size:.78em;color:#94a3b8">Ad space — <a href="#" onclick="event.preventDefault();alert(\'Upgrade to Pro to remove ads! $9.99/mo\')">Remove ads with Pro →</a></div>';
+
+  html += '<h1 style="font-size:2.2em;font-weight:900;margin-bottom:8px">'+data.title+'</h1>';
+  html += '<p style="color:#64748b;margin-bottom:24px">Personalized based on your answers. Bookmark this page — your progress saves automatically.</p>';
+
+  // ADHD tip if applicable
+  if (hasADHD) {
+    html += '<div style="background:#f0f9ff;border-left:4px solid #0ea5e9;border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:.9em"><h4 style="color:#0369a1;margin:0 0 6px">🧠 ADHD Mode Activated</h4><p style="color:#475569">Your roadmap includes extra structure, break reminders, and dopamine-friendly gamification. Focus on ONE phase at a time. Don\'t look ahead until you\'re ready.</p></div>';
+  }
+
+  // Timeline visualization
+  html += '<div style="display:flex;gap:4px;margin:20px 0;height:8px;border-radius:4px;overflow:hidden">';
+  data.phases.forEach((p,i) => {
+    const colors = ['#2563eb','#7c3aed','#059669','#d97706'];
+    html += '<div style="flex:1;background:'+colors[i%4]+'"></div>';
+  });
+  html += '</div>';
+
+  // Phases
+  data.phases.forEach((phase, i) => {
+    html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin:14px 0">';
+    html += '<h3 style="font-size:1.1em;color:#1e293b;margin:0 0 4px">Phase '+(i+1)+': '+phase.name+'</h3>';
+    html += '<p style="font-size:.85em;color:#64748b;margin:0 0 12px">'+phase.duration+'</p>';
+    html += '<ul style="padding-left:1.2em">';
+    phase.items.forEach(item => {
+      html += '<li style="margin:6px 0;color:#475569;font-size:.92em"><input type="checkbox" style="margin-right:8px;cursor:pointer" onchange="this.parentElement.style.opacity=this.checked?0.5:1">'+item+'</li>';
+    });
+    html += '</ul></div>';
+  });
+
+  // Resources
+  html += '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin:14px 0"><h4 style="color:#92400e;margin:0 0 6px;font-size:.95em">📚 Recommended Resources</h4><p style="font-size:.9em;color:#92400e">'+data.resources.join(' • ')+'</p></div>';
+
+  // Ad placement (bottom)
+  html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin:20px 0;font-size:.78em;color:#94a3b8">Ad space — <a href="#" onclick="event.preventDefault();alert(\'Upgrade to Pro to remove ads! $9.99/mo\')">Remove ads with Pro →</a></div>';
+
+  // Pro upsell
+  html += '<div style="background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:14px;padding:24px;text-align:center;color:#fff;margin:20px 0">';
+  html += '<h3 style="margin:0 0 8px;color:#fff">Unlock the Full Experience</h3>';
+  html += '<p style="color:rgba(255,255,255,.8);font-size:.92em;margin:0 0 16px">Study games, whiteboard, interview prep, score predictor, analytics — all ad-free.</p>';
+  html += '<button onclick="alert(\'Stripe checkout will go here — $9.99/mo or $79/yr\')" style="padding:12px 32px;background:#fff;color:#2563eb;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer">Start 7-Day Free Trial →</button>';
+  html += '</div>';
+
+  // Footer
+  html += '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:.82em">© 2026 Roadmap | <a href="#" onclick="event.preventDefault();location.reload()" style="color:#2563eb">Create Another Roadmap</a></div>';
+
+  html += '</div>';
+  container.innerHTML = html;
+  window.scrollTo(0,0);
 }
 </script>
 </body>
