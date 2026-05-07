@@ -228,6 +228,15 @@ body.dark .faq-item{background:#1e293b;border-color:#334155}
     <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I cancel Pro anytime?<span>+</span></div><div class="faq-a">Yes. One click. No questions asked. Your free roadmap stays forever.</div></div>
   </section>
 
+  <section style="padding:60px 20px;text-align:center;background:#0f172a">
+    <h2 style="font-size:1.6em;font-weight:800;color:#fff;margin-bottom:8px">Stay Updated</h2>
+    <p style="color:#94a3b8;margin-bottom:20px;font-size:.95em">Get notified when we add new paths and features.</p>
+    <form onsubmit="event.preventDefault();localStorage.setItem('waitlist_email',this.querySelector('input').value);this.innerHTML='<p style=color:#22c55e;font-weight:600>✓ You\'re on the list!</p>';" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+      <input type="email" placeholder="your@email.com" required style="flex:1;padding:12px 16px;border:1px solid #334155;border-radius:10px;background:#1e293b;color:#fff;font-size:.95em;outline:none">
+      <button type="submit" style="padding:12px 24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer">Join</button>
+    </form>
+  </section>
+
   <footer class="footer">
     <p>&copy; 2026 Roadmap. Built by <a href="#">David Tashjian</a>. A personalized path for following your dreams.</p>
   </footer>
@@ -260,6 +269,16 @@ const QUESTIONS = {
     {q: 'What year are you in school?', opts: ['Freshman','Sophomore','Junior','Senior/Graduate']},
     {q: 'Do you have any finance experience?', opts: ['None','Finance clubs/competitions','Internship(s)','Full-time experience']},
     {q: 'Target bank tier?', opts: ['Bulge bracket (GS, MS, JPM)','Elite boutique (Evercore, Lazard)','Middle market','Any that will hire me']},
+  ],
+  tech: [
+    {q: 'Current coding ability?', opts: ['Complete beginner','Some coursework','Side projects','Professional experience']},
+    {q: 'Target company type?', opts: ['FAANG/Big Tech','Startup','Mid-size','Any SWE role']},
+    {q: 'Preferred language?', opts: ['Python','JavaScript','Java/C++','Don\'t know yet']},
+  ],
+  caa: [
+    {q: 'Do you have anesthesia shadowing hours?', opts: ['None yet','Some (1-15 hrs)','Minimum met (16+ hrs)','Extensive (40+)']},
+    {q: 'Are you willing to relocate for the program?', opts: ['Yes, anywhere','Prefer East Coast/DC','Prefer Midwest','Only if necessary']},
+    {q: 'Have you taken A&P and Calculus?', opts: ['Neither','One of them','Both','Plus statistics too']},
   ],
 };
 
@@ -357,6 +376,28 @@ function generateRoadmap() {
       ],
       resources: ['Case in Point','Victor Cheng videos','PrepLounge','Management Consulted'],
     },
+    tech: {
+      title: 'Your Software Engineering Roadmap',
+      phases: [
+        {name:'Learn to Code',duration:'Months 1-4',items:['Pick a language (Python or JavaScript recommended)','Complete freeCodeCamp or The Odin Project','Build 3 personal projects','Learn Git/GitHub','HTML/CSS basics']},
+        {name:'Data Structures & Algorithms',duration:'Months 4-8',items:['Complete Neetcode 150 or Blind 75','Practice LeetCode daily (easy → medium)','Master arrays, trees, graphs, dynamic programming','System design fundamentals','Timed practice sessions']},
+        {name:'Portfolio & Resume',duration:'Months 6-10',items:['3-5 polished projects on GitHub','Deploy 2+ live web apps','Contribute to open source','Write a technical blog','Tailor resume to ATS systems']},
+        {name:'Job Search',duration:'Months 10-14',items:['Apply to 50+ companies','Network for referrals','Phone screens & online assessments','Behavioral prep (STAR method)','Negotiate offer (always negotiate)']},
+      ],
+      resources: ['Neetcode.io (free roadmap)','LeetCode','freeCodeCamp','The Odin Project','Cracking the Coding Interview'],
+      schedule: 'Mon-Fri: 2hr coding + 1hr LeetCode. Weekends: project work.',
+    },
+    caa: {
+      title: 'Your CAA (Anesthesiologist Assistant) Roadmap',
+      phases: [
+        {name:'Prerequisites',duration:'Months 1-10',items:['Complete Bio I & II, Gen Chem I & II, Orgo I & II + labs','Complete Physics I & II + labs','Complete A&P I & II, Biochemistry','Calculus and Statistics','Maintain 3.3+ science GPA']},
+        {name:'Clinical & Shadowing',duration:'Months 4-14',items:['Get 16+ hours anesthesia shadowing (MINIMUM)','Aim for 40+ hours across multiple settings','Hospital volunteering (100+ hours)','Contact Case Western MSA for shadowing help','Shadow through volunteer coordinator route']},
+        {name:'Application Prep',duration:'Months 12-16',items:['MCAT (500+) or GRE (60th percentile+)','Take Casper test if required','Personal statement specific to CAA','3 strong recommendation letters','Research programs (Case Western DC is closest to NE)']},
+        {name:'Apply (CASAA)',duration:'Months 16-20',items:['CASAA application opens March','Submit to 4-6 programs','Prepare for interviews','Understand anesthesia care team model','Decision by May/June']},
+      ],
+      resources: ['CASAA portal','Case Western MSA info','AAAA.org (profession info)','anesthesiaonesource.com','NCCAA.org (certification)'],
+      schedule: 'Heavy course load during prereqs. Shadow on weekends/breaks.',
+    },
   };
 
   const data = pathData[path] || pathData.premed;
@@ -396,8 +437,21 @@ function generateRoadmap() {
     html += '</ul></div>';
   });
 
+  // Weekly schedule suggestion
+  if (data.schedule) {
+    html += '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;margin:14px 0"><h4 style="color:#166534;margin:0 0 6px;font-size:.95em">📅 Suggested Weekly Schedule</h4><p style="font-size:.9em;color:#166534">'+data.schedule+'</p></div>';
+  } else {
+    html += '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;margin:14px 0"><h4 style="color:#166534;margin:0 0 6px;font-size:.95em">📅 Suggested Weekly Schedule</h4><p style="font-size:.9em;color:#166534">Mon-Fri: 2-3 hours focused work on current phase. Weekends: Review + planning. Adjust based on your commitments.</p></div>';
+  }
+
   // Resources
   html += '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin:14px 0"><h4 style="color:#92400e;margin:0 0 6px;font-size:.95em">📚 Recommended Resources</h4><p style="font-size:.9em;color:#92400e">'+data.resources.join(' • ')+'</p></div>';
+
+  // Pomodoro timer
+  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 8px;font-size:.95em">⏲ Pomodoro Timer</h4><div id="pomo-display" style="font-size:2.5em;font-weight:800;color:#2563eb;margin:8px 0">25:00</div><div style="display:flex;gap:8px;justify-content:center"><button onclick="pomoStart()" style="padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Start</button><button onclick="pomoReset()" style="padding:8px 20px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">Reset</button></div><p style="font-size:.78em;color:#94a3b8;margin-top:8px">25 min focus, 5 min break. Repeat.</p></div>';
+
+  // Simple flashcard area
+  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 12px;font-size:.95em">🃏 Quick Flashcards</h4><div id="fc-area" style="min-height:100px;border:2px solid #e2e8f0;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer;font-size:1.1em;font-weight:600" onclick="this.querySelector(\'span\').style.display=this.querySelector(\'span\').style.display===\'none\'?\'block\':\'none\'"><div><p id="fc-q-text">Click \"Add Card\" to create flashcards for this path</p><span style="display:none;color:#2563eb;margin-top:8px" id="fc-a-text"></span></div></div><div style="margin-top:10px"><button onclick="fcPromptAdd()" style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85em">+ Add Card</button> <button onclick="fcNext()" style="padding:6px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.85em">Next →</button></div></div>';
 
   // Ad placement (bottom)
   html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin:20px 0;font-size:.78em;color:#94a3b8">Ad space — <a href="#" onclick="event.preventDefault();alert(\'Upgrade to Pro to remove ads! $9.99/mo\')">Remove ads with Pro →</a></div>';
@@ -416,6 +470,42 @@ function generateRoadmap() {
   container.innerHTML = html;
   window.scrollTo(0,0);
 }
+
+// Dark mode auto-detect
+if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches) document.body.classList.add('dark');
+
+// Pomodoro Timer
+let pomoInt=null, pomoSecs=1500;
+function pomoStart(){
+  if(pomoInt){clearInterval(pomoInt);pomoInt=null;return;}
+  pomoInt=setInterval(()=>{
+    pomoSecs--;
+    const m=Math.floor(pomoSecs/60),s=pomoSecs%60;
+    const d=document.getElementById('pomo-display');
+    if(d)d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(pomoSecs<=0){clearInterval(pomoInt);pomoInt=null;pomoSecs=300;alert('Time! Take a 5-min break.');}
+  },1000);
+}
+function pomoReset(){clearInterval(pomoInt);pomoInt=null;pomoSecs=1500;const d=document.getElementById('pomo-display');if(d)d.textContent='25:00';}
+
+// Flashcards
+let fcCards=JSON.parse(localStorage.getItem('rm_flashcards')||'[]'), fcIdx=0;
+function fcPromptAdd(){
+  const front=prompt('Front (question/term):');if(!front)return;
+  const back=prompt('Back (answer/definition):');if(!back)return;
+  fcCards.push({q:front,a:back});
+  localStorage.setItem('rm_flashcards',JSON.stringify(fcCards));
+  fcShow();
+}
+function fcNext(){if(!fcCards.length)return;fcIdx=(fcIdx+1)%fcCards.length;fcShow();}
+function fcShow(){
+  const qt=document.getElementById('fc-q-text');
+  const at=document.getElementById('fc-a-text');
+  if(!qt||!fcCards.length)return;
+  qt.textContent=fcCards[fcIdx].q;
+  if(at){at.textContent=fcCards[fcIdx].a;at.style.display='none';}
+}
+if(fcCards.length)setTimeout(fcShow,500);
 </script>
 </body>
 </html>
