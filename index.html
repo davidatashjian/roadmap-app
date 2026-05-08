@@ -370,7 +370,7 @@ const QUESTIONS = {
     {q: 'What type of medical program are you targeting?', opts: ['MD (allopathic)','DO (osteopathic)','Both MD and DO','Not sure yet']},
     {q: 'Have you completed any science prerequisites?', opts: ['None yet','Some (1-2 courses)','Most of them','All of them']},
     {q: 'When are you planning to take the MCAT?', opts: ['This year','Next year','2+ years from now','Haven\'t thought about it']},
-    {q: 'Do you have clinical experience?', opts: ['None','Some volunteering','Shadowing only','Paid clinical work (CNA/EMT/etc)']},
+    {q: 'Do you have clinical experience?', opts: ['None','Some volunteering','Shadowing only','Paid clinical work (CNA/EMT/etc)'], multi:true},
   ],
   prelaw: [
     {q: 'When are you planning to take the LSAT?', opts: ['This year','Next year','2+ years from now','Haven\'t decided']},
@@ -379,7 +379,7 @@ const QUESTIONS = {
   ],
   ib: [
     {q: 'What year are you in school?', opts: ['Freshman','Sophomore','Junior','Senior/Graduate']},
-    {q: 'Do you have any finance experience?', opts: ['None','Finance clubs/competitions','Internship(s)','Full-time experience']},
+    {q: 'Do you have any finance experience?', opts: ['None','Finance clubs/competitions','Internship(s)','Full-time experience'], multi:true},
     {q: 'Target bank tier?', opts: ['Bulge bracket (GS, MS, JPM)','Elite boutique (Evercore, Lazard)','Middle market','Any that will hire me']},
   ],
   tech: [
@@ -394,7 +394,7 @@ const QUESTIONS = {
   ],
   nursing: [
     {q: 'What nursing level are you targeting?', opts: ['BSN (Bachelor\'s)','Direct-entry MSN','Nurse Practitioner (NP)','DNP (Doctorate)']},
-    {q: 'Do you have any healthcare experience?', opts: ['None','CNA/MA certification','Volunteering','Working in healthcare']},
+    {q: 'Do you have any healthcare experience?', opts: ['None','CNA/MA certification','Volunteering','Working in healthcare'], multi:true},
     {q: 'Preferred specialty?', opts: ['Emergency/Critical Care','Pediatrics','Psych/Mental Health','Family/Primary Care','Not sure']},
   ],
   pa: [
@@ -430,7 +430,7 @@ const QUESTIONS = {
   ],
   phd: [
     {q: 'Field?', opts: ['STEM (Bio, Chem, Physics, CS)','Social Sciences','Humanities','Engineering']},
-    {q: 'Research experience?', opts: ['None','1 semester','1-2 years','Publications']},
+    {q: 'Research experience?', opts: ['None','1 semester','1-2 years','Publications'], multi:true},
     {q: 'Goal after PhD?', opts: ['Tenure-track professor','Industry research','Consulting','Not sure']},
     {q: 'GRE status?', opts: ['Not required by programs','Haven\'t taken','Already taken','Programs waiving it']},
   ],
@@ -464,7 +464,7 @@ function renderQuizStep() {
   container.innerHTML = '<div class="quiz-page active">' +
     '<div class="quiz-progress"><div class="quiz-progress-fill" style="width:'+pct+'%"></div></div>' +
     '<h2>'+q.q+'</h2>' +
-    '<p>Question '+(quizStep+1)+' of '+qs.length+'</p>' +
+    '<p>Question '+(quizStep+1)+' of '+qs.length+(q.multi?' &mdash; <em>select all that apply</em>':'')+'</p>' +
     q.opts.map((o,i) => '<button class="quiz-option" onclick="selectQuizOpt(this,'+quizStep+',\''+o.replace(/'/g,"\\'")+'\')">' + o + '</button>').join('') +
     '<div class="quiz-nav">' +
     (quizStep > 0 ? '<button class="back-btn" onclick="quizStep--;renderQuizStep()">Back</button>' : '') +
@@ -473,9 +473,18 @@ function renderQuizStep() {
 }
 
 function selectQuizOpt(btn, step, answer) {
-  document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  quizAnswers['q'+step] = answer;
+  const qs = [...QUESTIONS.common, ...(QUESTIONS[quizPath]||[])];
+  const isMulti = qs[step] && qs[step].multi;
+  if (isMulti) {
+    btn.classList.toggle('selected');
+    var selected = [];
+    document.querySelectorAll('.quiz-option.selected').forEach(b => selected.push(b.textContent));
+    quizAnswers['q'+step] = selected.join(', ');
+  } else {
+    document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    quizAnswers['q'+step] = answer;
+  }
 }
 
 function quizNext() {
