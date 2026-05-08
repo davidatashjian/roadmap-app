@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Roadmap — A Personalized Path for Following Your Dreams</title>
 <meta name="description" content="Get a personalized career roadmap built just for you. Pre-med, pre-law, finance, consulting — answer a few questions and get your complete plan.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://pagead2.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https://ddiklxucgprxkrobwfbj.supabase.co https://www.google-analytics.com; frame-src https://pagead2.googlesyndication.com">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4767679771627212" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNHRB4G6Q0"></script>
@@ -371,15 +375,35 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 let sb=null;let sbUser=null;
 try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){console.log('Supabase not loaded')}
 
+// === SECURITY: Input sanitization ===
+function sanitize(str){
+  if(!str)return'';
+  return String(str).replace(/[<>"'&]/g,function(c){return{'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]||c}).trim();
+}
+// Rate limiter (max 5 attempts per minute)
+var authAttempts=0;var authReset=Date.now();
+function checkRateLimit(){
+  if(Date.now()-authReset>60000){authAttempts=0;authReset=Date.now()}
+  authAttempts++;
+  if(authAttempts>5){alert('Too many attempts. Please wait a minute.');return false}
+  return true;
+}
+
 // Auth functions
 async function sbSignUp(email,pass){
   if(!sb)return;
+  if(!checkRateLimit())return;
+  email=sanitize(email);
+  if(!email||!pass||pass.length<6){alert('Valid email and password (6+ chars) required.');return}
   const{data,error}=await sb.auth.signUp({email,password:pass});
   if(error){alert('Sign up error: '+error.message);return}
   alert('Check your email to confirm your account!');
 }
 async function sbLogin(email,pass){
   if(!sb)return;
+  if(!checkRateLimit())return;
+  email=sanitize(email);
+  if(!email||!pass){alert('Email and password required.');return}
   const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
   if(error){alert('Login error: '+error.message);return}
   sbUser=data.user;
