@@ -76,7 +76,8 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 .fade-in.visible{opacity:1;transform:translateY(0)}
 
 /* Hero */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);color:#fff;position:relative;overflow:hidden}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px 40px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);color:#fff;position:relative;overflow:hidden}
+.hero>*{position:relative;z-index:2}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(37,99,235,.15) 0%,transparent 50%),radial-gradient(circle at 70% 80%,rgba(124,58,237,.1) 0%,transparent 50%)}
 .hero h1{font-size:clamp(2.5em,6vw,4.5em);font-weight:900;letter-spacing:-.02em;margin-bottom:12px;background:linear-gradient(135deg,#fff,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero .tagline{font-size:clamp(1em,2.5vw,1.4em);color:#94a3b8;max-width:600px;margin:0 auto 32px;line-height:1.6}
@@ -760,11 +761,16 @@ function fcShow(){
 }
 if(fcCards.length)setTimeout(fcShow,500);
 
-// Scroll animation observer
+// Scroll animation observer - also check immediately for already-visible elements
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-}, {threshold:0.1});
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}, {threshold:0.05});
+document.querySelectorAll('.fade-in').forEach(el => {
+  observer.observe(el);
+  // Immediately show if already in viewport
+  const rect = el.getBoundingClientRect();
+  if(rect.top < window.innerHeight) el.classList.add('visible');
+});
 
 // === XP / LEVEL SYSTEM ===
 function getXP(){return parseInt(localStorage.getItem('rm_xp'))||0}
