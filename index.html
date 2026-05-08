@@ -878,7 +878,12 @@ function startSurvival(){
   var area=document.getElementById('sv-area');
   if(!area)return;
   area.style.display='block';
-  area.innerHTML='<p style="text-align:center;padding:20px;color:#475569">Survival Mode loaded! Answer questions to earn XP.</p><button onclick="addXP(10);spawnConfetti();this.textContent=\"Nice! +10 XP\"" style="display:block;margin:12px auto;padding:12px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600">Start Challenge</button>';
+  area.innerHTML='<p style="text-align:center;padding:20px;color:#475569">Survival Mode loaded! Answer questions to earn XP.</p>';
+  var btn=document.createElement('button');
+  btn.style.cssText='display:block;margin:12px auto;padding:12px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600';
+  btn.textContent='Start Challenge';
+  btn.onclick=function(){addXP(10);spawnConfetti();this.textContent='Nice! +10 XP'};
+  area.appendChild(btn);
 }
 
 // === CUSTOM SCROLLBAR ===
