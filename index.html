@@ -6,6 +6,7 @@
 <title>Roadmap — A Personalized Path for Following Your Dreams</title>
 <meta name="description" content="Get a personalized career roadmap built just for you. Pre-med, pre-law, finance, consulting — answer a few questions and get your complete plan.">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4767679771627212" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNHRB4G6Q0"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-VNHRB4G6Q0');</script>
 <style>
@@ -156,6 +157,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     <a href="#features">Features</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
+    <a href="#" id="auth-nav-btn" style="color:#94a3b8;text-decoration:none;font-size:.88em;cursor:pointer" onclick="event.preventDefault();showAuthModal()">Sign In</a>
     <a href="#" class="nav-cta" onclick="event.preventDefault();startQuiz()">Get Started</a>
   </div>
 </nav>
@@ -348,7 +350,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
   <section style="padding:60px 20px;text-align:center;background:#0f172a">
     <h2 style="font-size:1.6em;font-weight:800;color:#fff;margin-bottom:8px">Stay Updated</h2>
     <p style="color:#94a3b8;margin-bottom:20px;font-size:.95em">Get notified when we add new paths and features.</p>
-    <form onsubmit="event.preventDefault();localStorage.setItem('waitlist_email',this.querySelector('input').value);this.innerHTML='<p style=color:#22c55e;font-weight:600>✓ You\'re on the list!</p>';" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
+    <form onsubmit="event.preventDefault();var e=this.querySelector('input').value;localStorage.setItem('waitlist_email',e);saveWaitlistEmail(e);this.innerHTML='<p style=color:#22c55e;font-weight:600>\u2713 You\'re on the list!</p>';" style="display:flex;gap:8px;max-width:400px;margin:0 auto">
       <input type="email" placeholder="your@email.com" required style="flex:1;padding:12px 16px;border:1px solid #334155;border-radius:10px;background:#1e293b;color:#fff;font-size:.95em;outline:none">
       <button type="submit" style="padding:12px 24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer">Join</button>
     </form>
@@ -363,6 +365,66 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 <div id="quiz-container"></div>
 
 <script>
+// === SUPABASE INIT ===
+const SUPABASE_URL='https://ddiklxucgprxkrobwfbj.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkaWtseHVjZ3ByeGtyb2J3ZmJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMDczODYsImV4cCI6MjA5Mzc4MzM4Nn0.ec-k9tdwqktv3FCJSOgR-bNzQwlgV7NoITec5Xw5WZE';
+let sb=null;let sbUser=null;
+try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){console.log('Supabase not loaded')}
+
+// Auth functions
+async function sbSignUp(email,pass){
+  if(!sb)return;
+  const{data,error}=await sb.auth.signUp({email,password:pass});
+  if(error){alert('Sign up error: '+error.message);return}
+  alert('Check your email to confirm your account!');
+}
+async function sbLogin(email,pass){
+  if(!sb)return;
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){alert('Login error: '+error.message);return}
+  sbUser=data.user;
+  updateAuthUI();
+  syncFromCloud();
+}
+async function sbLogout(){
+  if(!sb)return;
+  await sb.auth.signOut();
+  sbUser=null;
+  updateAuthUI();
+}
+function showAuthModal(){
+  var m=document.createElement('div');
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center';
+  m.innerHTML='<div style="background:var(--card,#fff);border-radius:16px;padding:32px;max-width:380px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,.2)"><h2 style="margin:0 0 16px;font-size:1.3em">Sign In / Sign Up</h2><input id="auth-email" type="email" placeholder="Email" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em"><input id="auth-pass" type="password" placeholder="Password (6+ chars)" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em"><div style="display:flex;gap:8px;margin-top:12px"><button onclick="sbLogin(document.getElementById(\'auth-email\').value,document.getElementById(\'auth-pass\').value);this.closest(\'div\').closest(\'div\').remove()" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">Log In</button><button onclick="sbSignUp(document.getElementById(\'auth-email\').value,document.getElementById(\'auth-pass\').value);this.closest(\'div\').closest(\'div\').remove()" style="flex:1;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">Sign Up</button></div><button onclick="this.closest(\'div\').closest(\'div\').remove()" style="width:100%;padding:8px;background:none;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px;cursor:pointer;color:#64748b">Cancel</button></div>';
+  document.body.appendChild(m);
+}
+function updateAuthUI(){
+  var btn=document.getElementById('auth-nav-btn');
+  if(!btn)return;
+  if(sbUser){btn.textContent='Logout';btn.onclick=sbLogout}
+  else{btn.textContent='Sign In';btn.onclick=showAuthModal}
+}
+
+// Cloud sync
+async function syncToCloud(key,val){
+  if(!sb||!sbUser)return;
+  var parts=key.replace('rm_','').split('_');
+  var path=parts[0];var taskKey=parts.slice(1).join('_');
+  await sb.from('progress').upsert({user_id:sbUser.id,path:path,task_key:taskKey,completed:val==='1'},{onConflict:'user_id,path,task_key'});
+}
+async function syncFromCloud(){
+  if(!sb||!sbUser)return;
+  var{data}=await sb.from('progress').select('*').eq('user_id',sbUser.id);
+  if(data)data.forEach(function(r){localStorage.setItem('rm_'+r.path+'_'+r.task_key,r.completed?'1':'0')});
+}
+async function saveWaitlistEmail(email){
+  if(!sb)return;
+  await sb.from('waitlist').insert({email:email});
+}
+
+// Check session on load
+if(sb){sb.auth.getSession().then(function(res){if(res.data.session){sbUser=res.data.session.user;updateAuthUI();syncFromCloud()}})}
+
 // Questionnaire engine
 const QUESTIONS = {
   common: [
