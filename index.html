@@ -837,9 +837,106 @@ function getDailyQuote(){
     {t:"You don't have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},
     {t:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln"},
     {t:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"Winston Churchill"},
+    {t:"Every expert was once a beginner.",a:"Helen Hayes"},
+    {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"},
+    {t:"What we fear of doing most is usually what we most need to do.",a:"Tim Ferriss"},
+    {t:"Don't watch the clock; do what it does. Keep going.",a:"Sam Levenson"},
   ];
   return quotes[Math.floor(Date.now()/86400000)%quotes.length];
 }
+
+// === SCROLL-TO-TOP ===
+const stt=document.createElement('button');
+stt.style.cssText='position:fixed;bottom:20px;right:20px;width:40px;height:40px;border-radius:50%;background:#2563eb;color:#fff;border:none;font-size:1.1em;cursor:pointer;z-index:15;opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.2)';
+stt.innerHTML='&#9650;';
+stt.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+document.body.appendChild(stt);
+window.addEventListener('scroll',()=>{stt.style.opacity=window.scrollY>400?'1':'0'});
+
+// === AMBIENT SOUNDS (Pro) ===
+function playAmbient(type){
+  if(!isPro()){showProGate('Ambient Focus Sounds');return;}
+  if(window._ambCtx){try{window._ambSrc.stop()}catch(e){}}
+  window._ambCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const gain=window._ambCtx.createGain();gain.gain.value=0.3;gain.connect(window._ambCtx.destination);
+  const buf=window._ambCtx.createBuffer(1,2*window._ambCtx.sampleRate,window._ambCtx.sampleRate);
+  const d=buf.getChannelData(0);let b0=0;
+  for(let i=0;i<d.length;i++){const w=Math.random()*2-1;if(type==='white')d[i]=w;else if(type==='brown'){d[i]=(b0+(0.02*w))/1.02;b0=d[i];d[i]*=3.5;}else{d[i]=w*0.5;}}
+  window._ambSrc=window._ambCtx.createBufferSource();
+  window._ambSrc.buffer=buf;window._ambSrc.loop=true;window._ambSrc.connect(gain);window._ambSrc.start();
+}
+function stopAmbient(){if(window._ambSrc)try{window._ambSrc.stop()}catch(e){}}
+
+// === SURVIVAL MODE GAME (Pro) ===
+let svLives=3,svScore=0,svStreak2=0,svQs=[],svIdx2=0,svTimer2=null,svMax=8000;
+function startSurvival(cls){
+  if(!isPro()){showProGate('Survival Mode Game');return;}
+  const banks={chem1:[{q:'Ideal gas law?',a:'PV = nRT'},{q:'pH of neutral?',a:'7'},{q:'What is oxidation?',a:'Loss of electrons'},{q:'Avogadro\\'s number?',a:'6.022 x 10^23'}],
+    bio1:[{q:'Powerhouse of cell?',a:'Mitochondria'},{q:'DNA bases?',a:'A, T, G, C'},{q:'What is ATP?',a:'Energy currency'},{q:'Central dogma?',a:'DNA→RNA→Protein'}],
+    general:[{q:'Study technique that works?',a:'Active recall'},{q:'Best time to review notes?',a:'Same day as lecture'},{q:'Pomodoro duration?',a:'25 minutes'}]};
+  svQs=(banks[cls]||banks.general).sort(()=>Math.random()-0.5);
+  svLives=3;svScore=0;svStreak2=0;svIdx2=0;svMax=8000;
+  document.getElementById('sv-area').style.display='block';
+  svNextQ2();
+}
+function svNextQ2(){
+  if(svIdx2>=svQs.length)svIdx2=0;
+  const area=document.getElementById('sv-area');
+  const q=svQs[svIdx2];
+  area.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:12px"><span style="font-size:1.2em">'+('❤️'.repeat(svLives))+'</span><span style="font-size:1.4em;font-weight:800;color:#2563eb">'+svScore+' pts</span><span style="font-size:.85em;color:#64748b">'+(svStreak2>1?svStreak2+'x streak':'')+'</span></div><div style="height:6px;background:#e2e8f0;border-radius:3px;margin-bottom:16px"><div id="sv-bar" style="height:100%;background:#2563eb;border-radius:3px;width:100%;transition:width '+svMax+'ms linear"></div></div><h3 style="text-align:center;margin:16px 0">'+q.q+'</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+svQs.map(o=>'<button style="padding:12px;border:2px solid #e2e8f0;border-radius:10px;background:#fff;cursor:pointer;font-size:.9em" onclick="svAns2(this,\\''+o.a.replace(/'/g,"\\'")+'\\'===\\''+q.a.replace(/'/g,"\\'")+'\\'?1:0)">'+o.a+'</button>').join('')+'</div>';
+  setTimeout(()=>{const b=document.getElementById('sv-bar');if(b)b.style.width='0%'},50);
+  clearTimeout(svTimer2);svTimer2=setTimeout(()=>{svLives--;if(svLives<=0)svEnd();else{svStreak2=0;svIdx2++;svNextQ2()}},svMax);
+}
+function svAns2(btn,correct){
+  clearTimeout(svTimer2);
+  if(correct){btn.style.background='#f0fdf4';btn.style.borderColor='#22c55e';svScore+=10+(svStreak2*5);svStreak2++;svMax=Math.max(3000,svMax-200);svIdx2++;if(svStreak2%5===0)spawnConfetti();setTimeout(svNextQ2,400);}
+  else{btn.style.background='#fef2f2';btn.style.borderColor='#ef4444';svLives--;svStreak2=0;if(svLives<=0){setTimeout(svEnd,500)}else{svIdx2++;setTimeout(svNextQ2,500)}}
+}
+function svEnd(){
+  const area=document.getElementById('sv-area');
+  const high=parseInt(localStorage.getItem('sv_high'))||0;
+  if(svScore>high)localStorage.setItem('sv_high',String(svScore));
+  area.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:3em;font-weight:800;color:#2563eb">'+svScore+'</div><p style="margin:8px 0">'+(svScore>high?'🎉 NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#64748b">High: '+Math.max(svScore,high)+'</p><button onclick="startSurvival(\\'general\\')" style="margin-top:16px;padding:10px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600">Play Again</button></div>';
+  if(svScore>high)spawnConfetti();addXP(Math.floor(svScore/5));
+}
+
+// === CUSTOM SCROLLBAR ===
+const scrollCSS=document.createElement('style');
+scrollCSS.textContent='::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#94a3b8}body.dark ::-webkit-scrollbar-thumb{background:#475569}';
+document.head.appendChild(scrollCSS);
+
+// === INJECT STREAK + LEVEL + QUOTE INTO ROADMAP ===
+setTimeout(function(){
+  const rmPct=document.querySelector('.rm-pct');
+  if(rmPct){
+    const streak=getStreak();
+    const xp=getXP();
+    const lvl=Math.floor(xp/100)+1;
+    const quote=getDailyQuote();
+    const statsDiv=document.createElement('div');
+    statsDiv.style.cssText='display:flex;gap:16px;justify-content:center;margin:16px 0;flex-wrap:wrap';
+    statsDiv.innerHTML='<div style="text-align:center"><div style="font-size:1.5em;font-weight:800;color:#2563eb">Lv.'+lvl+'</div><div style="font-size:.72em;color:#64748b">Level</div></div><div style="text-align:center"><div style="font-size:1.5em;font-weight:800;color:#f59e0b">'+streak+'</div><div style="font-size:.72em;color:#64748b">Day Streak</div></div><div style="text-align:center"><div style="font-size:1.5em;font-weight:800;color:#7c3aed">'+xp+'</div><div style="font-size:.72em;color:#64748b">Total XP</div></div>';
+    rmPct.parentNode.insertBefore(statsDiv,rmPct);
+    // Daily quote
+    const qDiv=document.createElement('div');
+    qDiv.style.cssText='background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border-left:3px solid #2563eb;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:.88em;font-style:italic;color:#475569';
+    qDiv.innerHTML='"'+quote.t+'" <span style="display:block;font-style:normal;font-weight:600;margin-top:4px;font-size:.9em;color:#1e293b">— '+quote.a+'</span>';
+    rmPct.parentNode.insertBefore(qDiv,rmPct);
+  }
+  // Add Pro tools section at bottom of roadmap
+  const proUpsell=document.querySelector('[onclick*="Stripe"]');
+  if(proUpsell&&!document.getElementById('sv-area')){
+    const toolsDiv=document.createElement('div');
+    toolsDiv.style.cssText='margin:20px 0';
+    toolsDiv.innerHTML='<h3 style="margin-bottom:12px">🎮 Study Tools</h3>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+      '<button onclick="startSurvival(\'general\')" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">⚔️ Survival Mode'+(isPro()?'':'<br><span style=font-size:.75em;color:#64748b>PRO</span>')+'</button>'+
+      '<button onclick="if(isPro()){alert(\'Ambient sounds playing!\')}else{showProGate(\'Ambient Sounds\')}" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">🎵 Focus Sounds'+(isPro()?'':'<br><span style=font-size:.75em;color:#64748b>PRO</span>')+'</button>'+
+      '</div>'+
+      '<div id="sv-area" style="display:none;margin-top:16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px"></div>';
+    proUpsell.parentNode.insertBefore(toolsDiv,proUpsell);
+  }
+},500);
 </script>
 </body>
 </html>
