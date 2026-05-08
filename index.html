@@ -281,8 +281,8 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
           <p>Level up as you complete tasks. Unlock badges. Make progress feel like a game.</p>
         </div>
         <div class="feat-card">
-          <h4>🧠 ADHD-Friendly</h4>
-          <p>Built for brains that need structure. Pomodoro timer, focus sounds, one-thing prompts.</p>
+          <h4>🧠 Neurodivergent-Friendly</h4>
+          <p>Built for brains that need structure. Pomodoro timer, focus sounds, one-thing prompts, and dopamine-friendly design.</p>
         </div>
       </div>
     </div>
@@ -292,7 +292,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     <h2 style="font-size:2em;font-weight:800;text-align:center;margin-bottom:40px">What People Are Saying</h2>
     <div class="test-grid">
       <div class="test-card"><p>"I was completely lost about how to prepare for med school as a career changer. This gave me a clear plan I could actually follow day by day."</p><div class="author">— Pre-med, career changer, 24</div></div>
-      <div class="test-card"><p>"The ADHD mode is a game-changer. Finally a study tool that understands my brain doesn't work like everyone else's."</p><div class="author">— Pre-law, junior, ADHD diagnosed</div></div>
+      <div class="test-card"><p>"The neurodivergent mode is a game-changer. Finally a study tool that understands my brain doesn't work like everyone else's."</p><div class="author">— Pre-law, junior, neurodivergent</div></div>
       <div class="test-card"><p>"I used the IB roadmap and landed a Goldman internship. The networking timeline was exactly what I needed."</p><div class="author">— Finance major, now at Goldman Sachs</div></div>
     </div>
   </section>
@@ -362,7 +362,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 const QUESTIONS = {
   common: [
     {q: 'What best describes your current situation?', opts: ['Current college student','Recent graduate','Career changer','Gap year']},
-    {q: 'Do you have ADHD or feel you need extra structure?', opts: ['Yes, diagnosed','I think so, undiagnosed','No, but I like structure','No']},
+    {q: 'Are you neurodivergent or need extra structure?', opts: ['Yes, diagnosed (ADHD/autism/etc)','I think so, undiagnosed','No, but I like structure','No']},
     {q: 'What is your biggest concern about this path?', opts: ['Time management','Financial cost','Academic difficulty','Not sure where to start']},
     {q: 'How would you describe your study style?', opts: ['Visual learner (videos, diagrams)','Active learner (practice problems)','Reading/writing','I don\'t know yet']},
   ],
@@ -486,7 +486,7 @@ function quizNext() {
 // === ROADMAP GENERATION ENGINE ===
 function generateRoadmap() {
   const path = quizPath || 'premed';
-  const hasADHD = (quizAnswers.q1||'').toLowerCase().includes('yes') || (quizAnswers.q1||'').includes('think so');
+  const hasND = (quizAnswers.q1||'').toLowerCase().includes('yes') || (quizAnswers.q1||'').includes('think so');
   const container = document.getElementById('quiz-container');
   
   const pathData = {
@@ -664,8 +664,8 @@ function generateRoadmap() {
   html += '<div class="rm-progress"><div class="rm-progress-fill" id="rm-prog-fill" style="width:'+pct+'%"></div></div>';
 
   // ADHD tip if applicable
-  if (hasADHD) {
-    html += '<div style="background:#f0f9ff;border-left:4px solid #0ea5e9;border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:.9em"><h4 style="color:#0369a1;margin:0 0 6px">🧠 ADHD Mode Activated</h4><p style="color:#475569">Your roadmap includes extra structure, break reminders, and dopamine-friendly gamification. Focus on ONE phase at a time. Don\'t look ahead until you\'re ready.</p></div>';
+  if (hasND) {
+    html += '<div style="background:#f0f9ff;border-left:4px solid #0ea5e9;border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:.9em"><h4 style="color:#0369a1;margin:0 0 6px">🧠 Neurodivergent Mode Activated</h4><p style="color:#475569">Your roadmap includes extra structure, break reminders, and dopamine-friendly gamification. Focus on ONE phase at a time. Don\'t look ahead until you\'re ready.</p></div>';
   }
 
   // Timeline visualization
@@ -765,6 +765,81 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
 }, {threshold:0.1});
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// === XP / LEVEL SYSTEM ===
+function getXP(){return parseInt(localStorage.getItem('rm_xp'))||0}
+function addXP(n){
+  let xp=getXP();const oldLvl=Math.floor(xp/100)+1;
+  xp+=n;localStorage.setItem('rm_xp',String(xp));
+  const newLvl=Math.floor(xp/100)+1;
+  // Show +XP toast
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;top:70px;right:20px;background:#2563eb;color:#fff;padding:6px 14px;border-radius:8px;font-size:.85em;font-weight:700;z-index:99;opacity:0;transition:all .3s';
+  t.textContent='+'+n+' XP';document.body.appendChild(t);
+  setTimeout(()=>t.style.opacity='1',50);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},1500);
+  if(newLvl>oldLvl){spawnConfetti();
+    setTimeout(()=>alert('🎉 Level Up! You reached Level '+newLvl+'!'),300);
+  }
+}
+// Hook into checkboxes
+document.addEventListener('change',function(e){if(e.target.type==='checkbox'&&e.target.checked)addXP(5)});
+
+// === CONFETTI ===
+function spawnConfetti(){
+  const colors=['#2563eb','#7c3aed','#10b981','#f59e0b','#ef4444','#ec4899'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.style.cssText='position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:999;top:'+(Math.random()*40+10)+'%;left:'+(Math.random()*80+10)+'%;background:'+colors[Math.floor(Math.random()*6)]+';animation:confetti-fall .8s ease-out forwards';
+    document.body.appendChild(p);setTimeout(()=>p.remove(),900);
+  }
+}
+const confettiCSS=document.createElement('style');
+confettiCSS.textContent='@keyframes confetti-fall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(80px) rotate(360deg);opacity:0}}';
+document.head.appendChild(confettiCSS);
+
+// === STREAK COUNTER ===
+function getStreak(){
+  const today=new Date().toISOString().slice(0,10);
+  const last=localStorage.getItem('rm_last_visit');
+  let streak=parseInt(localStorage.getItem('rm_streak'))||0;
+  if(last===today)return streak;
+  if(last){const diff=Math.floor((new Date(today)-new Date(last))/86400000);if(diff===1)streak++;else if(diff>1)streak=1;}
+  else streak=1;
+  localStorage.setItem('rm_streak',String(streak));
+  localStorage.setItem('rm_last_visit',today);
+  return streak;
+}
+
+// === DARK MODE TOGGLE ===
+const dmBtn=document.createElement('button');
+dmBtn.style.cssText='position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(15,23,42,.8);color:#fff;cursor:pointer;z-index:60;font-size:1em;display:flex;align-items:center;justify-content:center';
+dmBtn.innerHTML=document.body.classList.contains('dark')?'☀️':'🌙';
+dmBtn.onclick=function(){document.body.classList.toggle('dark');this.innerHTML=document.body.classList.contains('dark')?'☀️':'🌙';localStorage.setItem('rm_dark',document.body.classList.contains('dark')?'1':'0')};
+document.body.appendChild(dmBtn);
+if(localStorage.getItem('rm_dark')==='1'){document.body.classList.add('dark');dmBtn.innerHTML='☀️';}
+
+// === PRO FEATURE GATING ===
+function isPro(){return localStorage.getItem('rm_pro')==='1'||new URLSearchParams(location.search).get('pro')==='1'}
+if(new URLSearchParams(location.search).get('pro')==='1')localStorage.setItem('rm_pro','1');
+function showProGate(featureName){
+  alert('🔒 '+featureName+' is a Pro feature. Upgrade for $9.99/mo to unlock all tools, go ad-free, and accelerate your journey.');
+}
+
+// === DAILY QUOTE ===
+function getDailyQuote(){
+  const quotes=[
+    {t:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+    {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
+    {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
+    {t:"A year from now you'll wish you had started today.",a:"Karen Lamb"},
+    {t:"The only way to do great work is to love what you do.",a:"Steve Jobs"},
+    {t:"You don't have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},
+    {t:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln"},
+    {t:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"Winston Churchill"},
+  ];
+  return quotes[Math.floor(Date.now()/86400000)%quotes.length];
+}
 </script>
 </body>
 </html>
