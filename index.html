@@ -301,6 +301,28 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     </div>
   </section>
 
+  <section class="fade-in" id="games" style="padding:80px 20px">
+    <div style="max-width:1100px;margin:0 auto;text-align:center">
+      <h2 style="font-size:2em;font-weight:800;margin-bottom:12px">Games</h2>
+      <p style="color:#64748b;margin-bottom:32px">Take a study break or sharpen your MCAT knowledge</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px;margin:0 auto">
+        <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
+          <div style="font-size:2.5em;margin-bottom:12px">🏓</div>
+          <h3 style="margin-bottom:6px">Brain Bounce</h3>
+          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Addictive physics game. Bounce the ball, answer trivia for bonus points. Free for everyone!</p>
+          <button onclick="launchBrainBounce()" style="padding:10px 24px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play Free</button>
+        </div>
+        <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
+          <div style="font-size:2.5em;margin-bottom:12px">🧬</div>
+          <h3 style="margin-bottom:6px">MCAT Dash</h3>
+          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Endless runner meets MCAT prep. Answer questions to survive. Better than flashcards.</p>
+          <button onclick="launchMCATDash()" style="padding:10px 24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play (Pro)</button>
+        </div>
+      </div>
+      <div id="game-area" style="display:none;margin-top:24px;background:#0f172a;border-radius:16px;position:relative;height:400px;overflow:hidden;cursor:pointer"></div>
+    </div>
+  </section>
+
   <section class="faq-section fade-in" id="faq">
     <h2 style="font-size:2em;font-weight:800;text-align:center;margin-bottom:32px">FAQ</h2>
     <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is it really free?<span>+</span></div><div class="faq-a">Yes. The basic roadmap with timeline and progress tracking is 100% free forever. Pro adds premium tools and removes ads.</div></div>
@@ -998,6 +1020,109 @@ function startMCATRunner(){
   area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em">Click/tap to fly! Avoid the pipes.</div>';
   area.onclick=function(){if(!alive){alive=true;score=0;playerY=130;vy=0;pipes=[];frame=0;render()}else{vy=-7}};
   setTimeout(function(){alive=true;render()},500);
+}
+
+// === BRAIN BOUNCE (Free game - addictive physics game) ===
+function launchBrainBounce(){
+  var area=document.getElementById('game-area');
+  area.style.display='block';area.style.height='400px';area.style.background='#0f172a';
+  area.scrollIntoView({behavior:'smooth'});
+  var W=area.offsetWidth,H=400;
+  var ballX=W/2,ballY=200,bvx=3,bvy=-3,ballR=10;
+  var padX=W/2-40,padW=80,padH=10;
+  var score=0,alive=true;
+  var trivia=[{q:'Largest organ?',a:'Skin'},{q:'Smallest bone?',a:'Stapes'},{q:'Blood type universal donor?',a:'O-'},{q:'Fastest muscle?',a:'Eyelid'},{q:'Hardest substance in body?',a:'Enamel'},{q:'Normal body temp (F)?',a:'98.6'},{q:'Bones in adult body?',a:'206'},{q:'Largest internal organ?',a:'Liver'}];
+  var currentTrivia=null,triviaTimer=0,bonusMsg='';
+  area.onmousemove=function(e){var r=area.getBoundingClientRect();padX=e.clientX-r.left-padW/2};
+  area.ontouchmove=function(e){e.preventDefault();var r=area.getBoundingClientRect();padX=e.touches[0].clientX-r.left-padW/2};
+  function tick(){
+    if(!alive)return;
+    ballX+=bvx;ballY+=bvy;
+    if(ballX<ballR||ballX>W-ballR)bvx*=-1;
+    if(ballY<ballR)bvy*=-1;
+    if(ballY>H-padH-ballR&&ballX>padX&&ballX<padX+padW&&bvy>0){
+      bvy*=-1;score++;bvy*=1.02;bvx*=1.01;
+      if(score%5===0&&!currentTrivia){currentTrivia=trivia[Math.floor(Math.random()*trivia.length)];triviaTimer=150}
+    }
+    if(ballY>H+ballR){alive=false;bbGameOver();return}
+    if(currentTrivia){triviaTimer--;if(triviaTimer<=0)currentTrivia=null}
+    if(bonusMsg){bonusMsg=''}
+    var h='<div style="position:absolute;left:'+(ballX-ballR)+'px;top:'+(ballY-ballR)+'px;width:'+(ballR*2)+'px;height:'+(ballR*2)+'px;background:#2563eb;border-radius:50%"></div>';
+    h+='<div style="position:absolute;left:'+padX+'px;bottom:0;width:'+padW+'px;height:'+padH+'px;background:#fff;border-radius:4px"></div>';
+    h+='<div style="position:absolute;top:12px;left:16px;color:#fff;font-size:1.4em;font-weight:800">'+score+'</div>';
+    if(currentTrivia){
+      h+='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);padding:16px 24px;border-radius:12px;color:#fff;text-align:center;z-index:5"><p style="margin:0 0 8px;font-size:1em">'+currentTrivia.q+'</p><div style="display:flex;gap:8px;justify-content:center"><button onclick="bbTrivia(1)" style="padding:8px 16px;background:#22c55e;color:#fff;border:none;border-radius:6px;cursor:pointer">'+currentTrivia.a+'</button><button onclick="bbTrivia(0)" style="padding:8px 16px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer">'+trivia[Math.floor(Math.random()*trivia.length)].a+'</button></div></div>';
+    }
+    area.innerHTML=h;
+    requestAnimationFrame(tick);
+  }
+  window.bbTrivia=function(correct){
+    if(correct){score+=10;spawnConfetti();addXP(5)}
+    currentTrivia=null;
+  };
+  function bbGameOver(){
+    var high=parseInt(localStorage.getItem('bb_high'))||0;
+    if(score>high)localStorage.setItem('bb_high',String(score));
+    area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:3em;font-weight:800">'+score+'</div><p style="margin:8px 0">'+(score>high?'NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">Best: '+Math.max(score,high)+'</p><button onclick="launchBrainBounce()" style="margin-top:16px;padding:12px 28px;background:#059669;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600">Play Again</button></div></div>';
+    if(score>high)spawnConfetti();
+  }
+  alive=true;score=0;ballX=W/2;ballY=200;bvx=3;bvy=-3;
+  tick();
+}
+
+// === MCAT DASH (Pro - endless runner with MCAT questions) ===
+function launchMCATDash(){
+  if(!isPro()){showProGate('MCAT Dash');return}
+  var area=document.getElementById('game-area');
+  area.style.display='block';area.style.height='400px';area.style.background='linear-gradient(180deg,#0f172a,#1e293b)';
+  area.scrollIntoView({behavior:'smooth'});
+  var W=area.offsetWidth,H=400;
+  var playerX=80,playerY=H-60,jumping=false,vy=0;
+  var obstacles=[],frame=0,score=0,alive=true,speed=4;
+  var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
+  var currentQ=null,qTimer=0;
+  area.onclick=function(){if(!alive){startRun();return}if(!jumping){jumping=true;vy=-12}};
+  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=4;currentQ=null;tick2()}
+  function tick2(){
+    if(!alive)return;
+    vy+=0.7;playerY+=vy;
+    if(playerY>=H-60){playerY=H-60;jumping=false;vy=0}
+    for(var i=obstacles.length-1;i>=0;i--){
+      obstacles[i].x-=speed;
+      if(obstacles[i].x<-40)obstacles.splice(i,1);
+      if(obstacles[i].x<playerX+20&&obstacles[i].x+30>playerX&&playerY+30>obstacles[i].y){
+        alive=false;dashGameOver();return;
+      }
+      if(obstacles[i].x===Math.floor(playerX)){score++;if(score%10===0)speed+=0.5}
+    }
+    if(frame%50===0){
+      var h2=40+Math.random()*60;
+      obstacles.push({x:W,y:H-h2,h:h2,q:allQs[Math.floor(Math.random()*allQs.length)].q.slice(0,15)});
+    }
+    if(frame%120===0&&!currentQ){currentQ=allQs[Math.floor(Math.random()*allQs.length)];qTimer=100}
+    if(currentQ){qTimer--;if(qTimer<=0)currentQ=null}
+    var html='<div style="position:absolute;left:'+playerX+'px;top:'+playerY+'px;width:30px;height:30px;background:#2563eb;border-radius:6px;z-index:2"></div>';
+    html+='<div style="position:absolute;bottom:0;left:0;right:0;height:20px;background:#1e293b"></div>';
+    html+='<div style="position:absolute;top:12px;right:16px;color:#fff;font-size:1.4em;font-weight:800;z-index:3">'+score+'</div>';
+    html+='<div style="position:absolute;top:12px;left:16px;color:#94a3b8;font-size:.85em;z-index:3">Speed: '+speed.toFixed(1)+'x</div>';
+    obstacles.forEach(function(o){
+      html+='<div style="position:absolute;left:'+o.x+'px;top:'+o.y+'px;width:30px;height:'+o.h+'px;background:#dc2626;border-radius:4px 4px 0 0"></div>';
+      html+='<div style="position:absolute;left:'+(o.x-20)+'px;top:'+(o.y-16)+'px;width:70px;font-size:.5em;color:#94a3b8;text-align:center">'+o.q+'</div>';
+    });
+    if(currentQ){
+      html+='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.8);padding:16px 24px;border-radius:12px;color:#fff;text-align:center;z-index:5"><p style="margin:0 0 8px">'+currentQ.q+'</p><button onclick="dashAnswer(1)" style="padding:6px 14px;background:#22c55e;color:#fff;border:none;border-radius:6px;cursor:pointer;margin:4px">'+currentQ.a+'</button><button onclick="dashAnswer(0)" style="padding:6px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;margin:4px">'+allQs[Math.floor(Math.random()*allQs.length)].a+'</button></div>';
+    }
+    area.innerHTML=html;
+    frame++;requestAnimationFrame(tick2);
+  }
+  window.dashAnswer=function(correct){if(correct){score+=5;addXP(3);spawnConfetti()}currentQ=null};
+  function dashGameOver(){
+    var high=parseInt(localStorage.getItem('mcat_dash_high'))||0;
+    if(score>high)localStorage.setItem('mcat_dash_high',String(score));
+    area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:3em;font-weight:800;color:#2563eb">'+score+'</div><p style="margin:8px 0">'+(score>high?'NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">Best: '+Math.max(score,high)+' | Speed: '+speed.toFixed(1)+'x</p><button onclick="launchMCATDash()" style="margin-top:16px;padding:12px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600">Play Again</button></div></div>';
+    addXP(score);if(score>high)spawnConfetti();
+  }
+  startRun();
 }
 
 // Update Pro tools section to include multiplayer + MCAT runner
