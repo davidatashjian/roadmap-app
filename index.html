@@ -1228,15 +1228,6 @@ document.addEventListener('keydown',function(e){
   }
 });
 
-// === iOS INSTALL PROMPT (only on actual iOS devices) ===
-if(window.navigator.standalone===false&&/iPhone|iPad|iPod/.test(navigator.userAgent)){
-  setTimeout(function(){
-    var banner=document.createElement('div');
-    banner.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#1e293b;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;z-index:50;font-size:.88em';
-    banner.innerHTML='<span>📱 Add to Home Screen for the best experience</span><button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:1px solid #475569;color:#fff;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:.85em">Dismiss</button>';
-    document.body.appendChild(banner);
-  },3000);
-}
 </script>
 </body>
 </html>
