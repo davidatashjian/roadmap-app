@@ -301,8 +301,8 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
           <li>Export to PDF</li>
           <li>Priority support</li>
         </ul>
-        <a href="#" class="price-btn" onclick="event.preventDefault();showProGate('Pro')">Start Pro — 7 Day Free Trial</a>
-        <a href="#" onclick="event.preventDefault();var c=prompt('Enter referral code:');if(c)tryCode(c)||alert('Invalid code.')" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
+        <a href="https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00" class="price-btn" target="_blank">Start Pro — 7 Day Free Trial</a>
+        <a href="#" onclick="event.preventDefault();var c=prompt('Enter referral code:');if(c){var codes=['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'];if(codes.indexOf(c.toUpperCase())!==-1){localStorage.setItem('rm_pro','1');window.location.reload()}else{alert('Invalid code.')}}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
       </div>
     </div>
   </section>
@@ -808,22 +808,17 @@ function tryCode(code){
   return false;
 }
 function showProGate(featureName){
-  // If not signed in, prompt sign in first
-  if(!sbUser){
-    showAuthModal(function(){
-      // After successful login, show Pro prompt
-      setTimeout(function(){showProPrompt(featureName)},300);
-    });
-    return;
+  if(isPro())return true;
+  var code=prompt(featureName+' is a Pro feature ($9.99/mo).\n\nEnter a referral code, or click OK to go to checkout:');
+  if(code===null)return false;
+  if(code.trim()&&CODES.indexOf(code.trim().toUpperCase())!==-1){
+    localStorage.setItem('rm_pro','1');
+    window.location.reload();
+    return true;
   }
-  showProPrompt(featureName);
-}
-function showProPrompt(featureName){
-  var code=prompt('Upgrade to Pro ($9.99/mo)\n\nEnter a referral code below, or leave blank and click OK to go to checkout:');
-  if(code===null)return;
-  if(code.trim()&&tryCode(code.trim()))return;
-  if(code.trim()){alert('Invalid code. Check spelling.');return}
+  if(code.trim()){alert('Invalid code.');return false}
   window.open(STRIPE,'_blank');
+  return false;
 }
 
 // === DAILY QUOTE ===
