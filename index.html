@@ -302,8 +302,8 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
           <li>Export to PDF</li>
           <li>Priority support</li>
         </ul>
-        <a href="#" class="price-btn" onclick="event.preventDefault();var c=prompt('Start your Pro trial!\n\nHave a referral code? Enter it below.\nOtherwise click OK to go to checkout:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('Pro unlocked!');location.reload()}else{window.open('https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00','_blank')}">Start Pro — 7 Day Free Trial</a>
-        <a href="#" onclick="event.preventDefault();var c=prompt('Enter your referral code:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('Pro unlocked! Refreshing...');location.reload()}else if(c){alert('Invalid code. Check spelling and try again.')}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
+        <a href="#" class="price-btn" onclick="event.preventDefault();var c=prompt('Start your Pro trial!\n\nHave a referral code? Enter it below.\nOtherwise click OK to go to checkout:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');location.reload()}else{window.open('https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00','_blank')}">Start Pro — 7 Day Free Trial</a>
+        <a href="#" onclick="event.preventDefault();var c=prompt('Enter your referral code:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');location.reload()}else if(c){alert('Invalid code.')}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
       </div>
     </div>
   </section>
@@ -770,7 +770,7 @@ function showProGate(featureName){
   if(code&&REFERRAL_CODES.includes(code.toUpperCase())){
     localStorage.setItem('rm_pro','1');localStorage.setItem('rm_code',code.toUpperCase());
     if(sb&&sbUser)sb.from('subscriptions').upsert({user_id:sbUser.id,status:'pro_referral'},{onConflict:'user_id'});
-    alert('✅ Pro unlocked!');location.reload();
+    location.reload();
   } else {
     window.open(STRIPE_LINK,'_blank');
   }
