@@ -358,6 +358,10 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 <div id="quiz-container"></div>
 
 <script>
+// Force scroll to top on page load
+if(window.location.hash){history.replaceState(null,null,' ');}
+window.scrollTo(0,0);
+
 // === SUPABASE INIT ===
 const SUPABASE_URL='https://ddiklxucgprxkrobwfbj.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkaWtseHVjZ3ByeGtyb2J3ZmJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMDczODYsImV4cCI6MjA5Mzc4MzM4Nn0.ec-k9tdwqktv3FCJSOgR-bNzQwlgV7NoITec5Xw5WZE';
@@ -1140,11 +1144,11 @@ function launchMCATDash(){
   area.scrollIntoView({behavior:'smooth'});
   var W=area.offsetWidth,H=400;
   var playerX=80,playerY=H-60,jumping=false,vy=0;
-  var obstacles=[],frame=0,score=0,alive=true,speed=2;
+  var obstacles=[],frame=0,score=0,alive=true,speed=2.5;
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
   var currentQ=null,qTimer=0;
   area.onclick=function(){if(!alive){startRun();return}if(!jumping){jumping=true;vy=-12}};
-  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=2;currentQ=null;tick2()}
+  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=2.5;currentQ=null;tick2()}
   function tick2(){
     if(!alive)return;
     vy+=0.7;playerY+=vy;
@@ -1152,18 +1156,18 @@ function launchMCATDash(){
     for(var i=obstacles.length-1;i>=0;i--){
       obstacles[i].x-=speed;
       if(obstacles[i].x<-40)obstacles.splice(i,1);
-      if(obstacles[i].x<playerX+20&&obstacles[i].x+30>playerX&&playerY+30>obstacles[i].y){
+      if(obstacles[i].x<playerX+25&&obstacles[i].x+30>playerX+5&&playerY+35>obstacles[i].y){
         alive=false;dashGameOver();return;
       }
       if(obstacles[i].x===Math.floor(playerX)){score++;if(score%10===0)speed+=0.5}
     }
-    if(frame%50===0){
-      var h2=40+Math.random()*60;
-      obstacles.push({x:W,y:H-h2,h:h2,q:allQs[Math.floor(Math.random()*allQs.length)].q.slice(0,15)});
+    if(frame%80===0){
+      var h2=30+Math.random()*40;
+      obstacles.push({x:W+20,y:H-h2-20,h:h2,q:allQs[Math.floor(Math.random()*allQs.length)].q.slice(0,15)});
     }
     if(frame%120===0&&!currentQ){currentQ=allQs[Math.floor(Math.random()*allQs.length)];qTimer=100}
     if(currentQ){qTimer--;if(qTimer<=0)currentQ=null}
-    var html='<div style="position:absolute;left:'+playerX+'px;top:'+playerY+'px;width:30px;height:30px;background:#2563eb;border-radius:6px;z-index:2"></div>';
+    var html='<div style="position:absolute;left:'+playerX+'px;top:'+playerY+'px;width:32px;height:36px;background:#2563eb;border-radius:8px;z-index:2;box-shadow:0 0 8px rgba(37,99,235,.5)"></div>';
     html+='<div style="position:absolute;bottom:0;left:0;right:0;height:20px;background:#1e293b"></div>';
     html+='<div style="position:absolute;top:12px;right:16px;color:#fff;font-size:1.4em;font-weight:800;z-index:3">'+score+'</div>';
     html+='<div style="position:absolute;top:12px;left:16px;color:#94a3b8;font-size:.85em;z-index:3">Speed: '+speed.toFixed(1)+'x</div>';
