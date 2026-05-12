@@ -302,7 +302,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
           <li>Export to PDF</li>
           <li>Priority support</li>
         </ul>
-        <a href="#" class="price-btn" onclick="event.preventDefault();var c=prompt('Start your Pro trial!\n\nHave a referral code? Enter it below.\nOtherwise click OK to go to checkout:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('Pro unlocked!');location.reload()}else{window.open('https://buy.stripe.com/5kQ9AMaQ4b1n8LG7Cx33W01','_blank')}">Start Pro — 7 Day Free Trial</a>
+        <a href="#" class="price-btn" onclick="event.preventDefault();var c=prompt('Start your Pro trial!\n\nHave a referral code? Enter it below.\nOtherwise click OK to go to checkout:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('Pro unlocked!');location.reload()}else{window.open('https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00','_blank')}">Start Pro — 7 Day Free Trial</a>
         <a href="#" onclick="event.preventDefault();var c=prompt('Enter your referral code:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('Pro unlocked! Refreshing...');location.reload()}else if(c){alert('Invalid code. Check spelling and try again.')}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
       </div>
     </div>
@@ -664,7 +664,7 @@ function pomoStart(){
     const m=Math.floor(pomoSecs/60),s=pomoSecs%60;
     const d=document.getElementById('pomo-display');
     if(d)d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    if(pomoSecs<=0){clearInterval(pomoInt);pomoInt=null;pomoSecs=300;alert('Time! Take a 5-min break.');}
+    if(pomoSecs<=0){clearInterval(pomoInt);pomoInt=null;pomoSecs=300;var playGame=confirm('Time! Take a 5-min break.\n\nWant to play Brain Breaker during your break?');if(playGame){var ga=document.getElementById('game-area');if(ga){ga.scrollIntoView({behavior:"smooth"});setTimeout(launchBrainBounce,500)}}}
   },1000);
 }
 function pomoReset(){clearInterval(pomoInt);pomoInt=null;pomoSecs=1500;const d=document.getElementById('pomo-display');if(d)d.textContent='25:00';}
@@ -754,19 +754,25 @@ if(localStorage.getItem('rm_dark')==='1'){document.body.classList.add('dark');dm
 
 // === PRO FEATURE GATING ===
 var REFERRAL_CODES=['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'];
+var STRIPE_LINK='https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00';
 function isPro(){return localStorage.getItem('rm_pro')==='1'||new URLSearchParams(location.search).get('pro')==='1'}
 if(new URLSearchParams(location.search).get('pro')==='1')localStorage.setItem('rm_pro','1');
-// Check URL for referral code
 var urlCode=new URLSearchParams(location.search).get('code');
 if(urlCode&&REFERRAL_CODES.includes(urlCode.toUpperCase())){localStorage.setItem('rm_pro','1');localStorage.setItem('rm_code',urlCode.toUpperCase())}
 function showProGate(featureName){
-  var code=prompt('🔒 '+featureName+' is a Pro feature.\n\nUpgrade for $9.99/mo or enter a referral code:');
-  if(!code)return;
-  if(REFERRAL_CODES.includes(code.toUpperCase())){
+  if(!sbUser){
+    var doLogin=confirm('🔒 '+featureName+' requires a Pro account.\n\nYou need to sign in or create an account first.\n\nClick OK to sign in.');
+    if(doLogin)showAuthModal();
+    return;
+  }
+  var code=prompt('🔒 Upgrade to Pro!\n\nEnter a referral code, or click OK to go to checkout ($9.99/mo):');
+  if(code===null)return;
+  if(code&&REFERRAL_CODES.includes(code.toUpperCase())){
     localStorage.setItem('rm_pro','1');localStorage.setItem('rm_code',code.toUpperCase());
-    alert('✅ Pro unlocked! Enjoy all features.');location.reload();
+    if(sb&&sbUser)sb.from('subscriptions').upsert({user_id:sbUser.id,status:'pro_referral'},{onConflict:'user_id'});
+    alert('✅ Pro unlocked!');location.reload();
   } else {
-    window.open('https://buy.stripe.com/5kQ9AMaQ4b1n8LG7Cx33W01','_blank');
+    window.open(STRIPE_LINK,'_blank');
   }
 }
 
@@ -1134,11 +1140,11 @@ function launchMCATDash(){
   area.scrollIntoView({behavior:'smooth'});
   var W=area.offsetWidth,H=400;
   var playerX=80,playerY=H-60,jumping=false,vy=0;
-  var obstacles=[],frame=0,score=0,alive=true,speed=4;
+  var obstacles=[],frame=0,score=0,alive=true,speed=2;
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
   var currentQ=null,qTimer=0;
   area.onclick=function(){if(!alive){startRun();return}if(!jumping){jumping=true;vy=-12}};
-  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=4;currentQ=null;tick2()}
+  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=2;currentQ=null;tick2()}
   function tick2(){
     if(!alive)return;
     vy+=0.7;playerY+=vy;
