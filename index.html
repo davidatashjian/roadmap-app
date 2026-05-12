@@ -314,8 +314,8 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px;margin:0 auto">
         <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
           <div style="font-size:2.5em;margin-bottom:12px">🏓</div>
-          <h3 style="margin-bottom:6px">Brain Bounce</h3>
-          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Addictive physics game. Bounce the ball, answer trivia for bonus points. Free for everyone!</p>
+          <h3 style="margin-bottom:6px">Brain Breaker</h3>
+          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Classic brick breaker with levels, lives, and increasing speed. Smash all bricks to advance. Free for everyone!</p>
           <button onclick="launchBrainBounce()" style="padding:10px 24px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play Free</button>
         </div>
         <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
@@ -1045,51 +1045,83 @@ function startMCATRunner(){
   setTimeout(function(){alive=true;render()},500);
 }
 
-// === BRAIN BOUNCE (Free game - addictive physics game) ===
+// === BRAIN BOUNCE - Brick Breaker (Free game) ===
 function launchBrainBounce(){
   var area=document.getElementById('game-area');
-  area.style.display='block';area.style.height='400px';area.style.background='#0f172a';
+  area.style.display='block';area.style.height='450px';area.style.background='#0f172a';
   area.scrollIntoView({behavior:'smooth'});
-  var W=area.offsetWidth,H=400;
-  var ballX=W/2,ballY=200,bvx=3,bvy=-3,ballR=10;
-  var padX=W/2-40,padW=80,padH=10;
-  var score=0,alive=true;
-  var trivia=[{q:'Largest organ?',a:'Skin'},{q:'Smallest bone?',a:'Stapes'},{q:'Blood type universal donor?',a:'O-'},{q:'Fastest muscle?',a:'Eyelid'},{q:'Hardest substance in body?',a:'Enamel'},{q:'Normal body temp (F)?',a:'98.6'},{q:'Bones in adult body?',a:'206'},{q:'Largest internal organ?',a:'Liver'}];
-  var currentTrivia=null,triviaTimer=0,bonusMsg='';
-  area.onmousemove=function(e){var r=area.getBoundingClientRect();padX=e.clientX-r.left-padW/2};
-  area.ontouchmove=function(e){e.preventDefault();var r=area.getBoundingClientRect();padX=e.touches[0].clientX-r.left-padW/2};
+  var W=area.offsetWidth,H=450;
+  var ballX=W/2,ballY=H-50,bvx=4,bvy=-4,ballR=8;
+  var padX=W/2-50,padW=100,padH=12;
+  var score=0,alive=true,level=1,lives=3;
+  var brickRows=5,brickCols=Math.floor(W/65),brickW=Math.floor((W-20)/brickCols)-4,brickH=18,bricks=[];
+  var colors=['#ef4444','#f59e0b','#22c55e','#2563eb','#7c3aed'];
+  function buildBricks(){
+    bricks=[];
+    for(var r=0;r<brickRows;r++)for(var c=0;c<brickCols;c++){
+      bricks.push({x:12+c*(brickW+4),y:40+r*(brickH+4),w:brickW,h:brickH,color:colors[r%5],alive:true,hits:r<2?2:1});
+    }
+  }
+  buildBricks();
+  area.onmousemove=function(e){var r=area.getBoundingClientRect();padX=Math.max(0,Math.min(W-padW,e.clientX-r.left-padW/2))};
+  area.ontouchmove=function(e){e.preventDefault();var r=area.getBoundingClientRect();padX=Math.max(0,Math.min(W-padW,e.touches[0].clientX-r.left-padW/2))};
   function tick(){
     if(!alive)return;
     ballX+=bvx;ballY+=bvy;
     if(ballX<ballR||ballX>W-ballR)bvx*=-1;
     if(ballY<ballR)bvy*=-1;
-    if(ballY>H-padH-ballR&&ballX>padX&&ballX<padX+padW&&bvy>0){
-      bvy*=-1;score++;bvy*=1.02;bvx*=1.01;
-      if(score%5===0&&!currentTrivia){currentTrivia=trivia[Math.floor(Math.random()*trivia.length)];triviaTimer=150}
+    // Paddle collision
+    if(ballY>H-padH-ballR-4&&ballY<H-padH&&ballX>padX-ballR&&ballX<padX+padW+ballR&&bvy>0){
+      bvy*=-1;
+      var hitPos=(ballX-(padX+padW/2))/(padW/2);
+      bvx=hitPos*5;
+      ballY=H-padH-ballR-5;
     }
-    if(ballY>H+ballR){alive=false;bbGameOver();return}
-    if(currentTrivia){triviaTimer--;if(triviaTimer<=0)currentTrivia=null}
-    if(bonusMsg){bonusMsg=''}
-    var h='<div style="position:absolute;left:'+(ballX-ballR)+'px;top:'+(ballY-ballR)+'px;width:'+(ballR*2)+'px;height:'+(ballR*2)+'px;background:#2563eb;border-radius:50%"></div>';
-    h+='<div style="position:absolute;left:'+padX+'px;bottom:0;width:'+padW+'px;height:'+padH+'px;background:#fff;border-radius:4px"></div>';
-    h+='<div style="position:absolute;top:12px;left:16px;color:#fff;font-size:1.4em;font-weight:800">'+score+'</div>';
-    if(currentTrivia){
-      h+='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);padding:16px 24px;border-radius:12px;color:#fff;text-align:center;z-index:5"><p style="margin:0 0 8px;font-size:1em">'+currentTrivia.q+'</p><div style="display:flex;gap:8px;justify-content:center"><button onclick="bbTrivia(1)" style="padding:8px 16px;background:#22c55e;color:#fff;border:none;border-radius:6px;cursor:pointer">'+currentTrivia.a+'</button><button onclick="bbTrivia(0)" style="padding:8px 16px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer">'+trivia[Math.floor(Math.random()*trivia.length)].a+'</button></div></div>';
+    // Ball lost
+    if(ballY>H+ballR){
+      lives--;
+      if(lives<=0){alive=false;bbGameOver();return}
+      ballX=W/2;ballY=H-50;bvx=4*(Math.random()>0.5?1:-1);bvy=-4;
     }
+    // Brick collision
+    var allDead=true;
+    for(var i=0;i<bricks.length;i++){
+      var b=bricks[i];if(!b.alive)continue;
+      allDead=false;
+      if(ballX+ballR>b.x&&ballX-ballR<b.x+b.w&&ballY+ballR>b.y&&ballY-ballR<b.y+b.h){
+        bvy*=-1;b.hits--;
+        if(b.hits<=0){b.alive=false;score+=10*level;addXP(1)}
+        else{b.color='#94a3b8'}
+        break;
+      }
+    }
+    // Level complete
+    if(allDead){
+      level++;score+=50*level;spawnConfetti();
+      bvx*=1.1;bvy*=1.1;
+      brickRows=Math.min(7,brickRows+1);
+      buildBricks();ballX=W/2;ballY=H-50;bvx=4*(Math.random()>0.5?1:-1);bvy=-4-(level*0.5);
+    }
+    // Render
+    var h='';
+    for(var i=0;i<bricks.length;i++){var b=bricks[i];if(!b.alive)continue;
+      h+='<div style="position:absolute;left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px;background:'+b.color+';border-radius:3px"></div>';
+    }
+    h+='<div style="position:absolute;left:'+(ballX-ballR)+'px;top:'+(ballY-ballR)+'px;width:'+(ballR*2)+'px;height:'+(ballR*2)+'px;background:#fff;border-radius:50%"></div>';
+    h+='<div style="position:absolute;left:'+padX+'px;bottom:6px;width:'+padW+'px;height:'+padH+'px;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:6px"></div>';
+    h+='<div style="position:absolute;top:10px;left:16px;color:#fff;font-size:1.1em;font-weight:800">Score: '+score+'</div>';
+    h+='<div style="position:absolute;top:10px;right:16px;color:#fff;font-size:.9em">Level '+level+' | Lives: '+('❤️'.repeat(lives))+'</div>';
     area.innerHTML=h;
     requestAnimationFrame(tick);
   }
-  window.bbTrivia=function(correct){
-    if(correct){score+=10;spawnConfetti();addXP(5)}
-    currentTrivia=null;
-  };
   function bbGameOver(){
     var high=parseInt(localStorage.getItem('bb_high'))||0;
     if(score>high)localStorage.setItem('bb_high',String(score));
-    area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:3em;font-weight:800">'+score+'</div><p style="margin:8px 0">'+(score>high?'NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">Best: '+Math.max(score,high)+'</p><button onclick="launchBrainBounce()" style="margin-top:16px;padding:12px 28px;background:#059669;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600">Play Again</button></div></div>';
-    if(score>high)spawnConfetti();
+    area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:3em;font-weight:800">'+score+'</div><p style="margin:8px 0;font-size:1.1em">'+(score>high?'🎉 NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">Level reached: '+level+' | Best: '+Math.max(score,high)+'</p><button onclick="launchBrainBounce()" style="margin-top:16px;padding:12px 28px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:1em">Play Again</button></div></div>';
+    if(score>high)spawnConfetti();addXP(Math.floor(score/10));
   }
-  alive=true;score=0;ballX=W/2;ballY=200;bvx=3;bvy=-3;
+  alive=true;score=0;level=1;lives=3;brickRows=5;
+  buildBricks();ballX=W/2;ballY=H-50;bvx=4;bvy=-4;
   tick();
 }
 
