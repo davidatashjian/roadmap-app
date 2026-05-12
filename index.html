@@ -740,10 +740,21 @@ document.body.appendChild(dmBtn);
 if(localStorage.getItem('rm_dark')==='1'){document.body.classList.add('dark');dmBtn.innerHTML='☀️';}
 
 // === PRO FEATURE GATING ===
+var REFERRAL_CODES=['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'];
 function isPro(){return localStorage.getItem('rm_pro')==='1'||new URLSearchParams(location.search).get('pro')==='1'}
 if(new URLSearchParams(location.search).get('pro')==='1')localStorage.setItem('rm_pro','1');
+// Check URL for referral code
+var urlCode=new URLSearchParams(location.search).get('code');
+if(urlCode&&REFERRAL_CODES.includes(urlCode.toUpperCase())){localStorage.setItem('rm_pro','1');localStorage.setItem('rm_code',urlCode.toUpperCase())}
 function showProGate(featureName){
-  alert('🔒 '+featureName+' is a Pro feature. Upgrade for $9.99/mo to unlock all tools, go ad-free, and accelerate your journey.');
+  var code=prompt('🔒 '+featureName+' is a Pro feature.\n\nUpgrade for $9.99/mo or enter a referral code:');
+  if(!code)return;
+  if(REFERRAL_CODES.includes(code.toUpperCase())){
+    localStorage.setItem('rm_pro','1');localStorage.setItem('rm_code',code.toUpperCase());
+    alert('✅ Pro unlocked! Enjoy all features.');location.reload();
+  } else {
+    window.open('https://buy.stripe.com/5kQ9AMaQ4b1n8LG7Cx33W01','_blank');
+  }
 }
 
 // === DAILY QUOTE ===
