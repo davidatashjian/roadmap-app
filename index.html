@@ -244,12 +244,26 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     </div>
   </section>
 
-  <section class="test-section">
-    <h2 style="font-size:2em;font-weight:800;text-align:center;margin-bottom:40px">What People Are Saying</h2>
-    <div class="test-grid">
-      <div class="test-card"><p>"I was completely lost about how to prepare for med school as a career changer. This gave me a clear plan I could actually follow day by day. Went from 0 prerequisites to accepted in 2 years."</p><div class="author">— Career changer, econ major, accepted MD 2025</div></div>
-      <div class="test-card"><p>"The MCAT study tools are genuinely better than Anki. The survival mode game got me addicted to reviewing biochem. Scored a 518."</p><div class="author">— Post-bacc student, 518 MCAT</div></div>
-      <div class="test-card"><p>"As someone with ADHD, every other study tool felt overwhelming. This one actually understands how my brain works. The neurodivergent mode is a game-changer."</p><div class="author">— Pre-med junior, neurodivergent</div></div>
+  <section class="test-section" id="reviews">
+    <h2 style="font-size:2em;font-weight:800;text-align:center;margin-bottom:12px">Reviews</h2>
+    <p style="text-align:center;color:#64748b;margin-bottom:24px">Hear from pre-med students using Roadmap</p>
+    <div id="reviews-list" class="test-grid"></div>
+    <div style="max-width:500px;margin:24px auto 0;background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+      <h4 style="margin:0 0 12px">Leave a Review</h4>
+      <div id="star-rating" style="font-size:1.5em;cursor:pointer;margin-bottom:12px">
+        <span class="star" data-v="1" onclick="setStars(1)">&#9734;</span>
+        <span class="star" data-v="2" onclick="setStars(2)">&#9734;</span>
+        <span class="star" data-v="3" onclick="setStars(3)">&#9734;</span>
+        <span class="star" data-v="4" onclick="setStars(4)">&#9734;</span>
+        <span class="star" data-v="5" onclick="setStars(5)">&#9734;</span>
+        <span id="star-val" style="font-size:.5em;color:#64748b;margin-left:8px"></span>
+      </div>
+      <input type="text" id="rev-name" placeholder="Your name (or anonymous)" maxlength="40" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;font-size:.9em;background:var(--bg,#f8fafc);color:var(--text,#1e293b)">
+      <textarea id="rev-text" placeholder="Write your review..." maxlength="300" style="width:100%;padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;height:80px;font-size:.9em;font-family:inherit;resize:none;background:var(--bg,#f8fafc);color:var(--text,#1e293b)"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <span id="rev-chars" style="font-size:.75em;color:#94a3b8">0/300</span>
+        <button onclick="submitReview()" style="padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">Submit</button>
+      </div>
     </div>
   </section>
 
@@ -802,6 +816,201 @@ setTimeout(function(){
     proUpsell.parentNode.insertBefore(toolsDiv,proUpsell);
   }
 },500);
+
+// === REVIEW SYSTEM ===
+var currentRating=0;
+function setStars(n){
+  currentRating=n;
+  document.querySelectorAll('#star-rating .star').forEach(function(s){
+    s.innerHTML=parseInt(s.dataset.v)<=n?'&#9733;':'&#9734;';
+    s.style.color=parseInt(s.dataset.v)<=n?'#f59e0b':'#cbd5e1';
+  });
+  document.getElementById('star-val').textContent=n+'/5';
+}
+document.getElementById('rev-text')?.addEventListener('input',function(){
+  document.getElementById('rev-chars').textContent=this.value.length+'/300';
+});
+var PROFANITY=['fuck','shit','damn','ass','bitch','dick','cock','pussy','nigger','faggot','retard','whore','slut','cunt'];
+function hasProfanity(text){var t=text.toLowerCase();return PROFANITY.some(function(w){return t.includes(w)})}
+async function submitReview(){
+  var name=sanitize(document.getElementById('rev-name')?.value||'Anonymous');
+  var text=sanitize(document.getElementById('rev-text')?.value||'');
+  if(!currentRating){alert('Please select a star rating.');return}
+  if(text&&hasProfanity(text)){alert('Please keep your review respectful.');return}
+  if(name&&hasProfanity(name)){alert('Please use an appropriate name.');return}
+  if(sb){await sb.from('reviews').insert({user_name:name||'Anonymous',rating:currentRating,review_text:text})}
+  // Also save locally
+  var local=JSON.parse(localStorage.getItem('rm_reviews')||'[]');
+  local.push({user_name:name||'Anonymous',rating:currentRating,review_text:text,created_at:new Date().toISOString()});
+  localStorage.setItem('rm_reviews',JSON.stringify(local));
+  alert('Thank you for your review!');
+  document.getElementById('rev-text').value='';
+  document.getElementById('rev-name').value='';
+  currentRating=0;
+  setStars(0);
+  loadReviews();
+}
+async function loadReviews(){
+  var reviews=[];
+  if(sb){var r=await sb.from('reviews').select('*').order('created_at',{ascending:false}).limit(12);if(r.data)reviews=r.data}
+  if(!reviews.length)reviews=JSON.parse(localStorage.getItem('rm_reviews')||'[]').reverse();
+  // Show default reviews if none exist
+  if(!reviews.length)reviews=[
+    {user_name:'Career Changer',rating:5,review_text:'Went from 0 prerequisites to accepted in 2 years. This tool planned my entire path.'},
+    {user_name:'Post-bacc Student',rating:5,review_text:'The MCAT study tools are better than Anki. Survival mode got me addicted to biochem review. 518.'},
+    {user_name:'Neurodivergent Pre-med',rating:5,review_text:'Finally a study tool that understands how my brain works. The structure is perfect for ADHD.'}
+  ];
+  var el=document.getElementById('reviews-list');
+  if(!el)return;
+  el.innerHTML=reviews.slice(0,9).map(function(r){
+    var stars='';for(var i=1;i<=5;i++)stars+=i<=r.rating?'<span style="color:#f59e0b">&#9733;</span>':'<span style="color:#e2e8f0">&#9734;</span>';
+    return '<div class="test-card"><div style="margin-bottom:8px">'+stars+'</div>'+(r.review_text?'<p>"'+r.review_text+'"</p>':'')+'<div class="author">\u2014 '+r.user_name+'</div></div>';
+  }).join('');
+}
+loadReviews();
+
+// === EXPANDED SURVIVAL QUESTIONS (All Pre-Med Courses) ===
+var PREMED_QS={
+  chem:[
+    {q:'Ideal gas law?',a:'PV = nRT'},{q:'pH of neutral solution?',a:'7'},{q:'What is oxidation?',a:'Loss of electrons'},
+    {q:'Avogadro\'s number?',a:'6.022 x 10^23'},{q:'What is a buffer?',a:'Resists pH change'},
+    {q:'Le Chatelier\'s principle?',a:'System shifts to oppose stress'},{q:'Molarity formula?',a:'mol/L'},
+    {q:'What is entropy?',a:'Measure of disorder'},{q:'Electronegativity trend?',a:'Increases up and right'},
+    {q:'Strong acid example?',a:'HCl'},{q:'What is a catalyst?',a:'Speeds reaction, not consumed'},
+    {q:'Hess\'s Law?',a:'Total enthalpy is path independent'}
+  ],
+  bio:[
+    {q:'Powerhouse of the cell?',a:'Mitochondria'},{q:'DNA bases?',a:'A, T, G, C'},{q:'What is ATP?',a:'Energy currency'},
+    {q:'Central dogma?',a:'DNA \u2192 RNA \u2192 Protein'},{q:'Function of ribosomes?',a:'Protein synthesis'},
+    {q:'What is mitosis?',a:'Cell division \u2192 2 identical cells'},{q:'Meiosis produces?',a:'4 haploid gametes'},
+    {q:'Cell membrane structure?',a:'Phospholipid bilayer'},{q:'What is an enzyme?',a:'Biological catalyst'},
+    {q:'Dominant vs recessive?',a:'Dominant masks recessive'},{q:'What is diffusion?',a:'High to low concentration'},
+    {q:'Krebs cycle location?',a:'Mitochondrial matrix'}
+  ],
+  orgo:[
+    {q:'SN2 mechanism?',a:'Backside attack, inversion'},{q:'SN1 intermediate?',a:'Carbocation'},
+    {q:'Markovnikov\'s rule?',a:'H adds to more H\'s'},{q:'What is a chiral center?',a:'4 different groups on C'},
+    {q:'E2 requirement?',a:'Anti-periplanar geometry'},{q:'Nucleophile definition?',a:'Electron donor'},
+    {q:'Electrophile definition?',a:'Electron acceptor'},{q:'R vs S determined by?',a:'CIP priority rules'},
+    {q:'What is a leaving group?',a:'Group that departs with electrons'},{q:'Zaitsev\'s rule?',a:'Most substituted alkene forms'}
+  ],
+  physics:[
+    {q:'Newton\'s 2nd law?',a:'F = ma'},{q:'Kinetic energy?',a:'KE = 1/2 mv\u00B2'},{q:'Ohm\'s law?',a:'V = IR'},
+    {q:'What is momentum?',a:'p = mv'},{q:'Work formula?',a:'W = Fd cos\u03B8'},
+    {q:'Conservation of energy?',a:'Energy cannot be created/destroyed'},{q:'What is frequency?',a:'Cycles per second (Hz)'},
+    {q:'Coulomb\'s law?',a:'F = kq1q2/r\u00B2'},{q:'Snell\'s law?',a:'n1 sin\u03B81 = n2 sin\u03B82'},
+    {q:'Bernoulli\'s principle?',a:'Fast flow = low pressure'}
+  ],
+  biochem:[
+    {q:'Essential amino acids count?',a:'9'},{q:'Enzyme inhibition types?',a:'Competitive, non-competitive, uncompetitive'},
+    {q:'Glycolysis net ATP?',a:'2 ATP'},{q:'ETC location?',a:'Inner mitochondrial membrane'},
+    {q:'Km meaning?',a:'Substrate conc at half Vmax'},{q:'What is Vmax?',a:'Maximum reaction rate'},
+    {q:'DNA replication enzyme?',a:'DNA polymerase'},{q:'Transcription enzyme?',a:'RNA polymerase'},
+    {q:'Translation location?',a:'Ribosome'},{q:'Beta oxidation does what?',a:'Breaks down fatty acids'}
+  ],
+  psych:[
+    {q:'Classical conditioning?',a:'Pavlov - associate stimulus with response'},{q:'Operant conditioning?',a:'Skinner - consequences shape behavior'},
+    {q:'Maslow\'s top need?',a:'Self-actualization'},{q:'Id vs Superego?',a:'Id=desires, Superego=morality'},
+    {q:'What is groupthink?',a:'Conformity suppresses dissent'},{q:'Bystander effect?',a:'Less help with more people'},
+    {q:'Piaget stages count?',a:'4 (sensorimotor, preop, concrete, formal)'},{q:'Erikson\'s identity stage?',a:'Adolescence'},
+    {q:'What is schema?',a:'Mental framework for organizing info'},{q:'Confirmation bias?',a:'Seeking info that confirms beliefs'}
+  ]
+};
+
+// === MULTIPLAYER MODE ===
+function startMultiplayer(){
+  if(!isPro()){showProGate('Multiplayer Mode');return}
+  var area=document.getElementById('sv-area');if(!area)return;
+  area.style.display='block';
+  var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
+  allQs.sort(function(){return Math.random()-0.5});
+  var qs=allQs.slice(0,10);
+  var p1=0,p2=0,qi=0,turn=1;
+  function renderMP(){
+    if(qi>=qs.length){
+      area.innerHTML='<div style="text-align:center;padding:20px"><h3>Game Over!</h3><div style="font-size:2em;font-weight:800;margin:12px 0;color:#2563eb">Player 1: '+p1+' | Player 2: '+p2+'</div><p style="font-size:1.2em;font-weight:600;color:'+(p1>p2?'#2563eb':p1<p2?'#7c3aed':'#64748b')+'">'+(p1>p2?'Player 1 Wins!':p1<p2?'Player 2 Wins!':'Tie!')+'</p></div>';
+      if(p1!==p2)spawnConfetti();addXP(Math.max(p1,p2));return;
+    }
+    var q=qs[qi];var opts=allQs.filter(function(x){return x.a!==q.a}).sort(function(){return Math.random()-0.5}).slice(0,3).map(function(x){return x.a});
+    opts.push(q.a);opts.sort(function(){return Math.random()-0.5});
+    area.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:12px"><span style="font-weight:700;color:#2563eb">P1: '+p1+'</span><span style="font-weight:700;color:'+(turn===1?'#2563eb':'#7c3aed')+'">Player '+turn+'\'s Turn</span><span style="font-weight:700;color:#7c3aed">P2: '+p2+'</span></div><h3 style="text-align:center;margin:16px 0">'+q.q+'</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+opts.map(function(o){return '<button style="padding:12px;border:2px solid #e2e8f0;border-radius:10px;background:var(--card,#fff);cursor:pointer;font-size:.9em;color:var(--text,#1e293b)" onclick="mpAnswer(this,'+(o===q.a?1:0)+')">'+o+'</button>'}).join('')+'</div>';
+  }
+  window.mpAnswer=function(btn,correct){
+    if(correct){btn.style.borderColor='#22c55e';btn.style.background='#f0fdf4';if(turn===1)p1++;else p2++}
+    else{btn.style.borderColor='#ef4444';btn.style.background='#fef2f2'}
+    area.querySelectorAll('button').forEach(function(b){b.style.pointerEvents='none'});
+    qi++;turn=turn===1?2:1;
+    setTimeout(renderMP,600);
+  };
+  renderMP();
+}
+
+// === TOS & PRIVACY MODALS ===
+var tosHTML='<div id="tos-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center"><div style="background:var(--card,#fff);border-radius:16px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.2)"><h2 style="margin:0 0 16px">Terms of Service</h2><p style="font-size:.88em;line-height:1.7;color:#475569">By using Pre-Med Roadmap ("the Service"), you agree to these terms. The Service is provided "as is" without warranty. All content is for educational purposes only and does not constitute medical, legal, or professional advice.<br><br><strong>Accounts:</strong> You are responsible for maintaining the security of your account. Do not share your login credentials.<br><br><strong>Subscriptions:</strong> Pro subscriptions are billed monthly at $9.99/mo. You may cancel anytime. Access continues until the end of your billing period.<br><br><strong>Content:</strong> All content, code, and design are copyright \u00A9 2026 David Tashjian. All rights reserved. You may not copy, reproduce, or redistribute any part of this service without written permission.<br><br><strong>Reviews:</strong> Reviews must be truthful and respectful. We reserve the right to remove inappropriate content.<br><br><strong>Termination:</strong> We reserve the right to suspend or terminate accounts that violate these terms.<br><br>Last updated: May 2026</p><button onclick="this.closest(\'div\').closest(\'div\').style.display=\'none\'" style="margin-top:16px;padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer">Close</button></div></div>';
+var privHTML='<div id="privacy-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center"><div style="background:var(--card,#fff);border-radius:16px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.2)"><h2 style="margin:0 0 16px">Privacy Policy</h2><p style="font-size:.88em;line-height:1.7;color:#475569"><strong>Data we collect:</strong> Email (if you create an account), study progress, quiz answers, and review content. We use Google Analytics for anonymous usage statistics and Google AdSense for advertising.<br><br><strong>How we use it:</strong> To personalize your roadmap, sync your progress across devices, and improve the service. We never sell your personal data to third parties.<br><br><strong>Cookies:</strong> We use localStorage for progress tracking and cookies via Google Analytics and AdSense. You can disable cookies in your browser settings.<br><br><strong>Third parties:</strong> Supabase (authentication/database), Stripe (payments), Google (analytics/ads). Each has their own privacy policy.<br><br><strong>Data deletion:</strong> Email david@roadmappath.com to request deletion of your account and data.<br><br><strong>Children:</strong> This service is not intended for children under 13.<br><br>Last updated: May 2026</p><button onclick="this.closest(\'div\').closest(\'div\').style.display=\'none\'" style="margin-top:16px;padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer">Close</button></div></div>';
+document.body.insertAdjacentHTML('beforeend',tosHTML+privHTML);
+
+// === DAILY CHALLENGE (unique differentiator) ===
+function getDailyChallenge(){
+  var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
+  var dayIdx=Math.floor(Date.now()/86400000)%allQs.length;
+  return allQs[dayIdx];
+}
+
+// === MCAT MINI-GAME (Flappy Bird style knowledge game) ===
+function startMCATRunner(){
+  if(!isPro()){showProGate('MCAT Runner Game');return}
+  var area=document.getElementById('sv-area');if(!area)return;
+  area.style.display='block';
+  area.style.position='relative';area.style.height='300px';area.style.overflow='hidden';area.style.background='linear-gradient(180deg,#0f172a,#1e293b)';area.style.borderRadius='12px';
+  var score=0;var alive=true;var playerY=130;var vy=0;var pipes=[];var frame=0;
+  var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
+  function render(){
+    if(!alive)return;
+    vy+=0.5;playerY+=vy;
+    if(playerY<0)playerY=0;if(playerY>260){alive=false;gameOver();return}
+    // Move pipes
+    for(var i=pipes.length-1;i>=0;i--){
+      pipes[i].x-=3;
+      if(pipes[i].x<-60)pipes.splice(i,1);
+      if(pipes[i].x>20&&pipes[i].x<60&&(playerY<pipes[i].gapY||playerY>pipes[i].gapY+80)){alive=false;gameOver();return}
+      if(pipes[i].x===20)score++;
+    }
+    if(frame%60===0){var q=allQs[Math.floor(Math.random()*allQs.length)];pipes.push({x:400,gapY:40+Math.random()*140,q:q.q.slice(0,20)})}
+    // Draw
+    var h='<div style="position:absolute;left:40px;top:'+playerY+'px;width:24px;height:24px;background:#2563eb;border-radius:50%;z-index:2"></div>';
+    h+='<div style="position:absolute;top:8px;right:12px;color:#fff;font-size:1.2em;font-weight:800;z-index:3">'+score+'</div>';
+    pipes.forEach(function(p){
+      h+='<div style="position:absolute;left:'+p.x+'px;top:0;width:40px;height:'+p.gapY+'px;background:#334155;border-radius:0 0 6px 6px"></div>';
+      h+='<div style="position:absolute;left:'+p.x+'px;top:'+(p.gapY+80)+'px;width:40px;bottom:0;background:#334155;border-radius:6px 6px 0 0"></div>';
+      h+='<div style="position:absolute;left:'+(p.x-10)+'px;top:'+(p.gapY+30)+'px;font-size:.55em;color:#94a3b8;width:60px;text-align:center;z-index:2">'+p.q+'</div>';
+    });
+    area.innerHTML=h;
+    frame++;requestAnimationFrame(render);
+  }
+  function gameOver(){
+    var high=parseInt(localStorage.getItem('mcat_runner_high'))||0;
+    if(score>high)localStorage.setItem('mcat_runner_high',String(score));
+    area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:2.5em;font-weight:800">'+score+'</div><p>'+(score>high?'NEW HIGH SCORE!':'Score')+'</p><p style="font-size:.82em;color:#94a3b8">High: '+Math.max(score,high)+'</p><button onclick="startMCATRunner()" style="margin-top:12px;padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Play Again</button></div></div>';
+    addXP(score);if(score>high)spawnConfetti();
+  }
+  area.onclick=function(){vy=-7};
+  area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em">Click/tap to fly! Avoid the pipes.</div>';
+  area.onclick=function(){if(!alive){alive=true;score=0;playerY=130;vy=0;pipes=[];frame=0;render()}else{vy=-7}};
+  setTimeout(function(){alive=true;render()},500);
+}
+
+// Update Pro tools section to include multiplayer + MCAT runner
+setTimeout(function(){
+  var proUpsell2=document.querySelector('[onclick*="buy.stripe"]');
+  if(proUpsell2&&!document.getElementById('mp-btn')){
+    var toolsDiv2=document.createElement('div');
+    toolsDiv2.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0';
+    toolsDiv2.innerHTML='<button id="mp-btn" onclick="startMultiplayer()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\u2694\uFE0F 1v1 Mode'+(isPro()?'':'<br><span style="font-size:.75em;color:#64748b">PRO</span>')+'</button><button onclick="startMCATRunner()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83C\uDFC3 MCAT Runner'+(isPro()?'':'<br><span style="font-size:.75em;color:#64748b">PRO</span>')+'</button>';
+    var svArea=document.getElementById('sv-area');
+    if(svArea)svArea.parentNode.insertBefore(toolsDiv2,svArea);
+  }
+},600);
 </script>
 </body>
 </html>
