@@ -302,8 +302,8 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
           <li>Export to PDF</li>
           <li>Priority support</li>
         </ul>
-        <a href="https://buy.stripe.com/5kQ9AMaQ4b1n8LG7Cx33W01" class="price-btn">Start Pro — 7 Day Free Trial</a>
-        <a href="#" onclick="event.preventDefault();var c=prompt('Enter your referral code:');if(c&&REFERRAL_CODES&&REFERRAL_CODES.includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('✅ Pro unlocked!');location.reload()}else if(c){alert('Invalid code. Check spelling and try again.')}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
+        <a href="#" class="price-btn" onclick="event.preventDefault();var c=prompt('Start your Pro trial!\n\nHave a referral code? Enter it below.\nOtherwise click OK to go to checkout:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('Pro unlocked!');location.reload()}else{window.open('https://buy.stripe.com/5kQ9AMaQ4b1n8LG7Cx33W01','_blank')}">Start Pro — 7 Day Free Trial</a>
+        <a href="#" onclick="event.preventDefault();var c=prompt('Enter your referral code:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');alert('Pro unlocked! Refreshing...');location.reload()}else if(c){alert('Invalid code. Check spelling and try again.')}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
       </div>
     </div>
   </section>
@@ -641,7 +641,7 @@ function generateRoadmap() {
   html += '<div style="background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:14px;padding:24px;text-align:center;color:#fff;margin:20px 0">';
   html += '<h3 style="margin:0 0 8px;color:#fff">Unlock the Full Experience</h3>';
   html += '<p style="color:rgba(255,255,255,.8);font-size:.92em;margin:0 0 16px">Study games, whiteboard, interview prep, score predictor, analytics — all ad-free.</p>';
-  html += '<button onclick="window.open(\'https://buy.stripe.com/5kQ9AMaQ4b1n8LG7Cx33W01\',\'_blank\')" style="padding:12px 32px;background:#fff;color:#2563eb;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer">Start 7-Day Free Trial →</button>';
+  html += '<button onclick="showProGate(\'Pro\')" style="padding:12px 32px;background:#fff;color:#2563eb;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer">Upgrade to Pro</button>';
   html += '</div>';
 
   // Footer
