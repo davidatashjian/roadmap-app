@@ -504,7 +504,7 @@ let quizPath = '';
 let quizStep = 0;
 let quizAnswers = {};
 
-function startQuiz() { startQuizWith(''); }
+function startQuiz() { window.scrollTo(0,0);document.getElementById('landing').style.display='none';document.getElementById('quiz-container').innerHTML='<div style="min-height:80vh;display:flex;align-items:center;justify-content:center"><div style="text-align:center;max-width:600px;padding:40px 20px"><h2 style="font-size:2em;font-weight:800;margin-bottom:16px">Choose Your Path</h2><p style="color:#64748b;margin-bottom:32px">Which pre-med path are you on?</p><div style="display:grid;gap:12px"><button onclick="startQuizWith(\'premed\')" style="padding:20px;border:2px solid #e2e8f0;border-radius:12px;background:#fff;cursor:pointer;font-size:1.1em;font-weight:600;color:#1e293b">\ud83e\ude7a MD / DO</button><button onclick="startQuizWith(\'caa\')" style="padding:20px;border:2px solid #e2e8f0;border-radius:12px;background:#fff;cursor:pointer;font-size:1.1em;font-weight:600;color:#1e293b">\ud83d\udc89 CAA (Anesthesiologist Assistant)</button><button onclick="startQuizWith(\'mcat\')" style="padding:20px;border:2px solid #e2e8f0;border-radius:12px;background:#fff;cursor:pointer;font-size:1.1em;font-weight:600;color:#1e293b">\ud83d\udcdd MCAT Focused</button></div><button onclick="location.reload()" style="margin-top:20px;padding:8px 20px;background:none;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;color:#64748b">\u2190 Back</button></div></div>'; }
 function startQuizWith(path) {
   quizPath = path;
   quizStep = 0;
@@ -905,7 +905,7 @@ setTimeout(function(){
     rmPct.parentNode.insertBefore(qDiv,rmPct);
   }
   // Add Pro tools section at bottom of roadmap
-  const proUpsell=document.querySelector('[onclick*="Stripe"]');
+  var proUpsell=document.querySelector('[onclick*="showProGate"]');
   if(proUpsell&&!document.getElementById('sv-area')){
     const toolsDiv=document.createElement('div');
     toolsDiv.style.cssText='margin:20px 0';
