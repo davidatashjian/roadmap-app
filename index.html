@@ -302,8 +302,8 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
           <li>Export to PDF</li>
           <li>Priority support</li>
         </ul>
-        <a href="#" class="price-btn" onclick="event.preventDefault();var c=prompt('Start your Pro trial!\n\nHave a referral code? Enter it below.\nOtherwise click OK to go to checkout:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');location.reload()}else{window.open('https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00','_blank')}">Start Pro — 7 Day Free Trial</a>
-        <a href="#" onclick="event.preventDefault();var c=prompt('Enter your referral code:');if(c&&['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'].includes(c.toUpperCase())){localStorage.setItem('rm_pro','1');location.reload()}else if(c){alert('Invalid code.')}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
+        <a href="#" class="price-btn" onclick="event.preventDefault();showProGate('Pro')">Start Pro — 7 Day Free Trial</a>
+        <a href="#" onclick="event.preventDefault();var c=prompt('Enter referral code:');if(c)tryCode(c)||alert('Invalid code.')" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
       </div>
     </div>
   </section>
@@ -358,9 +358,9 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 <div id="quiz-container"></div>
 
 <script>
-// Force scroll to top on page load
-if(window.location.hash){history.replaceState(null,null,' ');}
+// === PAGE INIT ===
 window.scrollTo(0,0);
+if(window.location.hash)history.replaceState(null,null,window.location.pathname);
 
 // === SUPABASE INIT ===
 const SUPABASE_URL='https://ddiklxucgprxkrobwfbj.supabase.co';
@@ -382,65 +382,96 @@ function checkRateLimit(){
   return true;
 }
 
-// Auth functions
+// === AUTH SYSTEM ===
+var authModal=null;
 async function sbSignUp(email,pass){
-  if(!sb)return;
-  if(!checkRateLimit())return;
+  if(!sb){alert('Service unavailable. Try again later.');return false}
+  if(!checkRateLimit())return false;
   email=sanitize(email);
-  if(!email||!pass||pass.length<6){alert('Valid email and password (6+ chars) required.');return}
-  const{data,error}=await sb.auth.signUp({email,password:pass});
-  if(error){alert('Sign up error: '+error.message);return}
-  alert('Check your email to confirm your account!');
+  if(!email||!pass||pass.length<6){alert('Enter a valid email and password (6+ characters).');return false}
+  var res=await sb.auth.signUp({email:email,password:pass});
+  if(res.error){alert(res.error.message);return false}
+  alert('Account created! Check your email to confirm, then log in.');
+  return true;
 }
 async function sbLogin(email,pass){
-  if(!sb)return;
-  if(!checkRateLimit())return;
+  if(!sb){alert('Service unavailable. Try again later.');return false}
+  if(!checkRateLimit())return false;
   email=sanitize(email);
-  if(!email||!pass){alert('Email and password required.');return}
-  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
-  if(error){alert('Login error: '+error.message);return}
-  sbUser=data.user;
+  if(!email||!pass){alert('Enter your email and password.');return false}
+  var res=await sb.auth.signInWithPassword({email:email,password:pass});
+  if(res.error){alert(res.error.message);return false}
+  sbUser=res.data.user;
   updateAuthUI();
   syncFromCloud();
+  return true;
 }
 async function sbLogout(){
-  if(!sb)return;
-  await sb.auth.signOut();
+  if(sb)await sb.auth.signOut();
   sbUser=null;
+  localStorage.removeItem('rm_pro');
   updateAuthUI();
+  location.reload();
 }
-function showAuthModal(){
-  var m=document.createElement('div');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center';
-  m.innerHTML='<div style="background:var(--card,#fff);border-radius:16px;padding:32px;max-width:380px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,.2)"><h2 style="margin:0 0 16px;font-size:1.3em">Sign In / Sign Up</h2><input id="auth-email" type="email" placeholder="Email" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em"><input id="auth-pass" type="password" placeholder="Password (6+ chars)" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em"><div style="display:flex;gap:8px;margin-top:12px"><button onclick="sbLogin(document.getElementById(\'auth-email\').value,document.getElementById(\'auth-pass\').value);this.closest(\'div\').closest(\'div\').remove()" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">Log In</button><button onclick="sbSignUp(document.getElementById(\'auth-email\').value,document.getElementById(\'auth-pass\').value);this.closest(\'div\').closest(\'div\').remove()" style="flex:1;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">Sign Up</button></div><button onclick="this.closest(\'div\').closest(\'div\').remove()" style="width:100%;padding:8px;background:none;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px;cursor:pointer;color:#64748b">Cancel</button></div>';
-  document.body.appendChild(m);
+function closeAuthModal(){if(authModal){authModal.remove();authModal=null}}
+function showAuthModal(callback){
+  closeAuthModal();
+  authModal=document.createElement('div');
+  authModal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center';
+  var box=document.createElement('div');
+  box.style.cssText='background:#fff;border-radius:16px;padding:32px;max-width:380px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,.3)';
+  box.innerHTML='<h2 style="margin:0 0 4px;font-size:1.3em;color:#1e293b">Sign In / Sign Up</h2><p style="color:#64748b;font-size:.85em;margin:0 0 16px">Create an account or log in to save progress</p><input id="auth-email" type="email" placeholder="Email" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em;color:#1e293b"><input id="auth-pass" type="password" placeholder="Password (6+ chars)" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em;color:#1e293b"><p id="auth-msg" style="color:#ef4444;font-size:.82em;margin:4px 0;min-height:1.2em"></p><div style="display:flex;gap:8px;margin-top:8px"></div>';
+  var btnRow=box.querySelector('div:last-child');
+  var loginBtn=document.createElement('button');
+  loginBtn.textContent='Log In';
+  loginBtn.style.cssText='flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer';
+  loginBtn.onclick=async function(){
+    var ok=await sbLogin(document.getElementById('auth-email').value,document.getElementById('auth-pass').value);
+    if(ok){closeAuthModal();if(callback)callback()}
+  };
+  var signupBtn=document.createElement('button');
+  signupBtn.textContent='Sign Up';
+  signupBtn.style.cssText='flex:1;padding:10px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer';
+  signupBtn.onclick=async function(){
+    await sbSignUp(document.getElementById('auth-email').value,document.getElementById('auth-pass').value);
+  };
+  btnRow.appendChild(loginBtn);btnRow.appendChild(signupBtn);
+  var cancelBtn=document.createElement('button');
+  cancelBtn.textContent='Cancel';
+  cancelBtn.style.cssText='width:100%;padding:8px;background:none;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px;cursor:pointer;color:#64748b';
+  cancelBtn.onclick=closeAuthModal;
+  box.appendChild(cancelBtn);
+  authModal.appendChild(box);
+  authModal.onclick=function(e){if(e.target===authModal)closeAuthModal()};
+  document.body.appendChild(authModal);
+  setTimeout(function(){document.getElementById('auth-email')?.focus()},100);
 }
 function updateAuthUI(){
   var btn=document.getElementById('auth-nav-btn');
   if(!btn)return;
-  if(sbUser){btn.textContent='Logout';btn.onclick=sbLogout}
-  else{btn.textContent='Sign In';btn.onclick=showAuthModal}
+  if(sbUser){btn.textContent='Logout';btn.onclick=function(e){e.preventDefault();sbLogout()}}
+  else{btn.textContent='Sign In';btn.onclick=function(e){e.preventDefault();showAuthModal()}}
 }
 
 // Cloud sync
 async function syncToCloud(key,val){
   if(!sb||!sbUser)return;
   var parts=key.replace('rm_','').split('_');
-  var path=parts[0];var taskKey=parts.slice(1).join('_');
-  await sb.from('progress').upsert({user_id:sbUser.id,path:path,task_key:taskKey,completed:val==='1'},{onConflict:'user_id,path,task_key'});
+  var path=parts[0],taskKey=parts.slice(1).join('_');
+  try{await sb.from('progress').upsert({user_id:sbUser.id,path:path,task_key:taskKey,completed:val==='1'},{onConflict:'user_id,path,task_key'})}catch(e){}
 }
 async function syncFromCloud(){
   if(!sb||!sbUser)return;
-  var{data}=await sb.from('progress').select('*').eq('user_id',sbUser.id);
-  if(data)data.forEach(function(r){localStorage.setItem('rm_'+r.path+'_'+r.task_key,r.completed?'1':'0')});
+  try{var r=await sb.from('progress').select('*').eq('user_id',sbUser.id);
+  if(r.data)r.data.forEach(function(row){localStorage.setItem('rm_'+row.path+'_'+row.task_key,row.completed?'1':'0')})}catch(e){}
 }
 async function saveWaitlistEmail(email){
   if(!sb)return;
-  await sb.from('waitlist').insert({email:email});
+  try{await sb.from('waitlist').insert({email:email})}catch(e){}
 }
 
-// Check session on load
-if(sb){sb.auth.getSession().then(function(res){if(res.data.session){sbUser=res.data.session.user;updateAuthUI();syncFromCloud()}})}
+// Session restore
+if(sb){sb.auth.getSession().then(function(res){if(res.data&&res.data.session){sbUser=res.data.session.user;updateAuthUI();syncFromCloud()}}).catch(function(){})}
 
 // Questionnaire engine
 const QUESTIONS = {
@@ -756,28 +787,44 @@ dmBtn.onclick=function(){document.body.classList.toggle('dark');this.innerHTML=d
 document.body.appendChild(dmBtn);
 if(localStorage.getItem('rm_dark')==='1'){document.body.classList.add('dark');dmBtn.innerHTML='☀️';}
 
-// === PRO FEATURE GATING ===
-var REFERRAL_CODES=['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'];
-var STRIPE_LINK='https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00';
-function isPro(){return localStorage.getItem('rm_pro')==='1'||new URLSearchParams(location.search).get('pro')==='1'}
-if(new URLSearchParams(location.search).get('pro')==='1')localStorage.setItem('rm_pro','1');
-var urlCode=new URLSearchParams(location.search).get('code');
-if(urlCode&&REFERRAL_CODES.includes(urlCode.toUpperCase())){localStorage.setItem('rm_pro','1');localStorage.setItem('rm_code',urlCode.toUpperCase())}
+// === PRO SYSTEM ===
+var CODES=['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'];
+var STRIPE='https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00';
+function isPro(){return localStorage.getItem('rm_pro')==='1'}
+// Auto-activate from URL params
+(function(){
+  var p=new URLSearchParams(location.search);
+  if(p.get('pro')==='1')localStorage.setItem('rm_pro','1');
+  var c=p.get('code');
+  if(c&&CODES.includes(c.toUpperCase()))localStorage.setItem('rm_pro','1');
+})();
+function activatePro(code){
+  localStorage.setItem('rm_pro','1');
+  if(code)localStorage.setItem('rm_code',code);
+  if(sb&&sbUser){try{sb.from('subscriptions').upsert({user_id:sbUser.id,status:'pro'},{onConflict:'user_id'})}catch(e){}}
+  location.reload();
+}
+function tryCode(code){
+  if(code&&CODES.includes(code.toUpperCase())){activatePro(code.toUpperCase());return true}
+  return false;
+}
 function showProGate(featureName){
+  // If not signed in, prompt sign in first
   if(!sbUser){
-    var doLogin=confirm('🔒 '+featureName+' requires a Pro account.\n\nYou need to sign in or create an account first.\n\nClick OK to sign in.');
-    if(doLogin)showAuthModal();
+    showAuthModal(function(){
+      // After successful login, show Pro prompt
+      setTimeout(function(){showProPrompt(featureName)},300);
+    });
     return;
   }
-  var code=prompt('🔒 Upgrade to Pro!\n\nEnter a referral code, or click OK to go to checkout ($9.99/mo):');
+  showProPrompt(featureName);
+}
+function showProPrompt(featureName){
+  var code=prompt('Upgrade to Pro ($9.99/mo)\n\nEnter a referral code below, or leave blank and click OK to go to checkout:');
   if(code===null)return;
-  if(code&&REFERRAL_CODES.includes(code.toUpperCase())){
-    localStorage.setItem('rm_pro','1');localStorage.setItem('rm_code',code.toUpperCase());
-    if(sb&&sbUser)sb.from('subscriptions').upsert({user_id:sbUser.id,status:'pro_referral'},{onConflict:'user_id'});
-    location.reload();
-  } else {
-    window.open(STRIPE_LINK,'_blank');
-  }
+  if(code.trim()&&tryCode(code.trim()))return;
+  if(code.trim()){alert('Invalid code. Check spelling.');return}
+  window.open(STRIPE,'_blank');
 }
 
 // === DAILY QUOTE ===
@@ -1064,9 +1111,10 @@ function launchBrainBounce(){
   var W=area.offsetWidth,H=450;
   var ballX=W/2,ballY=H-50,bvx=4,bvy=-4,ballR=8;
   var padX=W/2-50,padW=100,padH=12;
-  var score=0,alive=true,level=1,lives=3;
+  var score=0,alive=true,level=1,lives=3,paused=false;
   var brickRows=5,brickCols=Math.floor(W/65),brickW=Math.floor((W-20)/brickCols)-4,brickH=18,bricks=[];
   var colors=['#ef4444','#f59e0b','#22c55e','#2563eb','#7c3aed'];
+  document.onkeydown=function(e){if((e.key==='p'||e.key==='P'||e.key==='Escape')&&alive){paused=!paused;if(!paused)tick()}};
   function buildBricks(){
     bricks=[];
     for(var r=0;r<brickRows;r++)for(var c=0;c<brickCols;c++){
@@ -1078,6 +1126,7 @@ function launchBrainBounce(){
   area.ontouchmove=function(e){e.preventDefault();var r=area.getBoundingClientRect();padX=Math.max(0,Math.min(W-padW,e.touches[0].clientX-r.left-padW/2))};
   function tick(){
     if(!alive)return;
+    if(paused){area.innerHTML+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);color:#fff;font-size:1.5em;font-weight:700;z-index:10">PAUSED (press P)</div>';return}
     ballX+=bvx;ballY+=bvy;
     if(ballX<ballR||ballX>W-ballR)bvx*=-1;
     if(ballY<ballR)bvy*=-1;
@@ -1144,13 +1193,18 @@ function launchMCATDash(){
   area.scrollIntoView({behavior:'smooth'});
   var W=area.offsetWidth,H=400;
   var playerX=80,playerY=H-60,jumping=false,vy=0;
-  var obstacles=[],frame=0,score=0,alive=true,speed=2.5;
+  var obstacles=[],frame=0,score=0,alive=true,speed=2.5,dPaused=false;
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
   var currentQ=null,qTimer=0;
-  area.onclick=function(){if(!alive){startRun();return}if(!jumping){jumping=true;vy=-12}};
-  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=2.5;currentQ=null;tick2()}
+  document.onkeydown=function(e){
+    if((e.key==='p'||e.key==='P'||e.key==='Escape')&&alive){dPaused=!dPaused;if(!dPaused)tick2()}
+    if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!alive){startRun()}else if(!jumping&&!dPaused){jumping=true;vy=-12}}
+  };
+  area.onclick=function(){if(!alive){startRun();return}if(!jumping&&!dPaused){jumping=true;vy=-12}};
+  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=2.5;currentQ=null;dPaused=false;tick2()}
   function tick2(){
     if(!alive)return;
+    if(dPaused){area.innerHTML+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);color:#fff;font-size:1.5em;font-weight:700;z-index:10">PAUSED (press P)</div>';return}
     vy+=0.7;playerY+=vy;
     if(playerY>=H-60){playerY=H-60;jumping=false;vy=0}
     for(var i=obstacles.length-1;i>=0;i--){
