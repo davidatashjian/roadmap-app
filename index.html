@@ -8,57 +8,59 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4767679771627212" crossorigin="anonymous"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0f172a;--card:#1e293b;--card-hover:#263548;--border:#334155;--text:#e2e8f0;--muted:#94a3b8;--accent:#3b82f6;--accent2:#8b5cf6;--success:#10b981;--warn:#f59e0b;--danger:#ef4444}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+:root{--bg:#fafaf9;--card:#fff;--card-hover:#f5f5f4;--border:#e7e5e4;--text:#1c1917;--muted:#78716c;--accent:#7c3aed;--accent2:#2563eb;--success:#059669;--warn:#d97706;--danger:#dc2626}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 
 /* Layout */
 .container{max-width:760px;margin:0 auto;padding:24px 20px 80px}
 header{text-align:center;padding:48px 20px 32px;border-bottom:1px solid var(--border);margin-bottom:32px}
-header h1{font-size:2.2em;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
-header p{color:var(--muted);font-size:1em;max-width:520px;margin:0 auto}
+header{background:#fff;border-bottom:1px solid var(--border)}
+header h1{font-size:2em;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-.02em}
+header p{color:var(--muted);font-size:.95em;max-width:540px;margin:0 auto;line-height:1.6}
 .progress-bar{margin:20px auto 0;max-width:400px;height:10px;background:var(--border);border-radius:5px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:5px;transition:width .4s}
+.progress-fill{height:100%;background:var(--accent);border-radius:5px;transition:width .4s}
 .progress-text{text-align:center;font-size:.82em;color:var(--muted);margin-top:6px}
 
 /* Sections */
 section{margin-bottom:40px}
-section h2{font-size:1.4em;font-weight:700;color:var(--text);margin-bottom:4px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:10px}
+section h2{font-size:1.35em;font-weight:700;color:var(--text);margin-bottom:4px;padding-bottom:10px;border-bottom:2px solid var(--accent);display:flex;align-items:center;gap:10px}
 section h2 .emoji{font-size:1.2em}
 .section-intro{color:var(--muted);font-size:.9em;margin-bottom:16px}
 
 /* Checklist */
 .checklist{list-style:none;padding:0}
-.checklist li{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;transition:background .15s,border-color .15s;cursor:pointer}
-.checklist li:hover{background:var(--card-hover);border-color:var(--accent)}
+.checklist li{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;transition:all .15s;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.checklist li:hover{background:var(--card-hover);border-color:var(--accent);box-shadow:0 2px 8px rgba(124,58,237,.08)}
 .checklist li.checked{opacity:.55;border-color:var(--success)}
 .checklist li.checked .cb{background:var(--success);border-color:var(--success)}
 .checklist li.checked .cb::after{content:'✓';color:#fff;font-size:.7em;font-weight:700}
 .cb{width:22px;height:22px;min-width:22px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px}
 .item-content{flex:1}
-.item-title{font-weight:600;font-size:.92em;color:var(--text)}
+.item-title{font-weight:600;font-size:.93em;color:var(--text)}
 .item-desc{font-size:.82em;color:var(--muted);margin-top:2px;line-height:1.5}
 
 /* Tip boxes */
-.tip{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:12px 0;font-size:.88em;color:var(--muted)}
+.tip{background:#f5f3ff;border:1px solid #ede9fe;border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:.88em;color:#57534e}
 .tip strong{color:var(--text)}
-.tip.nd{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2);border-left-color:var(--accent2)}
+.tip.nd{background:#eff6ff;border-color:#dbeafe;border-left-color:var(--accent2)}
 .tip.nd::before{content:'🧠 ';font-size:1.1em}
-.tip.warn{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);border-left-color:var(--warn)}
+.tip.warn{background:#fffbeb;border-color:#fef3c7;border-left-color:var(--warn)}
 
 /* Quote */
-.quote{background:var(--card);border-left:3px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-style:italic;font-size:.9em;color:var(--muted)}
+.quote{background:#faf5ff;border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-style:italic;font-size:.9em;color:#57534e}
 .quote .author{display:block;font-style:normal;font-weight:600;color:var(--accent);margin-top:6px;font-size:.88em}
 
 /* Links section */
 .resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:12px 0}
-.resource-link{display:block;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;transition:all .15s;font-size:.88em;font-weight:500}
+.resource-link{display:block;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:10px;transition:all .15s;font-size:.88em;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .resource-link:hover{border-color:var(--accent);background:var(--card-hover);text-decoration:none;transform:translateY(-1px)}
 .resource-link .rl-sub{display:block;font-size:.78em;color:var(--muted);font-weight:400;margin-top:2px}
 
 /* Donate */
-.donate-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:10;font-size:.85em}
+.donate-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:10;font-size:.85em;box-shadow:0 -2px 8px rgba(0,0,0,.04)}
 .donate-bar a{display:inline-block;padding:6px 18px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:8px;font-weight:600;font-size:.88em}
 .donate-bar a:hover{text-decoration:none;opacity:.9}
 
@@ -89,19 +91,19 @@ section h2 .emoji{font-size:1.2em}
   <div class="quote">"The secret of getting ahead is getting started." <span class="author">— Mark Twain</span></div>
   
   <ul class="checklist" data-section="prereqs">
-    <li data-key="prereq-0"><div class="cb"></div><div class="item-content"><div class="item-title">General Chemistry I + Lab</div><div class="item-desc">Foundation for orgo and biochem. Master moles, stoichiometry, acid-base.</div></div></li>
-    <li data-key="prereq-1"><div class="cb"></div><div class="item-content"><div class="item-title">General Chemistry II + Lab</div><div class="item-desc">Equilibrium, thermodynamics, electrochemistry.</div></div></li>
-    <li data-key="prereq-2"><div class="cb"></div><div class="item-content"><div class="item-title">Biology I + Lab</div><div class="item-desc">Cell biology, genetics, molecular biology.</div></div></li>
-    <li data-key="prereq-3"><div class="cb"></div><div class="item-content"><div class="item-title">Biology II + Lab</div><div class="item-desc">Ecology, evolution, physiology.</div></div></li>
-    <li data-key="prereq-4"><div class="cb"></div><div class="item-content"><div class="item-title">Organic Chemistry I + Lab</div><div class="item-desc">Reactions, mechanisms, stereochemistry. Start early — this one's a gatekeeper.</div></div></li>
-    <li data-key="prereq-5"><div class="cb"></div><div class="item-content"><div class="item-title">Organic Chemistry II + Lab</div><div class="item-desc">Carbonyl chemistry, spectroscopy, synthesis.</div></div></li>
-    <li data-key="prereq-6"><div class="cb"></div><div class="item-content"><div class="item-title">Physics I + Lab</div><div class="item-desc">Mechanics, waves, thermodynamics.</div></div></li>
-    <li data-key="prereq-7"><div class="cb"></div><div class="item-content"><div class="item-title">Physics II + Lab</div><div class="item-desc">Electricity, magnetism, optics.</div></div></li>
-    <li data-key="prereq-8"><div class="cb"></div><div class="item-content"><div class="item-title">Biochemistry</div><div class="item-desc">Amino acids, metabolism, enzyme kinetics. Heavily tested on the MCAT.</div></div></li>
-    <li data-key="prereq-9"><div class="cb"></div><div class="item-content"><div class="item-title">Math (Calculus or Statistics)</div><div class="item-desc">Most schools want at least one. Stats is more useful for research.</div></div></li>
-    <li data-key="prereq-10"><div class="cb"></div><div class="item-content"><div class="item-title">Psychology</div><div class="item-desc">Required by many schools. Also a full MCAT section (Psych/Soc).</div></div></li>
-    <li data-key="prereq-11"><div class="cb"></div><div class="item-content"><div class="item-title">Sociology</div><div class="item-desc">Pairs with psych for the MCAT P/S section.</div></div></li>
-    <li data-key="prereq-12"><div class="cb"></div><div class="item-content"><div class="item-title">English / Writing</div><div class="item-desc">Strong writing helps with CARS, personal statement, and secondaries.</div></div></li>
+    <li data-key="prereq-0"><div class="cb"></div><div class="item-content"><div class="item-title">General Chemistry I + Lab</div><div class="item-desc">Foundation for everything. Focus on moles, stoichiometry, acid-base, and bonding. Go to every office hour — gen chem professors are usually the most approachable. Use Khan Academy for tough topics. Make flashcards for periodic table trends.</div></div></li>
+    <li data-key="prereq-1"><div class="cb"></div><div class="item-content"><div class="item-title">General Chemistry II + Lab</div><div class="item-desc">Equilibrium, thermodynamics, kinetics, electrochemistry. Practice problems matter more than re-reading notes. If you struggled in Gen Chem I, get a tutor early — don't wait until the midterm.</div></div></li>
+    <li data-key="prereq-2"><div class="cb"></div><div class="item-content"><div class="item-title">Biology I + Lab</div><div class="item-desc">Cell biology, genetics, molecular biology. This is the "memorization" course — use Anki from day one. Understand the central dogma (DNA → RNA → Protein) cold. Draw out pathways by hand.</div></div></li>
+    <li data-key="prereq-3"><div class="cb"></div><div class="item-content"><div class="item-title">Biology II + Lab</div><div class="item-desc">Evolution, ecology, physiology, organ systems. Less memorization, more conceptual. Connect concepts to human health — that's how the MCAT tests it.</div></div></li>
+    <li data-key="prereq-4"><div class="cb"></div><div class="item-content"><div class="item-title">Organic Chemistry I + Lab</div><div class="item-desc">The "weed-out" course. Start studying from day one, not week three. Draw every mechanism by hand repeatedly. Professor Dave and The Organic Chemistry Tutor on YouTube are lifesavers. Form a study group — orgo is not a solo sport.</div></div></li>
+    <li data-key="prereq-5"><div class="cb"></div><div class="item-content"><div class="item-title">Organic Chemistry II + Lab</div><div class="item-desc">Carbonyl chemistry, spectroscopy, synthesis. Build on orgo I — if you learned mechanisms well, orgo II is actually easier. Practice NMR/IR problems weekly. Synthesis problems = connect the dots, not memorize every reaction.</div></div></li>
+    <li data-key="prereq-6"><div class="cb"></div><div class="item-content"><div class="item-title">Physics I + Lab</div><div class="item-desc">Mechanics, energy, waves, fluids. It's math-heavy — practice problems daily. Don't just memorize formulas, understand WHEN to use each one. Draw free body diagrams for every problem. The MCAT physics is conceptual, so understand the "why."</div></div></li>
+    <li data-key="prereq-7"><div class="cb"></div><div class="item-content"><div class="item-title">Physics II + Lab</div><div class="item-desc">Electricity, magnetism, circuits, optics. More abstract than Physics I. Circuits and optics are heavily tested on the MCAT. Draw circuit diagrams. Use simulations (PhET) to visualize fields.</div></div></li>
+    <li data-key="prereq-8"><div class="cb"></div><div class="item-content"><div class="item-title">Biochemistry</div><div class="item-desc">The most important MCAT course. Amino acids (memorize all 20 + properties), metabolism (glycolysis, TCA, ETC), enzyme kinetics. Take this as close to your MCAT as possible. Use Anki — the MileDown deck covers biochem heavily.</div></div></li>
+    <li data-key="prereq-9"><div class="cb"></div><div class="item-content"><div class="item-title">Math (Calculus or Statistics)</div><div class="item-desc">Stats is more practical for research and interpreting studies. Calculus is required by some schools — check your target schools' requirements. Either way, get comfortable with data interpretation.</div></div></li>
+    <li data-key="prereq-10"><div class="cb"></div><div class="item-content"><div class="item-title">Psychology</div><div class="item-desc">A full MCAT section (Psych/Soc). Learn the major theories, disorders, and experiments. The 300-page KA P/S doc + Anki is the gold standard for MCAT psych prep. Take this course — don't try to self-study it.</div></div></li>
+    <li data-key="prereq-11"><div class="cb"></div><div class="item-content"><div class="item-title">Sociology</div><div class="item-desc">Paired with psych on the MCAT. Focus on social structures, inequality, demographics. Easier than psych but still tested. The 300-page doc covers both psych and soc.</div></div></li>
+    <li data-key="prereq-12"><div class="cb"></div><div class="item-content"><div class="item-title">English / Writing</div><div class="item-desc">Strong writing = better CARS score, better personal statement, faster secondaries. Read dense passages regularly (scientific papers, philosophy, social science). Practice summarizing arguments in your own words.</div></div></li>
   </ul>
   
   <div class="tip"><strong>Post-bacc students:</strong> You can complete all of these in 2 years. Typical load: 2 science courses + labs per semester. Summer sessions help you finish faster.</div>
@@ -211,10 +213,10 @@ section h2 .emoji{font-size:1.2em}
   <h3 style="margin-top:20px;font-size:1.05em;color:var(--text)">📎 MCAT Resources</h3>
   <div class="resource-grid">
     <a class="resource-link" href="https://www.khanacademy.org/test-prep/mcat" target="_blank">Khan Academy MCAT<span class="rl-sub">Free — AAMC partnered</span></a>
-    <a class="resource-link" href="https://ankiweb.net/shared/info/178384767" target="_blank">MileDown Anki Deck<span class="rl-sub">Free — spaced repetition</span></a>
-    <a class="resource-link" href="https://www.jackwestin.com/" target="_blank">Jack Westin<span class="rl-sub">Free daily CARS passages</span></a>
-    <a class="resource-link" href="https://www.uworld.com/mcat/" target="_blank">UWorld MCAT<span class="rl-sub">Best question bank (~$300)</span></a>
-    <a class="resource-link" href="https://students-residents.aamc.org/prepare-mcat-exam/aamc-mcat-official-prep-products" target="_blank">AAMC Official Materials<span class="rl-sub">Must-have for final month</span></a>
+    <a class="resource-link" href="https://www.reddit.com/r/AnkiMCAT/comments/kbg1cm/miledown_updated_anki_deck_for_mcat/" target="_blank">MileDown Anki Deck<span class="rl-sub">Free — spaced repetition (Reddit link)</span></a>
+    <a class="resource-link" href="https://www.jackwestin.com" target="_blank">Jack Westin<span class="rl-sub">Free daily CARS passages</span></a>
+    <a class="resource-link" href="https://medical.uworld.com" target="_blank">UWorld MCAT<span class="rl-sub">Best question bank (~$300)</span></a>
+    <a class="resource-link" href="https://www.aamc.org/students/applying/mcat" target="_blank">AAMC Official Materials<span class="rl-sub">Must-have for final month</span></a>
     <a class="resource-link" href="https://www.reddit.com/r/Mcat/" target="_blank">r/Mcat<span class="rl-sub">Community advice & study plans</span></a>
   </div>
 
