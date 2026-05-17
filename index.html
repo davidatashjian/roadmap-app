@@ -688,7 +688,18 @@ function generateRoadmap() {
   html += '<label style="font-size:.82em;color:#64748b">Font Size<br><select onchange="rmSetFont(this.value)" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.9em"><option value="14px">Small</option><option value="16px" selected>Medium</option><option value="18px">Large</option><option value="20px">XL</option></select></label>';
   html += '<label style="font-size:.82em;color:#64748b">Accent Color<br><input type="color" value="#2563eb" onchange="rmSetAccent(this.value)" style="width:40px;height:28px;border:none;cursor:pointer;border-radius:4px"></label>';
   html += '<label style="font-size:.82em;color:#64748b">Width<br><select onchange="rmSetWidth(this.value)" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.9em"><option value="700px">Narrow</option><option value="900px" selected>Normal</option><option value="1100px">Wide</option><option value="100%">Full</option></select></label>';
+  html += '</div>';
+  // Section manager
+  html += '<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">';
+  html += '<h5 style="font-size:.82em;color:#64748b;margin:0 0 8px">Show/Hide Sections</h5>';
+  html += '<div id="section-toggles" style="display:flex;gap:6px;flex-wrap:wrap">';
+  var sects=[{id:'games',label:'Games'},{id:'countdowns',label:'Countdowns'},{id:'whatnow',label:'What Now'}];
+  sects.forEach(function(sec){
+    var hidden=localStorage.getItem('rm_hide_'+sec.id)==='1';
+    html += '<button onclick="toggleSection(\''+sec.id+'\',this)" style="padding:4px 10px;border-radius:6px;font-size:.78em;cursor:pointer;border:1px solid var(--border);background:'+(hidden?'var(--bg)':'#2563eb')+';color:'+(hidden?'#94a3b8':'#fff')+'">'+sec.label+'</button>';
+  });
   html += '</div></div>';
+  html += '</div>';
   
   // Ad placement (top)
   html += '<div class="ad-slot">Sponsored &mdash; Ads help keep this tool free</div>';
@@ -880,11 +891,24 @@ function generateRoadmap() {
 
   html += '</div>';
 
+  // === GAMES IN ROADMAP ===
+  html += '<div data-section="games" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0">';
+  html += '<h4 style="margin:0 0 12px;font-size:.95em;color:var(--text)">\uD83C\uDFAE Study Games</h4>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  html += '<button onclick="launchBrainBounce()" style="padding:12px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em">\uD83C\uDFD3 Brain Breaker</button>';
+  html += '<button onclick="launchMCATDash()" style="padding:12px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em">\uD83E\uDDEC Quiz Rush</button>';
+  html += '<button onclick="startSurvival()" style="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;color:var(--text)">\u2694\uFE0F Survival</button>';
+  html += '<button onclick="startMultiplayer()" style="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;color:var(--text)">\uD83E\uDD1C 1v1</button>';
+  html += '</div>';
+  html += '<div id="game-area-rm" style="display:none;margin-top:12px;background:#0f172a;border-radius:12px;position:relative;height:400px;overflow:hidden;cursor:pointer"></div>';
+  html += '<div id="sv-area" style="display:none;margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px"></div>';
+  html += '</div>';
+
   // === COUNTDOWN TIMERS ===
-  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0">';
-  html += '<h4 style="margin:0 0 12px;font-size:.95em">&#9200; Countdown Timers</h4>';
+  html += '<div data-section="countdowns" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0">';
+  html += '<h4 style="margin:0 0 12px;font-size:.95em;color:var(--text)">&#9200; Countdown Timers</h4>';
   html += '<div id="countdowns" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>';
-  html += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><input id="cd-name" type="text" placeholder="Event name" style="flex:1;min-width:120px;padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em"><input id="cd-date" type="date" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em"><button onclick="addCountdown()" style="padding:6px 14px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:.85em;cursor:pointer">Add</button></div>';
+  html += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><input id="cd-name" type="text" placeholder="Event name" style="flex:1;min-width:120px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85em;background:var(--bg);color:var(--text)"><input id="cd-date" type="date" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85em;background:var(--bg);color:var(--text)"><button onclick="addCountdown()" style="padding:6px 14px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:.85em;cursor:pointer">Add</button></div>';
   html += '</div>';
 
   // === WHAT NOW WIDGET ===
@@ -973,11 +997,33 @@ function toggleFocusMode(){
     if(btn)btn.style.background='none';if(btn)btn.style.color='var(--text)';
   }
 }
-// Restore saved customization
+// === SECTION TOGGLE ===
+function toggleSection(id,btn){
+  var el=document.querySelector('[data-section="'+id+'"]')||document.getElementById(id);
+  var isHidden=localStorage.getItem('rm_hide_'+id)==='1';
+  if(!isHidden){
+    if(!confirm('Hide this section? You can re-enable it from Customize.'))return;
+    localStorage.setItem('rm_hide_'+id,'1');
+    if(el)el.style.display='none';
+    if(btn){btn.style.background='var(--bg)';btn.style.color='#94a3b8'}
+  } else {
+    localStorage.removeItem('rm_hide_'+id);
+    if(el)el.style.display='';
+    if(btn){btn.style.background='#2563eb';btn.style.color='#fff'}
+  }
+}
+// Restore saved customization + hidden sections
 setTimeout(function(){
   var f=localStorage.getItem('rm_font');if(f)rmSetFont(f);
   var w=localStorage.getItem('rm_width');if(w)rmSetWidth(w);
   var a=localStorage.getItem('rm_accent');if(a)rmSetAccent(a);
+  // Apply hidden sections
+  ['games','countdowns','whatnow'].forEach(function(id){
+    if(localStorage.getItem('rm_hide_'+id)==='1'){
+      var el=document.querySelector('[data-section="'+id+'"]')||document.getElementById(id);
+      if(el)el.style.display='none';
+    }
+  });
 },600);
 
 // Dark mode auto-detect
