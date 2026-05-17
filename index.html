@@ -37,6 +37,10 @@ body.dark .quiz-option.selected{background:#1e3a5f;border-color:#2563eb}
 body.dark .quiz-page h2{color:#e2e8f0}
 body.dark #star-rating .star{color:#475569}
 body.dark #rev-name,body.dark #rev-text{background:#1e293b!important;border-color:#334155!important;color:#e2e8f0!important}
+body.dark input[type="checkbox"]{accent-color:#2563eb;width:16px;height:16px}
+body.dark .rm-phase{background:#1e293b!important}
+body.dark .rm-phase li{color:#e2e8f0!important}
+.rm-phase input[type="checkbox"]{width:16px;height:16px;accent-color:#2563eb}
 .test-section{padding:80px 20px;background:#fff}
 body.dark .test-section{background:#1e293b}
 .test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;max-width:1100px;margin:0 auto}
@@ -314,13 +318,13 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
         <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
           <div style="font-size:2.5em;margin-bottom:12px">🏓</div>
           <h3 style="margin-bottom:6px">Brain Breaker</h3>
-          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Classic brick breaker with levels, lives, and increasing speed. Smash all bricks to advance. Free for everyone!</p>
+          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Smash bricks, level up, don't lose your 3 lives. Gets faster each level. Move your paddle with the mouse.</p>
           <button onclick="launchBrainBounce()" style="padding:10px 24px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play Free</button>
         </div>
         <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
           <div style="font-size:2.5em;margin-bottom:12px">🧬</div>
-          <h3 style="margin-bottom:6px">MCAT Dash</h3>
-          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Endless runner meets MCAT prep. Answer questions to survive. Better than flashcards.</p>
+          <h3 style="margin-bottom:6px">MCAT Quiz Rush</h3>
+          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Rapid-fire MCAT questions. Pick the right answer before time runs out. Beat your high score.</p>
           <button onclick="launchMCATDash()" style="padding:10px 24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play Free</button>
         </div>
       </div>
@@ -1439,7 +1443,7 @@ function launchBrainBounce(){
   var ballX=W/2,ballY=H-50,bvx=4,bvy=-4,ballR=8;
   var padX=W/2-50,padW=100,padH=12;
   var score=0,alive=true,level=1,lives=3,paused=false;
-  var brickRows=5,brickCols=Math.floor(W/65),brickW=Math.floor((W-20)/brickCols)-4,brickH=18,bricks=[];
+  var brickRows=3,brickCols=Math.min(10,Math.floor(W/65)),brickW=Math.floor((W-20)/brickCols)-4,brickH=18,bricks=[];
   var colors=['#ef4444','#f59e0b','#22c55e','#2563eb','#7c3aed'];
   document.onkeydown=function(e){if((e.key==='p'||e.key==='P'||e.key==='Escape')&&alive){paused=!paused;if(!paused)tick()}};
   function buildBricks(){
@@ -1485,9 +1489,8 @@ function launchBrainBounce(){
     // Level complete
     if(allDead){
       level++;score+=50*level;spawnConfetti();
-      bvx*=1.1;bvy*=1.1;
-      brickRows=Math.min(7,brickRows+1);
-      buildBricks();ballX=W/2;ballY=H-50;bvx=4*(Math.random()>0.5?1:-1);bvy=-4-(level*0.5);
+      brickRows=Math.min(5,3+Math.floor(level/2));
+      buildBricks();ballX=W/2;ballY=H-50;bvx=3.5*(Math.random()>0.5?1:-1);bvy=-(3.5+level*0.3);
     }
     // Render
     var h='';
@@ -1507,68 +1510,50 @@ function launchBrainBounce(){
     area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:3em;font-weight:800">'+score+'</div><p style="margin:8px 0;font-size:1.1em">'+(score>high?'🎉 NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">Level reached: '+level+' | Best: '+Math.max(score,high)+'</p><button onclick="launchBrainBounce()" style="margin-top:16px;padding:12px 28px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:1em">Play Again</button></div></div>';
     if(score>high)spawnConfetti();addXP(Math.floor(score/10));
   }
-  alive=true;score=0;level=1;lives=3;brickRows=5;
+  alive=true;score=0;level=1;lives=3;brickRows=3;
   buildBricks();ballX=W/2;ballY=H-50;bvx=4;bvy=-4;
   tick();
 }
 
-// === MCAT DASH (Pro - endless runner with MCAT questions) ===
+// === MCAT QUIZ RUSH (timed trivia game) ===
 function launchMCATDash(){
   var area=document.getElementById('game-area');
-  area.style.display='block';area.style.height='400px';area.style.background='linear-gradient(180deg,#0f172a,#1e293b)';
+  area.style.display='block';area.style.height='400px';area.style.background='#0f172a';
   area.scrollIntoView({behavior:'smooth'});
-  var W=area.offsetWidth,H=400;
-  var playerX=80,playerY=H-60,jumping=false,vy=0;
-  var obstacles=[],frame=0,score=0,alive=true,speed=2.5,dPaused=false;
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
-  var currentQ=null,qTimer=0;
-  document.onkeydown=function(e){
-    if((e.key==='p'||e.key==='P'||e.key==='Escape')&&alive){dPaused=!dPaused;if(!dPaused)tick2()}
-    if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();if(!alive){startRun()}else if(!jumping&&!dPaused){jumping=true;vy=-12}}
-  };
-  area.onclick=function(){if(!alive){startRun();return}if(!jumping&&!dPaused){jumping=true;vy=-12}};
-  function startRun(){alive=true;score=0;playerY=H-60;obstacles=[];frame=0;speed=2.5;currentQ=null;dPaused=false;tick2()}
-  function tick2(){
-    if(!alive)return;
-    if(dPaused){area.innerHTML+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);color:#fff;font-size:1.5em;font-weight:700;z-index:10">PAUSED (press P)</div>';return}
-    vy+=0.7;playerY+=vy;
-    if(playerY>=H-60){playerY=H-60;jumping=false;vy=0}
-    for(var i=obstacles.length-1;i>=0;i--){
-      obstacles[i].x-=speed;
-      if(obstacles[i].x<-40)obstacles.splice(i,1);
-      if(obstacles[i].x<playerX+25&&obstacles[i].x+30>playerX+5&&playerY+35>obstacles[i].y){
-        alive=false;dashGameOver();return;
-      }
-      if(obstacles[i].x===Math.floor(playerX)){score++;if(score%10===0)speed+=0.5}
-    }
-    if(frame%80===0){
-      var h2=30+Math.random()*40;
-      obstacles.push({x:W+20,y:H-h2-20,h:h2,q:allQs[Math.floor(Math.random()*allQs.length)].q.slice(0,15)});
-    }
-    if(frame%120===0&&!currentQ){currentQ=allQs[Math.floor(Math.random()*allQs.length)];qTimer=100}
-    if(currentQ){qTimer--;if(qTimer<=0)currentQ=null}
-    var html='<div style="position:absolute;left:'+playerX+'px;top:'+playerY+'px;width:32px;height:36px;background:#2563eb;border-radius:8px;z-index:2;box-shadow:0 0 8px rgba(37,99,235,.5)"></div>';
-    html+='<div style="position:absolute;bottom:0;left:0;right:0;height:20px;background:#1e293b"></div>';
-    html+='<div style="position:absolute;top:12px;right:16px;color:#fff;font-size:1.4em;font-weight:800;z-index:3">'+score+'</div>';
-    html+='<div style="position:absolute;top:12px;left:16px;color:#94a3b8;font-size:.85em;z-index:3">Speed: '+speed.toFixed(1)+'x</div>';
-    obstacles.forEach(function(o){
-      html+='<div style="position:absolute;left:'+o.x+'px;top:'+o.y+'px;width:30px;height:'+o.h+'px;background:#dc2626;border-radius:4px 4px 0 0"></div>';
-      html+='<div style="position:absolute;left:'+(o.x-20)+'px;top:'+(o.y-16)+'px;width:70px;font-size:.5em;color:#94a3b8;text-align:center">'+o.q+'</div>';
-    });
-    if(currentQ){
-      html+='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.8);padding:16px 24px;border-radius:12px;color:#fff;text-align:center;z-index:5"><p style="margin:0 0 8px">'+currentQ.q+'</p><button onclick="dashAnswer(1)" style="padding:6px 14px;background:#22c55e;color:#fff;border:none;border-radius:6px;cursor:pointer;margin:4px">'+currentQ.a+'</button><button onclick="dashAnswer(0)" style="padding:6px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;margin:4px">'+allQs[Math.floor(Math.random()*allQs.length)].a+'</button></div>';
-    }
-    area.innerHTML=html;
-    frame++;requestAnimationFrame(tick2);
+  allQs.sort(function(){return Math.random()-0.5});
+  var score=0,lives=3,qi=0,timerVal=100,timerInt=null;
+  function showQuestion(){
+    if(lives<=0||qi>=allQs.length){endGame();return}
+    var q=allQs[qi];
+    var wrongs=allQs.filter(function(x){return x.a!==q.a}).sort(function(){return Math.random()-0.5}).slice(0,3).map(function(x){return x.a});
+    var opts=[q.a,...wrongs].sort(function(){return Math.random()-0.5});
+    timerVal=100;
+    area.innerHTML='<div style="padding:24px;color:#fff;height:100%;display:flex;flex-direction:column;justify-content:center"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:700">Score: '+score+'</span><span>'+('\u2764\uFE0F'.repeat(lives))+'</span><span style="color:#94a3b8">Q'+(qi+1)+'/'+Math.min(allQs.length,20)+'</span></div><div style="height:4px;background:#334155;border-radius:2px;margin-bottom:20px"><div id="qr-timer" style="height:100%;width:100%;background:#2563eb;border-radius:2px;transition:width .1s"></div></div><h3 style="text-align:center;margin:0 0 24px;font-size:1.2em;line-height:1.4">'+q.q+'</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+opts.map(function(o){return '<button onclick="qrAnswer(this,\''+(o===q.a?'1':'0')+'\')" style="padding:14px 12px;border:2px solid #334155;border-radius:10px;background:#1e293b;color:#e2e8f0;cursor:pointer;font-size:.9em;font-weight:500;transition:all .15s">'+o+'</button>'}).join('')+'</div></div>';
+    clearInterval(timerInt);
+    timerInt=setInterval(function(){
+      timerVal-=1;
+      var bar=document.getElementById('qr-timer');
+      if(bar)bar.style.width=timerVal+'%';
+      if(timerVal<=0){clearInterval(timerInt);lives--;qi++;setTimeout(showQuestion,300)}
+    },80);
   }
-  window.dashAnswer=function(correct){if(correct){score+=5;addXP(3);spawnConfetti()}currentQ=null};
-  function dashGameOver(){
-    var high=parseInt(localStorage.getItem('mcat_dash_high'))||0;
-    if(score>high)localStorage.setItem('mcat_dash_high',String(score));
-    area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:3em;font-weight:800;color:#2563eb">'+score+'</div><p style="margin:8px 0">'+(score>high?'NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">Best: '+Math.max(score,high)+' | Speed: '+speed.toFixed(1)+'x</p><button onclick="launchMCATDash()" style="margin-top:16px;padding:12px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600">Play Again</button></div></div>';
+  window.qrAnswer=function(btn,correct){
+    clearInterval(timerInt);
+    area.querySelectorAll('button').forEach(function(b){b.style.pointerEvents='none'});
+    if(correct==='1'){btn.style.borderColor='#22c55e';btn.style.background='#065f46';score+=10;addXP(2)}
+    else{btn.style.borderColor='#ef4444';btn.style.background='#7f1d1d';lives--}
+    qi++;
+    setTimeout(function(){if(qi>=20||lives<=0)endGame();else showQuestion()},500);
+  };
+  function endGame(){
+    clearInterval(timerInt);
+    var high=parseInt(localStorage.getItem('mcat_qr_high'))||0;
+    if(score>high)localStorage.setItem('mcat_qr_high',String(score));
+    area.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff"><div><div style="font-size:3em;font-weight:800;color:#2563eb">'+score+'</div><p style="margin:8px 0;font-size:1.1em">'+(score>high?'\uD83C\uDF89 NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">'+qi+' questions | Best: '+Math.max(score,high)+'</p><button onclick="launchMCATDash()" style="margin-top:16px;padding:12px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600">Play Again</button></div></div>';
     addXP(score);if(score>high)spawnConfetti();
   }
-  startRun();
+  showQuestion();
 }
 
 // Update Pro tools section to include multiplayer + MCAT runner
