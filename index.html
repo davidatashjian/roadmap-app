@@ -219,7 +219,7 @@ body.focus-mode .data-tools:hover{opacity:1}
 .pomo-toggle:hover{transform:scale(1.1)}
 
 /* === QUICK-NOTE FAB === */
-.qnote-fab{position:fixed;bottom:132px;right:28px;width:42px;height:42px;border-radius:50%;background:#7c3aed;color:#fff;border:none;font-size:1.3em;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:18;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.qnote-fab{position:fixed;bottom:136px;right:28px;width:42px;height:42px;border-radius:50%;background:#7c3aed;color:#fff;border:none;font-size:1.3em;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:18;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .qnote-fab:hover{transform:scale(1.1)}
 .qnote-overlay{position:fixed;bottom:184px;right:28px;width:320px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.2);z-index:19;padding:16px;display:none}
 .qnote-overlay.show{display:block}
@@ -292,8 +292,8 @@ body.focus-mode .data-tools:hover{opacity:1}
   .pomo-toggle{bottom:68px;right:16px;width:36px;height:36px;font-size:.9em}
   .qnote-fab{bottom:112px;right:16px;width:36px;height:36px;font-size:1em}
   .scroll-top{bottom:20px;right:16px;width:36px;height:36px;font-size:1em}
-  .pomo-widget{bottom:112px;right:16px;min-width:180px}
-  .qnote-overlay{bottom:156px;right:16px;width:280px}
+  .pomo-widget{bottom:128px;right:16px;min-width:180px}
+  .qnote-overlay{bottom:184px;right:16px;width:280px}
 }
 
 /* === SIDEBAR COUNTDOWN === */
@@ -393,7 +393,7 @@ body.focus-mode .data-tools:hover{opacity:1}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 
 /* === AMBIENT SOUNDS === */
-.sound-toggle{position:fixed;bottom:184px;right:28px;width:42px;height:42px;border-radius:50%;background:#059669;color:#fff;border:none;font-size:1.1em;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:18;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.sound-toggle{position:fixed;bottom:192px;right:28px;width:42px;height:42px;border-radius:50%;background:#059669;color:#fff;border:none;font-size:1.1em;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:18;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .sound-toggle:hover{transform:scale(1.1)}
 .sound-toggle.playing{background:#10b981;animation:pulse 2s infinite}
 .sound-panel{position:fixed;bottom:236px;right:28px;width:240px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:19;padding:14px;display:none}
@@ -842,7 +842,7 @@ body.dark .whatif-result{background:rgba(37,99,235,.15)}
 
 <div style="padding:12px 20px;margin-top:auto;border-top:1px solid var(--border)">
 <button id="auth-btn" onclick="showAuth()" style="width:100%;padding:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.82em;font-weight:600;cursor:pointer;margin-bottom:6px">Sign In / Sign Up</button>
-<a href="https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00" target="_blank" style="display:block;text-align:center;padding:6px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:8px;font-size:.78em;font-weight:600;text-decoration:none">☕ Buy Me a Coffee</a>
+<a href="https://donate.stripe.com/8x228k0bqglHfa42id33W02" target="_blank" style="display:block;text-align:center;padding:6px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:8px;font-size:.78em;font-weight:600;text-decoration:none">☕ Buy Me a Coffee</a>
 <p style="font-size:.68em;color:var(--text-muted);text-align:center;margin-top:6px">100% free. Donation optional.</p>
 </div>
 </nav>
@@ -856,7 +856,7 @@ body.dark .whatif-result{background:rgba(37,99,235,.15)}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-const MD_PAGES = {"prerequisites": "# Pre-Med Prerequisites\n\n> Check off completed courses.\n\n## General Chemistry\n- [ ] Gen Chem I \u2014 3cr\n- [ ] Gen Chem I Lab \u2014 1cr\n- [ ] Gen Chem II \u2014 3cr\n- [ ] Gen Chem II Lab \u2014 1cr\n\n## Biology\n- [ ] Bio I \u2014 3cr\n- [ ] Bio I Lab \u2014 1cr\n- [ ] Bio II \u2014 3cr\n- [ ] Bio II Lab \u2014 1cr\n\n## Organic Chemistry\n- [ ] Orgo I \u2014 3cr\n- [ ] Orgo I Lab \u2014 1cr\n- [ ] Orgo II \u2014 3cr\n- [ ] Orgo II Lab \u2014 1cr\n\n## Physics\n- [ ] Physics I \u2014 3cr\n- [ ] Physics I Lab \u2014 1cr\n- [ ] Physics II \u2014 3cr\n- [ ] Physics II Lab \u2014 1cr\n\n## Biochemistry\n- [ ] Biochem \u2014 3cr\n\n## Math\n- [ ] Calculus or Stats \u2014 3cr\n\n## Recommended\n- [ ] A&P I\n- [ ] A&P II\n- [ ] Psychology\n- [ ] Sociology", "ec-clinical": "# Clinical Experience\n\n> Aim for 200+ hours.\n\n## Paid\n- [ ] CNA\n- [ ] EMT\n- [ ] Medical Scribe\n- [ ] Patient Care Tech\n\n## Volunteer\n- [ ] Hospital Volunteer\n- [ ] Free Clinic\n- [ ] Hospice", "ec-volunteer": "# Volunteering\n\n> 100+ hours sustained.\n\n- [ ] Food bank\n- [ ] Habitat for Humanity\n- [ ] Tutoring\n- [ ] Health outreach\n- [ ] Crisis hotline", "ec-shadowing": "# Shadowing\n\n> 50+ hours, 3+ specialties.\n\n- [ ] Primary Care\n- [ ] Surgery\n- [ ] ER\n- [ ] Pediatrics\n- [ ] Anesthesiology\n- [ ] Psychiatry", "ec-research": "# Research & Clubs\n\n- [ ] Lab research\n- [ ] Clinical research\n- [ ] Pre-Med club\n- [ ] AMSA chapter", "resources": "# Study Resources\n\n## Free\n- **Khan Academy** \u2014 All subjects\n- **Organic Chemistry Tutor** (YT)\n- **Anki** \u2014 MileDown deck\n- **Jack Westin** \u2014 CARS\n\n## Paid\n- UWorld ~$300\n- AAMC ~$300\n- Blueprint/Kaplan ~$2000"};\nconst HTML_PAGES = {"home": "<h1>Pre-Med Roadmap</h1><p style=\"color:#64748b;margin-bottom:24px\">Your complete guide. 100% free.</p><div class=\"stat-grid\"><div class=\"stat\"><div class=\"num\" id=\"stat-courses\">0</div><div class=\"lbl\">Courses Done</div></div><div class=\"stat\"><div class=\"num\" id=\"stat-clinical\">0</div><div class=\"lbl\">Clinical Hrs</div></div><div class=\"stat\"><div class=\"num\" id=\"stat-shadow\">0</div><div class=\"lbl\">Shadow Hrs</div></div><div class=\"stat\"><div class=\"num\" id=\"stat-volunteer\">0</div><div class=\"lbl\">Vol Hrs</div></div></div><div class=\"one-thing\"><h4>Welcome! Start by tracking your prerequisites.</h4><p>Use the sidebar to navigate. Progress saves automatically.</p></div><h2>Choose Your Path</h2><div class=\"card-grid\"><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #2563eb\" onclick=\"render('careers')\"><h4>Physician (MD/DO)</h4><p>4 yrs med school + residency</p></div><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #7c3aed\" onclick=\"render('careers')\"><h4>Physician Assistant</h4><p>2-3 yr masters</p></div><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #059669\" onclick=\"render('careers')\"><h4>CAA</h4><p>24-28 month masters</p></div><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #d97706\" onclick=\"render('careers')\"><h4>Nursing (RN/CRNA/NP)</h4><p>Multiple pathways</p></div></div><h2>Quick Actions</h2><div class=\"card-grid\"><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('prerequisites')\"><h4>Track Prerequisites</h4><p>Check off courses</p></div><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('study-tools')\"><h4>Study Tools</h4><p>Flashcards, quizzes, games</p></div><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('kanban')\"><h4>Task Tracker</h4><p>Kanban board</p></div><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('mcat-pred')\"><h4>MCAT Predictor</h4><p>Estimate your score</p></div></div>", "careers": "<h1>Career Paths</h1><div class=\"card\" style=\"border-left:4px solid #2563eb\"><h3>Physician (MD/DO)</h3><p><strong>Timeline:</strong> 4 yrs + 3-7 yrs residency | <strong>MCAT:</strong> 511+ (MD) | <strong>GPA:</strong> 3.7+ | <strong>Salary:</strong> $200-500K+</p></div><div class=\"card\" style=\"border-left:4px solid #7c3aed\"><h3>Physician Assistant</h3><p><strong>Timeline:</strong> 2-3 yr masters | <strong>GPA:</strong> 3.5+ | <strong>PCE:</strong> 1000+ hrs | <strong>Salary:</strong> $115-150K</p></div><div class=\"card\" style=\"border-left:4px solid #059669\"><h3>CAA</h3><p><strong>Timeline:</strong> 24-28 months | <strong>Shadow:</strong> 16+ hrs | <strong>Salary:</strong> $160-250K</p></div><div class=\"card\" style=\"border-left:4px solid #d97706\"><h3>Nursing</h3><p><strong>RN:</strong> $75-90K | <strong>NP:</strong> $110-130K | <strong>CRNA:</strong> $200-250K</p></div>", "timeline": "<h1>Timeline</h1><div class=\"tl-container\"><div class=\"tl-months\"><span>Yr 1</span><span>Yr 2</span><span>Yr 3</span><span>Yr 4</span></div><div class=\"tl-row\"><div class=\"tl-label\">Prereqs</div><div class=\"tl-track\"><div class=\"tl-bar phase-postbacc\" style=\"left:0;width:60%\">Courses</div></div></div><div class=\"tl-row\"><div class=\"tl-label\">Clinical</div><div class=\"tl-track\"><div class=\"tl-bar phase-clinical\" style=\"left:10%;width:70%\">Experience</div></div></div><div class=\"tl-row\"><div class=\"tl-label\">MCAT</div><div class=\"tl-track\"><div class=\"tl-bar phase-mcat\" style=\"left:50%;width:20%\">Study</div></div></div><div class=\"tl-row\"><div class=\"tl-label\">Apply</div><div class=\"tl-track\"><div class=\"tl-bar phase-apply\" style=\"left:70%;width:20%\">Apps</div></div></div></div>", "analytics": "<h1>Analytics</h1><div id=\"analytics-content\"></div>", "calendar": "<h1>Calendar</h1><div id=\"cal-root\"></div>", "notes": "<h1>Notes</h1><div class=\"write-area\" contenteditable=\"true\" data-key=\"notes-main\" style=\"min-height:300px\"></div>", "clinical": "<h1>Clinical Hours Log</h1><table><thead><tr><th>Category</th><th>Hours</th><th>Goal</th></tr></thead><tbody><tr><td>Clinical Vol</td><td contenteditable=\"true\" data-key=\"hrs-cv\">0</td><td>150+</td></tr><tr><td>Non-Clinical Vol</td><td contenteditable=\"true\" data-key=\"hrs-ncv\">0</td><td>100+</td></tr><tr><td>Shadowing</td><td contenteditable=\"true\" data-key=\"hrs-sh\">0</td><td>50+</td></tr><tr><td>Research</td><td contenteditable=\"true\" data-key=\"hrs-re\">0</td><td>200+</td></tr></tbody></table>", "courses": "<h1>Course Planner</h1><div id=\"gpa-calc-root\"></div>"};
+const MD_PAGES = {"prerequisites": "# Pre-Med Prerequisites\n\n> Check off completed courses.\n\n## General Chemistry\n- [ ] Gen Chem I \u2014 3cr\n- [ ] Gen Chem I Lab \u2014 1cr\n- [ ] Gen Chem II \u2014 3cr\n- [ ] Gen Chem II Lab \u2014 1cr\n\n## Biology\n- [ ] Bio I \u2014 3cr\n- [ ] Bio I Lab \u2014 1cr\n- [ ] Bio II \u2014 3cr\n- [ ] Bio II Lab \u2014 1cr\n\n## Organic Chemistry\n- [ ] Orgo I \u2014 3cr\n- [ ] Orgo I Lab \u2014 1cr\n- [ ] Orgo II \u2014 3cr\n- [ ] Orgo II Lab \u2014 1cr\n\n## Physics\n- [ ] Physics I \u2014 3cr\n- [ ] Physics I Lab \u2014 1cr\n- [ ] Physics II \u2014 3cr\n- [ ] Physics II Lab \u2014 1cr\n\n## Biochemistry\n- [ ] Biochem \u2014 3cr\n\n## Math\n- [ ] Calculus or Stats \u2014 3cr\n\n## Recommended\n- [ ] A&P I\n- [ ] A&P II\n- [ ] Psychology\n- [ ] Sociology", "ec-clinical": "# Clinical Experience\n\n> Aim for 200+ hours.\n\n## Paid\n- [ ] CNA\n- [ ] EMT\n- [ ] Medical Scribe\n- [ ] Patient Care Tech\n\n## Volunteer\n- [ ] Hospital Volunteer\n- [ ] Free Clinic\n- [ ] Hospice", "ec-volunteer": "# Volunteering\n\n> 100+ hours sustained.\n\n- [ ] Food bank\n- [ ] Habitat for Humanity\n- [ ] Tutoring\n- [ ] Health outreach\n- [ ] Crisis hotline", "ec-shadowing": "# Shadowing\n\n> 50+ hours, 3+ specialties.\n\n- [ ] Primary Care\n- [ ] Surgery\n- [ ] ER\n- [ ] Pediatrics\n- [ ] Anesthesiology\n- [ ] Psychiatry", "ec-research": "# Research & Clubs\n\n- [ ] Lab research\n- [ ] Clinical research\n- [ ] Pre-Med club\n- [ ] AMSA chapter", "resources": "# Study Resources\n\n## Free\n- **Khan Academy** \u2014 All subjects\n- **Organic Chemistry Tutor** (YT)\n- **Anki** \u2014 MileDown deck\n- **Jack Westin** \u2014 CARS\n\n## Paid\n- UWorld ~$300\n- AAMC ~$300\n- Blueprint/Kaplan ~$2000"};\nconst HTML_PAGES = {"home": "<h1>Pre-Med Roadmap</h1><p style=\"color:#64748b;margin-bottom:24px\">Your complete guide. 100% free.</p><div class=\"stat-grid\"><div class=\"stat\"><div class=\"num\" id=\"stat-courses\">0</div><div class=\"lbl\">Courses Done</div></div><div class=\"stat\"><div class=\"num\" id=\"stat-clinical\">0</div><div class=\"lbl\">Clinical Hrs</div></div><div class=\"stat\"><div class=\"num\" id=\"stat-shadow\">0</div><div class=\"lbl\">Shadow Hrs</div></div><div class=\"stat\"><div class=\"num\" id=\"stat-volunteer\">0</div><div class=\"lbl\">Vol Hrs</div></div></div><div class=\"one-thing\"><h4>Welcome! Start by tracking your prerequisites.</h4><p>Use the sidebar to navigate. Progress saves automatically.</p></div><h2>Choose Your Path</h2><div class=\"card-grid\"><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #2563eb\" onclick=\"render('careers')\"><h4>Physician (MD/DO)</h4><p>4 yrs med school + residency</p></div><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #7c3aed\" onclick=\"render('careers')\"><h4>Physician Assistant</h4><p>2-3 yr masters</p></div><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #059669\" onclick=\"render('careers')\"><h4>CAA</h4><p>24-28 month masters</p></div><div class=\"card-sm\" style=\"cursor:pointer;border-left:4px solid #d97706\" onclick=\"render('careers')\"><h4>Nursing (RN/CRNA/NP)</h4><p>Multiple pathways</p></div></div><h2>Quick Actions</h2><div class=\"card-grid\"><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('prerequisites')\"><h4>Track Prerequisites</h4><p>Check off courses</p></div><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('study-tools')\"><h4>Study Tools</h4><p>Flashcards, quizzes, games</p></div><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('kanban')\"><h4>Task Tracker</h4><p>Kanban board</p></div><div class=\"card-sm\" style=\"cursor:pointer\" onclick=\"render('mcat-pred')\"><h4>MCAT Predictor</h4><p>Estimate your score</p></div></div>", "careers": "<h1>Career Paths</h1><div class=\"card\" style=\"border-left:4px solid #2563eb\"><h3>Physician (MD/DO)</h3><p><strong>Timeline:</strong> 4+3-7 yrs | <strong>MCAT:</strong> 511+ | <strong>GPA:</strong> 3.7+ | <strong>Salary:</strong> $200-500K+</p></div><div class=\"card\" style=\"border-left:4px solid #7c3aed\"><h3>Physician Assistant</h3><p><strong>Timeline:</strong> 2-3 yr masters | <strong>GPA:</strong> 3.5+ | <strong>Salary:</strong> $115-150K</p></div><div class=\"card\" style=\"border-left:4px solid #059669\"><h3>CAA</h3><p><strong>Timeline:</strong> 24-28 months | <strong>Salary:</strong> $160-250K</p></div><div class=\"card\" style=\"border-left:4px solid #d97706\"><h3>Nursing</h3><p><strong>RN:</strong> $75-90K | <strong>NP:</strong> $110-130K | <strong>CRNA:</strong> $200-250K</p></div>", "timeline": "<h1>Timeline</h1><div class=\"tl-container\"><div class=\"tl-months\"><span>Yr 1</span><span>Yr 2</span><span>Yr 3</span><span>Yr 4</span></div><div class=\"tl-row\"><div class=\"tl-label\">Prereqs</div><div class=\"tl-track\"><div class=\"tl-bar phase-postbacc\" style=\"left:0;width:60%\">Courses</div></div></div><div class=\"tl-row\"><div class=\"tl-label\">Clinical</div><div class=\"tl-track\"><div class=\"tl-bar phase-clinical\" style=\"left:10%;width:70%\">Experience</div></div></div><div class=\"tl-row\"><div class=\"tl-label\">MCAT</div><div class=\"tl-track\"><div class=\"tl-bar phase-mcat\" style=\"left:50%;width:20%\">Study</div></div></div><div class=\"tl-row\"><div class=\"tl-label\">Apply</div><div class=\"tl-track\"><div class=\"tl-bar phase-apply\" style=\"left:70%;width:20%\">Apps</div></div></div></div>", "analytics": "<h1>Analytics</h1><div id=\"analytics-content\"></div>", "calendar": "<h1>Calendar</h1><div id=\"cal-root\"></div>", "notes": "<h1>Notes</h1><div class=\"write-area\" contenteditable=\"true\" data-key=\"notes-main\" style=\"min-height:300px\"></div>", "clinical": "<h1>Clinical Hours Log</h1><table><thead><tr><th>Category</th><th>Hours</th><th>Goal</th></tr></thead><tbody><tr><td>Clinical Vol</td><td contenteditable=\"true\" data-key=\"hrs-cv\">0</td><td>150+</td></tr><tr><td>Non-Clinical Vol</td><td contenteditable=\"true\" data-key=\"hrs-ncv\">0</td><td>100+</td></tr><tr><td>Shadowing</td><td contenteditable=\"true\" data-key=\"hrs-sh\">0</td><td>50+</td></tr><tr><td>Research</td><td contenteditable=\"true\" data-key=\"hrs-re\">0</td><td>200+</td></tr></tbody></table>", "courses": "<h1>Course Planner</h1><div id=\"gpa-calc-root\"></div>", "study-tools": "<h1>Study Tools</h1><p style=\"color:#64748b;margin-bottom:20px\">Flashcards, quizzes, and study games.</p><div style=\"display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px\"><button class=\"study-tab active\" onclick=\"showStudy('fc',this)\">Flashcards</button><button class=\"study-tab\" onclick=\"showStudy('quiz',this)\">Quiz</button><button class=\"study-tab\" onclick=\"showStudy('match',this)\">Matching</button><button class=\"study-tab\" onclick=\"showStudy('speed',this)\">Speed Round</button></div><div id=\"study-fc\" class=\"study-section active\"></div><div id=\"study-quiz\" class=\"study-section\"></div><div id=\"study-match\" class=\"study-section\"></div><div id=\"study-speed\" class=\"study-section\"></div><h2>Performance</h2><div id=\"perf-dash\"></div>", "whiteboard": "<h1>Whiteboard</h1><div id=\"wb-root\"></div>", "mcat-pred": "<h1>MCAT Score Predictor</h1><div id=\"mcat-pred-root\"></div>", "kanban": "<h1>Task Tracker</h1><div id=\"kanban-root\"></div>", "ps-workshop": "<h1>Personal Statement</h1><div class=\"ps-step\"><h3>1. Opening Hook</h3><div class=\"ps-area\" contenteditable=\"true\" data-key=\"ps-hook\"></div></div><div class=\"ps-step\"><h3>2. Your Story</h3><div class=\"ps-area\" contenteditable=\"true\" data-key=\"ps-story\"></div></div><div class=\"ps-step\"><h3>3. Why Medicine</h3><div class=\"ps-area\" contenteditable=\"true\" data-key=\"ps-why\"></div></div><div class=\"ps-step\"><h3>4. Closing</h3><div class=\"ps-area\" contenteditable=\"true\" data-key=\"ps-close\"></div></div><button onclick=\"psPreview()\" style=\"margin-top:12px;padding:8px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer\">Preview</button><div id=\"ps-preview\" class=\"ps-preview\" style=\"display:none\"></div>", "interview": "<h1>Interview Prep</h1><div style=\"display:flex;gap:8px;margin-bottom:16px\"><button class=\"study-tab active\" onclick=\"ivMode('trad',this)\">Traditional</button><button class=\"study-tab\" onclick=\"ivMode('mmi',this)\">MMI</button><button class=\"study-tab\" onclick=\"ivMode('ethical',this)\">Ethical</button></div><div id=\"iv-root\"></div>", "expenses": "<h1>Expense Tracker</h1><div style=\"margin-bottom:12px\"><label>Budget: $<input type=\"number\" id=\"exp-budget-input\" value=\"5000\" style=\"width:80px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)\" onchange=\"expSaveBudget()\"></label></div><div id=\"exp-root\"></div><div style=\"margin-top:12px;display:flex;gap:8px;flex-wrap:wrap\"><input type=\"text\" id=\"exp-name\" placeholder=\"Expense\" style=\"flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)\"><input type=\"number\" id=\"exp-amt\" placeholder=\"$\" style=\"width:80px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)\"><button onclick=\"expAdd()\" style=\"padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer\">Add</button></div>"};
 let cur = 'home';
 // === SUPABASE AUTH ===
 const SB_URL='https://ddiklxucgprxkrobwfbj.supabase.co';
@@ -2151,10 +2151,10 @@ document.addEventListener('change', function(e) {
 function getCountdown() {
   const milestones = [
     {date:'2026-05-19', label:'Summer 2026 classes start'},
-    {date:'2026-08-15', label:'Summer 2026 ends'},
-    {date:'2026-09-02', label:'Fall 2026 starts'},
-    {date:'2027-01-20', label:'Spring 2027 starts'},
-    {date:'2027-06-01', label:'MCAT prep begins'},
+    
+    
+    
+    
     {date:'2027-09-13', label:'MCAT exam'},
     {date:'2028-03-01', label:'CASAA opens'},
     {date:'2028-05-01', label:'AMCAS opens'}
@@ -2555,15 +2555,13 @@ function addMultiCountdown() {
   if (c.querySelector('.multi-countdown')) return;
 
   const milestones = [
-    {date:'2026-05-15', label:'Anesthesia Shadow'},
-    {date:'2026-05-18', label:'Block 1 Starts'},
-    {date:'2026-06-29', label:'Block 1 Ends'},
-    {date:'2026-07-06', label:'Block 2 Starts'},
-    {date:'2026-08-15', label:'Block 2 Ends'},
-    {date:'2026-09-02', label:'Fall 2026 Starts'},
+
+    
+    
+    
     {date:'2026-12-15', label:'Fall 2026 Ends'},
-    {date:'2027-01-20', label:'Spring 2027'},
-    {date:'2027-06-01', label:'MCAT Prep Begins'},
+    
+    
     {date:'2027-09-13', label:'MCAT Exam'},
     {date:'2028-03-01', label:'CASAA Opens'},
     {date:'2028-05-01', label:'AMCAS Opens'}
@@ -2657,7 +2655,7 @@ function addTodaySchedule() {
   const today = new Date().getDay();
   const dayName = dayNames[today];
 
-  // Summer Block 1 schedule (May 18 - Jun 29)
+  // Generic schedule
   const block1 = {
     Mon: [{t:'9:30-10:20',c:'Bio Lab Lecture (Rozelle)'},{t:'10:30-1:20',c:'Bio I Lab (Rozelle)'},{t:'3:30-5:45',c:'Chem I Rec (K. Shih)'}],
     Tue: [{t:'10:30-1:20',c:'Bio I Lecture (King-Trudeau)'},{t:'3:30-5:45',c:'Chem I Rec (K. Shih)'},{t:'7:00-9:50',c:'Chem I Lab (K. Shih)'}],
@@ -3280,12 +3278,12 @@ function renderCal() {
   const events = getCalEvents();
   // Add class schedule
   const classEvents = [
-    {date:'2026-05-15',text:'OR Shadow (McDonald)',type:'shadow-ev'},
-    {date:'2026-05-18',text:'Block 1 Starts',type:'class-ev'},
-    {date:'2026-06-29',text:'Block 1 Ends',type:'class-ev'},
-    {date:'2026-07-06',text:'Block 2 Starts',type:'class-ev'},
-    {date:'2026-08-15',text:'Block 2 Ends',type:'class-ev'},
-    {date:'2026-09-02',text:'Fall Semester',type:'class-ev'},
+    
+    
+    
+    
+    
+    
     {date:'2027-09-13',text:'MCAT EXAM',type:'exam-ev'},
   ];
   const allEvents = [...classEvents,...events];
