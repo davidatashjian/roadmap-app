@@ -752,21 +752,25 @@ function generateRoadmap() {
 
   // ADHD tip if applicable
   if (hasND) {
-    html += '<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px;margin:14px 0;font-size:.9em">';
-    html += '<h4 style="color:#0369a1;margin:0 0 10px;font-size:1em">\uD83E\uDDE0 Neurodivergent Mode Active</h4>';
+    html += '<div data-section="nd-tools" style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px;margin:14px 0;font-size:.9em;position:relative">';
+    html += '<h4 style="color:#0369a1;margin:0 0 10px;font-size:1em">\uD83E\uDDE0 Neurodivergent Mode</h4>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
-    // One-thing focus card
-    html += '<div style="background:var(--card);border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">YOUR ONE THING RIGHT NOW</div><div id="nd-one-thing" style="font-weight:700;color:#0369a1;font-size:.95em">Complete your first unchecked task</div></div>';
-    // Break reminder
-    html += '<div style="background:var(--card);border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">BREAK REMINDER</div><div id="nd-break" style="font-weight:700;color:#0369a1;font-size:.95em">Every 25 min \u2192 5 min break</div></div>';
+    // One-thing focus card (auto-populated)
+    html += '<div style="background:var(--card);border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.75em;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Your One Thing</div><div id="nd-one-thing" style="font-weight:700;color:#0369a1;font-size:.92em">Loading...</div></div>';
+    // Break timer
+    html += '<div style="background:var(--card);border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.75em;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Break Timer</div><div id="nd-break-time" style="font-weight:700;color:#0369a1;font-size:1.2em">25:00</div><div style="margin-top:4px"><button onclick="ndStartBreakTimer()" style="padding:3px 10px;background:#0ea5e9;color:#fff;border:none;border-radius:4px;font-size:.75em;cursor:pointer">Start</button> <button onclick="ndResetBreakTimer()" style="padding:3px 10px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-size:.75em;cursor:pointer;color:var(--text)">Reset</button></div></div>';
     html += '</div>';
-    // Tips
-    html += '<div style="font-size:.85em;color:#475569;line-height:1.6">';
+    // Dopamine tracker
+    html += '<div style="background:var(--card);border:1px solid #e0f2fe;border-radius:8px;padding:10px;margin-bottom:10px;text-align:center"><span style="font-size:.78em;color:#64748b">Tasks done today: </span><span id="nd-done-count" style="font-weight:700;color:#0369a1">0</span><span style="font-size:.78em;color:#64748b"> \u2014 </span><span id="nd-reward" style="font-size:.78em;color:#059669"></span></div>';
+    // Tips (collapsible)
+    html += '<details style="font-size:.85em;color:var(--text)"><summary style="cursor:pointer;font-weight:600;color:#0369a1;margin-bottom:6px">ADHD Study Tips</summary>';
     html += '<p style="margin:4px 0">\u2022 <strong>Focus on ONE phase at a time.</strong> Don\'t look ahead until ready.</p>';
-    html += '<p style="margin:4px 0">\u2022 <strong>Body doubling:</strong> Study with a friend or on a video call for accountability.</p>';
-    html += '<p style="margin:4px 0">\u2022 <strong>Reward yourself</strong> after completing each checkbox (snack, 5 min scroll, walk).</p>';
-    html += '<p style="margin:4px 0">\u2022 <strong>Task too big?</strong> Break it into 15-minute chunks. Just start with one chunk.</p>';
-    html += '</div></div>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Body doubling:</strong> Study with a friend or on video call.</p>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Reward yourself</strong> after each checkbox (snack, 5 min scroll, walk).</p>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Task too big?</strong> Break into 15-min chunks. Just start one.</p>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Use the Pomodoro timer</strong> below \u2014 25 min on, 5 min off.</p>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Play focus sounds</strong> (brown noise works best for ADHD).</p>';
+    html += '</details></div>';
   }
 
   // Timeline visualization
@@ -1028,6 +1032,43 @@ setTimeout(function(){
     }
   });
 },600);
+
+// === NEURODIVERGENT TOOLS ===
+var ndBreakInt=null,ndBreakSecs=1500;
+function ndStartBreakTimer(){
+  if(ndBreakInt){clearInterval(ndBreakInt);ndBreakInt=null;return}
+  ndBreakInt=setInterval(function(){
+    ndBreakSecs--;
+    var m=Math.floor(ndBreakSecs/60),s=ndBreakSecs%60;
+    var el=document.getElementById('nd-break-time');
+    if(el)el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(ndBreakSecs<=0){clearInterval(ndBreakInt);ndBreakInt=null;ndBreakSecs=300;
+      var el2=document.getElementById('nd-break-time');
+      if(el2){el2.textContent='BREAK!';el2.style.color='#059669'}
+      try{new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ==').play()}catch(e){}
+    }
+  },1000);
+}
+function ndResetBreakTimer(){clearInterval(ndBreakInt);ndBreakInt=null;ndBreakSecs=1500;var el=document.getElementById('nd-break-time');if(el){el.textContent='25:00';el.style.color='#0369a1'}}
+function ndUpdateOneThing(){
+  var el=document.getElementById('nd-one-thing');if(!el)return;
+  var unchecked=document.querySelectorAll('.rm-phase input[type=checkbox]:not(:checked)');
+  if(unchecked.length>0){var li=unchecked[0].parentElement;if(li)el.textContent=li.textContent.trim().substring(0,60)}
+  else{el.textContent='All tasks done! \uD83C\uDF89'}
+}
+function ndUpdateDoneCount(){
+  var el=document.getElementById('nd-done-count');
+  var reward=document.getElementById('nd-reward');
+  if(!el)return;
+  var checked=document.querySelectorAll('.rm-phase input[type=checkbox]:checked').length;
+  el.textContent=checked;
+  var rewards=['','Keep going!','Nice streak!','You\'re on fire!','Unstoppable!','Take a reward break!'];
+  if(reward)reward.textContent=rewards[Math.min(checked,5)]||'\uD83C\uDF1F Amazing!';
+}
+setTimeout(function(){ndUpdateOneThing();ndUpdateDoneCount()},800);
+document.addEventListener('change',function(e){
+  if(e.target.type==='checkbox'){setTimeout(function(){ndUpdateOneThing();ndUpdateDoneCount()},100)}
+});
 
 // Dark mode auto-detect
 if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches) document.body.classList.add('dark');
