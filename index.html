@@ -772,6 +772,20 @@ function generateRoadmap() {
 
   html += '</div>';
 
+  // === COUNTDOWN TIMERS ===
+  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0">';
+  html += '<h4 style="margin:0 0 12px;font-size:.95em">&#9200; Countdown Timers</h4>';
+  html += '<div id="countdowns" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>';
+  html += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><input id="cd-name" type="text" placeholder="Event name" style="flex:1;min-width:120px;padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em"><input id="cd-date" type="date" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em"><button onclick="addCountdown()" style="padding:6px 14px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:.85em;cursor:pointer">Add</button></div>';
+  html += '</div>';
+
+  // === WHAT NOW WIDGET ===
+  html += '<div id="whatnow" style="background:linear-gradient(135deg,#059669,#10b981);border-radius:14px;padding:18px 22px;margin:14px 0;color:#fff">';
+  html += '<h3 style="font-size:1.05em;margin:0 0 8px;color:#fff;font-weight:700">What Should I Do Right Now?</h3>';
+  html += '<p id="whatnow-text" style="color:rgba(255,255,255,.9);font-size:.9em;margin:4px 0"></p>';
+  html += '<button onclick="getNextSuggestion()" style="display:inline-block;margin-top:10px;padding:7px 18px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-size:.85em;font-weight:600;cursor:pointer">Give Me Another</button>';
+  html += '</div>';
+
   // Ad placement (bottom)
   html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin:20px 0;font-size:.78em;color:#94a3b8">Ad space — Ads help keep this tool free</div>';
 
@@ -898,6 +912,77 @@ function renderGPA(){
   }).join('');
   calcGPA();
 }
+
+// === COUNTDOWN TIMERS ===
+var countdowns=JSON.parse(localStorage.getItem('rm_countdowns')||'[]');
+function addCountdown(){
+  var name=document.getElementById('cd-name');
+  var date=document.getElementById('cd-date');
+  if(!name||!date||!name.value||!date.value)return;
+  countdowns.push({name:name.value,date:date.value});
+  localStorage.setItem('rm_countdowns',JSON.stringify(countdowns));
+  name.value='';date.value='';
+  renderCountdowns();
+}
+function removeCountdown(i){
+  countdowns.splice(i,1);
+  localStorage.setItem('rm_countdowns',JSON.stringify(countdowns));
+  renderCountdowns();
+}
+function renderCountdowns(){
+  var el=document.getElementById('countdowns');if(!el)return;
+  if(!countdowns.length){el.innerHTML='<p style="color:#94a3b8;font-size:.85em">Add important dates (MCAT, application deadlines, etc.)</p>';return}
+  var today=new Date();today.setHours(0,0,0,0);
+  el.innerHTML=countdowns.map(function(c,i){
+    var target=new Date(c.date+'T00:00:00');
+    var diff=Math.ceil((target-today)/86400000);
+    var color=diff<0?'#94a3b8':diff<=7?'#ef4444':diff<=30?'#f59e0b':'#2563eb';
+    var label=diff<0?Math.abs(diff)+' days ago':diff===0?'TODAY':diff+' days';
+    return '<div style="background:var(--bg,#f8fafc);border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center;position:relative'+(diff<=7&&diff>=0?';border-color:'+color+';box-shadow:0 0 0 2px '+color+'20':'')+'"><button onclick="removeCountdown('+i+')" style="position:absolute;top:4px;right:6px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:.8em">&times;</button><div style="font-size:1.6em;font-weight:800;color:'+color+'">'+label+'</div><div style="font-size:.72em;color:#64748b;margin-top:2px">'+c.name+'</div></div>';
+  }).join('');
+}
+setTimeout(renderCountdowns,600);
+
+// === WHAT NOW WIDGET ===
+var whatNowIdx=0;
+function getWhatNowSuggestions(){
+  var suggestions=[];
+  var xp=getXP();var streak=getStreak();
+  // Check uncompleted tasks
+  var unchecked=document.querySelectorAll('input[type="checkbox"]:not(:checked)');
+  if(unchecked.length>0){
+    var items=[];unchecked.forEach(function(cb){var li=cb.parentElement;if(li)items.push(li.textContent.trim())});
+    if(items.length>0)suggestions.push('Next task: '+items[0]);
+  }
+  // Time-based suggestions
+  var hour=new Date().getHours();
+  if(hour<12)suggestions.push('Morning focus: Do your hardest subject first while your brain is fresh.');
+  else if(hour<17)suggestions.push('Afternoon: Practice problems or flashcard review session.');
+  else suggestions.push('Evening: Light review, Anki cards, or plan tomorrow.');
+  // Study suggestions
+  suggestions.push('Do 25 minutes of focused study (Pomodoro). One subject only.');
+  suggestions.push('Review 20 flashcards from your weakest subject.');
+  suggestions.push('Take a practice passage (CARS or science). Time yourself.');
+  suggestions.push('Spend 15 minutes on clinical volunteering research/applications.');
+  if(streak<3)suggestions.push('Build your streak! Just 30 minutes today counts.');
+  if(xp<100)suggestions.push('You\'re just getting started. Focus on completing Phase 1 tasks.');
+  suggestions.push('Play a round of Survival Mode to test your knowledge.');
+  suggestions.push('Write one paragraph of your personal statement draft.');
+  suggestions.push('Shadow a physician or email one about shadowing opportunities.');
+  suggestions.push('Look up 3 medical schools and note their average stats.');
+  return suggestions;
+}
+function getNextSuggestion(){
+  var suggestions=getWhatNowSuggestions();
+  whatNowIdx=(whatNowIdx+1)%suggestions.length;
+  var el=document.getElementById('whatnow-text');
+  if(el)el.textContent=suggestions[whatNowIdx];
+}
+setTimeout(function(){
+  var suggestions=getWhatNowSuggestions();
+  var el=document.getElementById('whatnow-text');
+  if(el&&suggestions.length)el.textContent=suggestions[Math.floor(Math.random()*suggestions.length)];
+},700);
 
 // Scroll animation observer - also check immediately for already-visible elements
 const observer = new IntersectionObserver((entries) => {
