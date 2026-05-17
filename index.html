@@ -672,10 +672,23 @@ function generateRoadmap() {
   data.phases.forEach((phase,i) => { phase.items.forEach((item,j) => { totalTasks++; if(localStorage.getItem('rm_'+path+'_'+i+'_'+j)==='1') checkedTasks++; }); });
   const pct = totalTasks > 0 ? Math.round((checkedTasks/totalTasks)*100) : 0;
 
-  let html = '<div style="max-width:900px;margin:0 auto;padding:60px 20px 40px">';
+  let html = '<div data-roadmap style="max-width:900px;margin:0 auto;padding:60px 20px 40px">';
   
-  // Back button + reset
-  html += '<div style="display:flex;gap:8px;margin-bottom:16px"><button onclick="location.reload()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 16px;color:#64748b;cursor:pointer;font-size:.85em">&larr; Back to Home</button><button onclick="if(confirm(\'Reset all progress for this roadmap?\')){for(var k in localStorage){if(k.startsWith(\'rm_\'+\''+path+'\')){localStorage.removeItem(k)}};location.reload()}" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 16px;color:#ef4444;cursor:pointer;font-size:.85em">Reset Progress</button></div>';
+  // Top toolbar
+  html += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
+  html += '<button onclick="location.reload()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:var(--text);cursor:pointer;font-size:.85em">&larr; Home</button>';
+  html += '<button onclick="if(confirm(\'Reset all progress?\')){for(var k in localStorage){if(k.startsWith(\'rm_\'+\''+path+'\')){localStorage.removeItem(k)}};location.reload()}" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:#ef4444;cursor:pointer;font-size:.85em">Reset</button>';
+  html += '<button onclick="document.getElementById(\'rm-settings\').style.display=document.getElementById(\'rm-settings\').style.display===\'none\'?\'block\':\'none\'" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:var(--text);cursor:pointer;font-size:.85em">\u2699 Customize</button>';
+  html += '<button onclick="toggleFocusMode()" id="focus-btn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:var(--text);cursor:pointer;font-size:.85em">\uD83C\uDFAF Focus Mode</button>';
+  html += '</div>';
+  // Settings panel
+  html += '<div id="rm-settings" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">';
+  html += '<h4 style="margin:0 0 12px;font-size:.9em;color:var(--text)">Customize Your Roadmap</h4>';
+  html += '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">';
+  html += '<label style="font-size:.82em;color:#64748b">Font Size<br><select onchange="rmSetFont(this.value)" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.9em"><option value="14px">Small</option><option value="16px" selected>Medium</option><option value="18px">Large</option><option value="20px">XL</option></select></label>';
+  html += '<label style="font-size:.82em;color:#64748b">Accent Color<br><input type="color" value="#2563eb" onchange="rmSetAccent(this.value)" style="width:40px;height:28px;border:none;cursor:pointer;border-radius:4px"></label>';
+  html += '<label style="font-size:.82em;color:#64748b">Width<br><select onchange="rmSetWidth(this.value)" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.9em"><option value="700px">Narrow</option><option value="900px" selected>Normal</option><option value="1100px">Wide</option><option value="100%">Full</option></select></label>';
+  html += '</div></div>';
   
   // Ad placement (top)
   html += '<div class="ad-slot">Sponsored &mdash; Ads help keep this tool free</div>';
@@ -928,6 +941,44 @@ function submitInlineReview(){
   inlineRating=0;
 }
 setTimeout(setupInlineStars,800);
+
+// === CUSTOMIZATION FUNCTIONS ===
+function rmSetFont(val){
+  var el=document.querySelector('[data-roadmap]');
+  if(el)el.style.fontSize=val;
+  localStorage.setItem('rm_font',val);
+}
+function rmSetAccent(val){
+  document.documentElement.style.setProperty('--accent',val);
+  localStorage.setItem('rm_accent',val);
+}
+function rmSetWidth(val){
+  var el=document.querySelector('[data-roadmap]');
+  if(el)el.style.maxWidth=val;
+  localStorage.setItem('rm_width',val);
+}
+var focusMode=false;
+function toggleFocusMode(){
+  focusMode=!focusMode;
+  var btn=document.getElementById('focus-btn');
+  if(focusMode){
+    document.querySelectorAll('.ad-slot').forEach(function(a){a.style.display='none'});
+    document.querySelectorAll('[data-roadmap] > div:not(.rm-phase):not([id])').forEach(function(el){
+      if(!el.querySelector('.rm-pct')&&!el.querySelector('h1')&&!el.querySelector('[data-roadmap]'))el.style.opacity='0.3';
+    });
+    if(btn)btn.style.background='#2563eb';if(btn)btn.style.color='#fff';
+  } else {
+    document.querySelectorAll('.ad-slot').forEach(function(a){a.style.display=''});
+    document.querySelectorAll('[data-roadmap] > div').forEach(function(el){el.style.opacity=''});
+    if(btn)btn.style.background='none';if(btn)btn.style.color='var(--text)';
+  }
+}
+// Restore saved customization
+setTimeout(function(){
+  var f=localStorage.getItem('rm_font');if(f)rmSetFont(f);
+  var w=localStorage.getItem('rm_width');if(w)rmSetWidth(w);
+  var a=localStorage.getItem('rm_accent');if(a)rmSetAccent(a);
+},600);
 
 // Dark mode auto-detect
 if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches) document.body.classList.add('dark');
