@@ -16,7 +16,8 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh}
-body.dark{background:#0f172a;color:#e2e8f0}
+body.dark{background:#0f172a;color:#e2e8f0;--card:#1e293b;--bg:#0f172a;--text:#e2e8f0;--border:#334155}
+body{--card:#fff;--bg:#f8fafc;--text:#1e293b;--border:#e2e8f0}
 body.dark .hero{background:#0f172a}
 body.dark .path-card,body.dark .feat-card,body.dark .price-card{background:#1e293b;border-color:#334155;color:#e2e8f0}
 body.dark .path-card p,body.dark .feat-card p{color:#94a3b8}
@@ -288,28 +289,12 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     </div>
   </section>
 
-  <section class="pricing fade-in" id="pricing">
-    <h2>100% Free</h2>
-    <p style="color:#64748b;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto">Every feature, every game, every study tool — completely free. Built by a pre-med student for pre-med students.</p>
-    <div style="max-width:500px;margin:0 auto">
-      <div class="price-card" style="border-color:#2563eb">
-        <div class="price">$0<span>/forever</span></div>
-        <ul>
-          <li>Personalized roadmap & timeline</li>
-          <li>All study games (Brick Breaker, MCAT Dash, Survival Mode, 1v1)</li>
-          <li>Pomodoro timer & flashcards</li>
-          <li>66 pre-med review questions across 6 subjects</li>
-          <li>XP system, streaks & achievements</li>
-          <li>Neurodivergent-friendly mode</li>
-          <li>Progress tracking (saves automatically)</li>
-        </ul>
-        <a href="#" class="price-btn" onclick="event.preventDefault();startQuiz()" style="background:linear-gradient(135deg,#2563eb,#7c3aed)">Build My Roadmap — Free</a>
-      </div>
-      <div style="margin-top:32px;background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
-        <h3 style="margin:0 0 8px;font-size:1.1em">Support a Pre-Med Student</h3>
-        <p style="color:#64748b;font-size:.9em;margin:0 0 16px">I built this tool while doing my own post-bacc. If it helps you, consider buying me a coffee to help me pay for med school.</p>
-        <a href="https://donate.stripe.com/8x228k0bqglHfa42id33W02" target="_blank" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;transition:transform .2s">Buy Me a Coffee</a>
-      </div>
+  <section class="fade-in" id="pricing" style="padding:60px 20px;text-align:center">
+    <div style="max-width:500px;margin:0 auto;background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid var(--border);border-radius:16px;padding:32px">
+      <h3 style="font-size:1.3em;margin:0 0 8px">Built by a Pre-Med, for Pre-Meds</h3>
+      <p style="color:#64748b;font-size:.92em;margin:0 0 20px;line-height:1.6">I'm doing my post-bacc right now and built this tool because I wished it existed when I started. If it helps you, consider supporting my med school journey.</p>
+      <a href="https://donate.stripe.com/8x228k0bqglHfa42id33W02" target="_blank" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:1em;transition:transform .2s">Buy Me a Coffee ☕</a>
+      <p style="color:#94a3b8;font-size:.78em;margin-top:12px">100% optional. Everything is free, always.</p>
     </div>
   </section>
 
@@ -734,7 +719,7 @@ function generateRoadmap() {
   readBreakdown.push('Roadmap Progress: '+progPts+'/15');
   var readColor=readiness>=70?'#059669':readiness>=40?'#f59e0b':'#ef4444';
   var readLabel=readiness>=80?'Application Ready':readiness>=60?'Getting Close':readiness>=40?'Building':readiness>=20?'Early Stage':'Just Starting';
-  html += '<div style="background:var(--card,#fff);border:2px solid '+readColor+';border-radius:14px;padding:20px;margin:14px 0;text-align:center">';
+  html += '<div style="background:var(--card);border:2px solid '+readColor+';border-radius:14px;padding:20px;margin:14px 0;text-align:center">';
   html += '<h3 style="margin:0 0 4px;font-size:.95em;color:#64748b">Pre-Med Readiness Score</h3>';
   html += '<div style="font-size:3em;font-weight:900;color:'+readColor+'">'+readiness+'<span style="font-size:.35em;color:#94a3b8">/100</span></div>';
   html += '<div style="font-size:.9em;font-weight:600;color:'+readColor+';margin-bottom:12px">'+readLabel+'</div>';
@@ -756,8 +741,8 @@ function generateRoadmap() {
     {t:"Believe you can and you\\'re halfway there.",a:"Theodore Roosevelt"},
   ];
   var dq=quotes[Math.floor(Date.now()/86400000)%quotes.length];
-  html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border-left:3px solid #2563eb;border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0;font-size:.88em;font-style:italic;color:#475569">';
-  html += '"'+dq.t+'" <span style="display:block;font-style:normal;font-weight:600;margin-top:4px;font-size:.9em;color:#1e293b">\u2014 '+dq.a+'</span></div>';
+  html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(124,58,237,.1));border-left:3px solid #2563eb;border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:.92em;font-style:italic;color:var(--text)">';
+  html += '"'+dq.t+'" <span style="display:block;font-style:normal;font-weight:700;margin-top:6px;font-size:.9em;color:#2563eb">\u2014 '+dq.a+'</span></div>';
 
   // Progress bar
   html += '<div class="rm-pct">'+pct+'% Complete</div>';
@@ -769,9 +754,9 @@ function generateRoadmap() {
     html += '<h4 style="color:#0369a1;margin:0 0 10px;font-size:1em">\uD83E\uDDE0 Neurodivergent Mode Active</h4>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
     // One-thing focus card
-    html += '<div style="background:#fff;border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">YOUR ONE THING RIGHT NOW</div><div id="nd-one-thing" style="font-weight:700;color:#0369a1;font-size:.95em">Complete your first unchecked task</div></div>';
+    html += '<div style="background:var(--card);border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">YOUR ONE THING RIGHT NOW</div><div id="nd-one-thing" style="font-weight:700;color:#0369a1;font-size:.95em">Complete your first unchecked task</div></div>';
     // Break reminder
-    html += '<div style="background:#fff;border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">BREAK REMINDER</div><div id="nd-break" style="font-weight:700;color:#0369a1;font-size:.95em">Every 25 min \u2192 5 min break</div></div>';
+    html += '<div style="background:var(--card);border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">BREAK REMINDER</div><div id="nd-break" style="font-weight:700;color:#0369a1;font-size:.95em">Every 25 min \u2192 5 min break</div></div>';
     html += '</div>';
     // Tips
     html += '<div style="font-size:.85em;color:#475569;line-height:1.6">';
@@ -815,18 +800,18 @@ function generateRoadmap() {
   html += '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin:14px 0"><h4 style="color:#92400e;margin:0 0 6px;font-size:.95em">📚 Recommended Resources</h4><p style="font-size:.9em;color:#92400e">'+data.resources.join(' • ')+'</p></div>';
 
   // Pomodoro timer
-  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 8px;font-size:.95em">⏲ Pomodoro Timer</h4><div id="pomo-display" style="font-size:2.5em;font-weight:800;color:#2563eb;margin:8px 0">25:00</div><div style="display:flex;gap:8px;justify-content:center"><button onclick="pomoStart()" style="padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Start</button><button onclick="pomoReset()" style="padding:8px 20px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer">Reset</button></div><p style="font-size:.78em;color:#94a3b8;margin-top:8px">25 min focus, 5 min break. Repeat.</p></div>';
+  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 8px;font-size:.95em;color:var(--text)">⏲ Pomodoro Timer</h4><div id="pomo-display" style="font-size:2.5em;font-weight:800;color:#2563eb;margin:8px 0">25:00</div><div style="display:flex;gap:8px;justify-content:center"><button onclick="pomoStart()" style="padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Start</button><button onclick="pomoReset()" style="padding:8px 20px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text)">Reset</button></div><p style="font-size:.78em;color:#94a3b8;margin-top:8px">25 min focus, 5 min break. Repeat.</p></div>';
 
   // Simple flashcard area
-  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 12px;font-size:.95em">🃏 Quick Flashcards</h4><div id="fc-area" style="min-height:100px;border:2px solid #e2e8f0;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer;font-size:1.1em;font-weight:600" onclick="this.querySelector(\'span\').style.display=this.querySelector(\'span\').style.display===\'none\'?\'block\':\'none\'"><div><p id="fc-q-text">Click \"Add Card\" to create flashcards for this path</p><span style="display:none;color:#2563eb;margin-top:8px" id="fc-a-text"></span></div></div><div style="margin-top:10px"><button onclick="fcPromptAdd()" style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85em">+ Add Card</button> <button onclick="fcNext()" style="padding:6px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.85em">Next →</button></div></div>';
+  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 12px;font-size:.95em;color:var(--text)">🃏 Quick Flashcards</h4><div id="fc-area" style="min-height:100px;border:2px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer;font-size:1.1em;font-weight:600;color:var(--text)" onclick="this.querySelector(\'span\').style.display=this.querySelector(\'span\').style.display===\'none\'?\'block\':\'none\'"><div><p id="fc-q-text">Click \"Add Card\" to create flashcards for this path</p><span style="display:none;color:#2563eb;margin-top:8px" id="fc-a-text"></span></div></div><div style="margin-top:10px"><button onclick="fcPromptAdd()" style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85em">+ Add Card</button> <button onclick="fcNext()" style="padding:6px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:.85em;color:var(--text)">Next →</button></div></div>';
 
   // === STUDY TOOLS (tabbed) ===
-  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin:14px 0;overflow:hidden">';
-  html += '<div style="display:flex;border-bottom:1px solid #e2e8f0;overflow-x:auto">';
-  html += '<button class="tool-tab active" onclick="showToolTab(\'habits\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#2563eb;border-bottom:2px solid #2563eb;white-space:nowrap">Habits</button>';
-  html += '<button class="tool-tab" onclick="showToolTab(\'hours\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">Study Hours</button>';
-  html += '<button class="tool-tab" onclick="showToolTab(\'gpa\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">GPA Calc</button>';
-  html += '<button class="tool-tab" onclick="showToolTab(\'notes\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">Notes</button>';
+  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;margin:14px 0;overflow:hidden">';
+  html += '<div style="display:flex;border-bottom:1px solid var(--border);overflow-x:auto">';
+  html += '<button class="tool-tab active" onclick="showToolTab(\'habits\')" style="padding:10px 16px;border:none;background:var(--card);cursor:pointer;font-size:.82em;font-weight:600;color:#2563eb;border-bottom:2px solid #2563eb;white-space:nowrap">Habits</button>';
+  html += '<button class="tool-tab" onclick="showToolTab(\'hours\')" style="padding:10px 16px;border:none;background:var(--card);cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">Study Hours</button>';
+  html += '<button class="tool-tab" onclick="showToolTab(\'gpa\')" style="padding:10px 16px;border:none;background:var(--card);cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">GPA Calc</button>';
+  html += '<button class="tool-tab" onclick="showToolTab(\'notes\')" style="padding:10px 16px;border:none;background:var(--card);cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">Notes</button>';
   html += '</div>';
 
   // Habit Tracker
@@ -1354,12 +1339,11 @@ async function loadReviews(){
   var reviews=[];
   if(sb){var r=await sb.from('reviews').select('*').order('created_at',{ascending:false}).limit(12);if(r.data)reviews=r.data}
   if(!reviews.length)reviews=JSON.parse(localStorage.getItem('rm_reviews')||'[]').reverse();
-  // Show default reviews if none exist
-  if(!reviews.length)reviews=[
-    {user_name:'Career Changer',rating:5,review_text:'Went from 0 prerequisites to accepted in 2 years. This tool planned my entire path.'},
-    {user_name:'Post-bacc Student',rating:5,review_text:'The MCAT study tools are better than Anki. Survival mode got me addicted to biochem review. 518.'},
-    {user_name:'Neurodivergent Pre-med',rating:5,review_text:'Finally a study tool that understands how my brain works. The structure is perfect for ADHD.'}
-  ];
+  if(!reviews.length){
+    var el=document.getElementById('reviews-list');
+    if(el)el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#94a3b8"><p style="font-size:1.1em;margin-bottom:8px">No reviews yet</p><p style="font-size:.85em">Be the first to share your experience!</p></div>';
+    return;
+  }
   var el=document.getElementById('reviews-list');
   if(!el)return;
   el.innerHTML=reviews.slice(0,9).map(function(r){
