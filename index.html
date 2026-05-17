@@ -159,7 +159,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
   <div class="nav-links">
     <a href="#paths">Paths</a>
     <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
+    <a href="#pricing">Support</a>
     <a href="#games">Games</a>
     <a href="#faq">FAQ</a>
     <a href="#" id="auth-nav-btn" style="color:#94a3b8;text-decoration:none;font-size:.88em;cursor:pointer" onclick="event.preventDefault();showAuthModal()">Sign In</a>
@@ -270,36 +270,26 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
   </section>
 
   <section class="pricing fade-in" id="pricing">
-    <h2>Simple Pricing</h2>
-    <div class="price-grid">
-      <div class="price-card">
-        <h3>Free</h3>
+    <h2>100% Free</h2>
+    <p style="color:#64748b;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto">Every feature, every game, every study tool — completely free. Built by a pre-med student for pre-med students.</p>
+    <div style="max-width:500px;margin:0 auto">
+      <div class="price-card" style="border-color:#2563eb">
         <div class="price">$0<span>/forever</span></div>
         <ul>
           <li>Personalized roadmap & timeline</li>
-          <li>Weekly schedule builder</li>
-          <li>Basic study tools</li>
-          <li>Progress tracking</li>
-          <li>Ad-supported</li>
+          <li>All study games (Brick Breaker, MCAT Dash, Survival Mode, 1v1)</li>
+          <li>Pomodoro timer & flashcards</li>
+          <li>66 pre-med review questions across 6 subjects</li>
+          <li>XP system, streaks & achievements</li>
+          <li>Neurodivergent-friendly mode</li>
+          <li>Progress tracking (saves automatically)</li>
         </ul>
-        <a href="#" class="price-btn free" onclick="event.preventDefault();startQuiz()">Get Started Free</a>
+        <a href="#" class="price-btn" onclick="event.preventDefault();startQuiz()" style="background:linear-gradient(135deg,#2563eb,#7c3aed)">Build My Roadmap — Free</a>
       </div>
-      <div class="price-card featured">
-        <h3>Pro</h3>
-        <div class="price">$9.99<span>/month</span></div>
-        <ul>
-          <li>Everything in Free</li>
-          <li>Ad-free experience</li>
-          <li>Advanced study games & whiteboard</li>
-          <li>Interview simulator</li>
-          <li>MCAT score predictor</li>
-          <li>Medical school database</li>
-          <li>Analytics dashboard</li>
-          <li>Export to PDF</li>
-          <li>Priority support</li>
-        </ul>
-        <a href="https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00" class="price-btn" target="_blank">Start Pro — 7 Day Free Trial</a>
-        <a href="#" onclick="event.preventDefault();var c=prompt('Enter referral code:');if(c){var codes=['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'];if(codes.indexOf(c.toUpperCase())!==-1){localStorage.setItem('rm_pro','1');window.location.reload()}else{alert('Invalid code.')}}" style="display:block;margin-top:10px;font-size:.82em;color:#64748b;text-decoration:underline;cursor:pointer">Have a referral code?</a>
+      <div style="margin-top:32px;background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
+        <h3 style="margin:0 0 8px;font-size:1.1em">Support a Pre-Med Student</h3>
+        <p style="color:#64748b;font-size:.9em;margin:0 0 16px">I built this tool while doing my own post-bacc. If it helps you, consider buying me a coffee to help me pay for med school.</p>
+        <a href="https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00" target="_blank" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;transition:transform .2s">Buy Me a Coffee</a>
       </div>
     </div>
   </section>
@@ -319,7 +309,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
           <div style="font-size:2.5em;margin-bottom:12px">🧬</div>
           <h3 style="margin-bottom:6px">MCAT Dash</h3>
           <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Endless runner meets MCAT prep. Answer questions to survive. Better than flashcards.</p>
-          <button onclick="launchMCATDash()" style="padding:10px 24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play (Pro)</button>
+          <button onclick="launchMCATDash()" style="padding:10px 24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play Free</button>
         </div>
       </div>
       <div id="game-area" style="display:none;margin-top:24px;background:#0f172a;border-radius:16px;position:relative;height:400px;overflow:hidden;cursor:pointer"></div>
@@ -328,11 +318,11 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 
   <section class="faq-section fade-in" id="faq">
     <h2 style="font-size:2em;font-weight:800;text-align:center;margin-bottom:32px">FAQ</h2>
-    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is it really free?<span>+</span></div><div class="faq-a">Yes. The basic roadmap with timeline and progress tracking is 100% free forever. Pro adds premium tools and removes ads.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is it really free?<span>+</span></div><div class="faq-a">Yes! Every feature, every game, every study tool is completely free. We show small ads to keep the lights on. If you want to support development, there's an optional donation link.</div></div>
     <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Do I need to create an account?<span>+</span></div><div class="faq-a">No. Your progress saves in your browser automatically. No email, no password needed.</div></div>
     <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">How personalized is it?<span>+</span></div><div class="faq-a">Very. Your answers determine timeline, resources, milestones, and study approach. A career changer gets a different plan than a college sophomore.</div></div>
     <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">What paths are supported?<span>+</span></div><div class="faq-a">Pre-Med to MD/DO, Pre-Med to CAA (Anesthesiologist Assistant), and MCAT preparation. Each path has its own personalized timeline, resources, and study tools.</div></div>
-    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I cancel Pro anytime?<span>+</span></div><div class="faq-a">Yes. One click. No questions asked. Your free roadmap stays forever.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">How can I support this project?<span>+</span></div><div class="faq-a">If this tool helps you, you can buy me a coffee through the Support section. Every dollar goes toward my med school tuition. But you never have to pay — everything is free.</div></div>
   </section>
 
   <section style="padding:60px 20px;text-align:center;background:#0f172a">
@@ -666,13 +656,13 @@ function generateRoadmap() {
   html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 12px;font-size:.95em">🃏 Quick Flashcards</h4><div id="fc-area" style="min-height:100px;border:2px solid #e2e8f0;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer;font-size:1.1em;font-weight:600" onclick="this.querySelector(\'span\').style.display=this.querySelector(\'span\').style.display===\'none\'?\'block\':\'none\'"><div><p id="fc-q-text">Click \"Add Card\" to create flashcards for this path</p><span style="display:none;color:#2563eb;margin-top:8px" id="fc-a-text"></span></div></div><div style="margin-top:10px"><button onclick="fcPromptAdd()" style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85em">+ Add Card</button> <button onclick="fcNext()" style="padding:6px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.85em">Next →</button></div></div>';
 
   // Ad placement (bottom)
-  html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin:20px 0;font-size:.78em;color:#94a3b8">Ad space — <a href="#" onclick="event.preventDefault();alert(\'Upgrade to Pro to remove ads! $9.99/mo\')">Remove ads with Pro →</a></div>';
+  html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin:20px 0;font-size:.78em;color:#94a3b8">Ad space — Ads help keep this tool free</div>';
 
-  // Pro upsell
-  html += '<div style="background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:14px;padding:24px;text-align:center;color:#fff;margin:20px 0">';
-  html += '<h3 style="margin:0 0 8px;color:#fff">Unlock the Full Experience</h3>';
-  html += '<p style="color:rgba(255,255,255,.8);font-size:.92em;margin:0 0 16px">Study games, whiteboard, interview prep, score predictor, analytics — all ad-free.</p>';
-  html += '<button onclick="showProGate(\'Pro\')" style="padding:12px 32px;background:#fff;color:#2563eb;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer">Upgrade to Pro</button>';
+  // Support card
+  html += '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:14px;padding:24px;text-align:center;color:#fff;margin:20px 0">';
+  html += '<h3 style="margin:0 0 8px;color:#fff">Enjoying this tool?</h3>';
+  html += '<p style="color:rgba(255,255,255,.9);font-size:.92em;margin:0 0 16px">Built by a pre-med student. If this helps you, consider supporting my med school journey.</p>';
+  html += '<a href="https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00" target="_blank" style="display:inline-block;padding:12px 32px;background:#fff;color:#d97706;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer;text-decoration:none">Buy Me a Coffee</a>';
   html += '</div>';
 
   // Footer
@@ -847,7 +837,6 @@ window.addEventListener('scroll',()=>{stt.style.opacity=window.scrollY>400?'1':'
 
 // === AMBIENT SOUNDS (Pro) ===
 function playAmbient(type){
-  if(!isPro()){showProGate('Ambient Focus Sounds');return;}
   if(window._ambCtx){try{window._ambSrc.stop()}catch(e){}}
   window._ambCtx=new(window.AudioContext||window.webkitAudioContext)();
   const gain=window._ambCtx.createGain();gain.gain.value=0.3;gain.connect(window._ambCtx.destination);
@@ -861,7 +850,6 @@ function stopAmbient(){if(window._ambSrc)try{window._ambSrc.stop()}catch(e){}}
 
 // === SURVIVAL MODE GAME (Pro) ===
 function startSurvival(){
-  if(!isPro()){showProGate('Survival Mode Game');return;}
   var area=document.getElementById('sv-area');
   if(!area)return;
   area.style.display='block';
@@ -903,8 +891,8 @@ setTimeout(function(){
     toolsDiv.style.cssText='margin:20px 0';
     toolsDiv.innerHTML='<h3 style="margin-bottom:12px">🎮 Study Tools</h3>'+
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
-      '<button onclick="startSurvival(\'general\')" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">⚔️ Survival Mode'+(isPro()?'':'<br><span style=font-size:.75em;color:#64748b>PRO</span>')+'</button>'+
-      '<button onclick="if(isPro()){alert(\'Ambient sounds playing!\')}else{showProGate(\'Ambient Sounds\')}" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">🎵 Focus Sounds'+(isPro()?'':'<br><span style=font-size:.75em;color:#64748b>PRO</span>')+'</button>'+
+      '<button onclick="startSurvival(\'general\')" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">⚔️ Survival Mode</button>'+
+      '<button onclick="playAmbient(\'brown\')" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">🎵 Focus Sounds</button>'+
       '</div>'+
       '<div id="sv-area" style="display:none;margin-top:16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px"></div>';
     proUpsell.parentNode.insertBefore(toolsDiv,proUpsell);
@@ -1013,7 +1001,6 @@ var PREMED_QS={
 
 // === MULTIPLAYER MODE ===
 function startMultiplayer(){
-  if(!isPro()){showProGate('Multiplayer Mode');return}
   var area=document.getElementById('sv-area');if(!area)return;
   area.style.display='block';
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
@@ -1053,7 +1040,6 @@ function getDailyChallenge(){
 
 // === MCAT MINI-GAME (Flappy Bird style knowledge game) ===
 function startMCATRunner(){
-  if(!isPro()){showProGate('MCAT Runner Game');return}
   var area=document.getElementById('sv-area');if(!area)return;
   area.style.display='block';
   area.style.position='relative';area.style.height='300px';area.style.overflow='hidden';area.style.background='linear-gradient(180deg,#0f172a,#1e293b)';area.style.borderRadius='12px';
@@ -1178,7 +1164,6 @@ function launchBrainBounce(){
 
 // === MCAT DASH (Pro - endless runner with MCAT questions) ===
 function launchMCATDash(){
-  if(!isPro()){showProGate('MCAT Dash');return}
   var area=document.getElementById('game-area');
   area.style.display='block';area.style.height='400px';area.style.background='linear-gradient(180deg,#0f172a,#1e293b)';
   area.scrollIntoView({behavior:'smooth'});
