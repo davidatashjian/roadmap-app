@@ -177,11 +177,11 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 <nav>
   <a href="#" class="logo" onclick="event.preventDefault();location.reload()">🩺 Pre-Med Roadmap</a>
   <div class="nav-links">
-    <a href="#paths">Paths</a>
-    <a href="#features">Features</a>
-    <a href="#pricing">Support</a>
-    <a href="#games">Games</a>
-    <a href="#faq">FAQ</a>
+    <a href="#paths" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Paths</a>
+    <a href="#features" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Features</a>
+    <a href="#pricing" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Support</a>
+    <a href="#games" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Games</a>
+    <a href="#faq" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">FAQ</a>
     <a href="#" id="auth-nav-btn" style="color:#94a3b8;text-decoration:none;font-size:.88em;cursor:pointer" onclick="event.preventDefault();showAuthModal()">Sign In</a>
     <a href="#" class="nav-cta" onclick="event.preventDefault();startQuiz()">Get Started</a>
   </div>
@@ -901,6 +901,33 @@ function generateRoadmap() {
   container.innerHTML = html;
   window.scrollTo(0,0);
 }
+
+// Inline review system for roadmap
+var inlineRating=0;
+function setupInlineStars(){
+  var el=document.getElementById('inline-stars');if(!el)return;
+  el.innerHTML='';
+  for(var i=1;i<=5;i++){
+    var s=document.createElement('span');
+    s.textContent='\u2606';s.style.cursor='pointer';s.dataset.v=i;
+    s.onclick=function(){
+      inlineRating=parseInt(this.dataset.v);
+      this.parentElement.querySelectorAll('span').forEach(function(x){x.textContent=parseInt(x.dataset.v)<=inlineRating?'\u2605':'\u2606';x.style.color=parseInt(x.dataset.v)<=inlineRating?'#f59e0b':'#cbd5e1'});
+    };
+    el.appendChild(s);
+  }
+}
+function submitInlineReview(){
+  var text=(document.getElementById('inline-rev-text')||{}).value||'';
+  if(!inlineRating){alert('Please tap a star rating.');return}
+  if(sb){try{sb.from('reviews').insert({user_name:sbUser?sbUser.email.split('@')[0]:'Anonymous',rating:inlineRating,review_text:sanitize(text)})}catch(e){}}
+  var local=JSON.parse(localStorage.getItem('rm_reviews')||'[]');
+  local.push({user_name:'User',rating:inlineRating,review_text:sanitize(text),created_at:new Date().toISOString()});
+  localStorage.setItem('rm_reviews',JSON.stringify(local));
+  document.getElementById('inline-review').innerHTML='<p style="color:#22c55e;font-weight:600;text-align:center;padding:12px">\u2713 Thanks for your review!</p>';
+  inlineRating=0;
+}
+setTimeout(setupInlineStars,800);
 
 // Dark mode auto-detect
 if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches) document.body.classList.add('dark');
