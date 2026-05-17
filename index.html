@@ -25,6 +25,18 @@ body.dark .pricing h2,body.dark .features h2,body.dark .paths h2,body.dark .step
 body.dark .features{background:#0f172a}
 body.dark .features-inner h2{color:#e2e8f0}
 body.dark .footer{background:#0f172a}
+body.dark .tool-tab{background:#1e293b!important;color:#94a3b8!important}
+body.dark .tool-tab.active{color:#93c5fd!important;border-bottom-color:#93c5fd!important}
+body.dark .tool-panel{color:#e2e8f0}
+body.dark .tool-panel input,body.dark .tool-panel select,body.dark .tool-panel textarea{background:#0f172a;border-color:#334155;color:#e2e8f0}
+body.dark .tool-panel table{color:#e2e8f0}
+body.dark .tool-panel th{color:#94a3b8!important}
+body.dark .quiz-option{background:#1e293b;border-color:#334155;color:#e2e8f0}
+body.dark .quiz-option:hover{background:#1e3a5f;border-color:#2563eb}
+body.dark .quiz-option.selected{background:#1e3a5f;border-color:#2563eb}
+body.dark .quiz-page h2{color:#e2e8f0}
+body.dark #star-rating .star{color:#475569}
+body.dark #rev-name,body.dark #rev-text{background:#1e293b!important;border-color:#334155!important;color:#e2e8f0!important}
 .test-section{padding:80px 20px;background:#fff}
 body.dark .test-section{background:#1e293b}
 .test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;max-width:1100px;margin:0 auto}
@@ -1159,18 +1171,20 @@ setTimeout(function(){
     qDiv.innerHTML='"'+quote.t+'" <span style="display:block;font-style:normal;font-weight:600;margin-top:4px;font-size:.9em;color:#1e293b">— '+quote.a+'</span>';
     rmPct.parentNode.insertBefore(qDiv,rmPct);
   }
-  // Add Pro tools section at bottom of roadmap
-  var proUpsell=document.querySelector('[onclick*="showProGate"]');
-  if(proUpsell&&!document.getElementById('sv-area')){
-    const toolsDiv=document.createElement('div');
+  // Add study games section to roadmap
+  var supportCard=document.querySelector('[href*="buy.stripe"]');
+  if(supportCard&&!document.getElementById('sv-area')){
+    var toolsDiv=document.createElement('div');
     toolsDiv.style.cssText='margin:20px 0';
-    toolsDiv.innerHTML='<h3 style="margin-bottom:12px">🎮 Study Tools</h3>'+
+    toolsDiv.innerHTML='<h3 style="margin-bottom:12px">\uD83C\uDFAE Study Games</h3>'+
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
-      '<button onclick="startSurvival(\'general\')" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">⚔️ Survival Mode</button>'+
-      '<button onclick="playAmbient(\'brown\')" style="padding:14px;background:#fff;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em">🎵 Focus Sounds</button>'+
+      '<button onclick="startSurvival()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\u2694\uFE0F Survival Mode</button>'+
+      '<button onclick="startMultiplayer()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\u2694\uFE0F 1v1 Mode</button>'+
+      '<button onclick="playAmbient(\'brown\')" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83C\uDFB5 Focus Sounds</button>'+
+      '<button onclick="stopAmbient()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83D\uDD07 Stop Sounds</button>'+
       '</div>'+
-      '<div id="sv-area" style="display:none;margin-top:16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px"></div>';
-    proUpsell.parentNode.insertBefore(toolsDiv,proUpsell);
+      '<div id="sv-area" style="display:none;margin-top:16px;background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:12px;padding:20px"></div>';
+    supportCard.closest('div').parentNode.insertBefore(toolsDiv,supportCard.closest('div'));
   }
 },500);
 
@@ -1558,16 +1572,6 @@ function launchMCATDash(){
 }
 
 // Update Pro tools section to include multiplayer + MCAT runner
-setTimeout(function(){
-  var proUpsell2=document.querySelector('[onclick*="buy.stripe"]');
-  if(proUpsell2&&!document.getElementById('mp-btn')){
-    var toolsDiv2=document.createElement('div');
-    toolsDiv2.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0';
-    toolsDiv2.innerHTML='<button id="mp-btn" onclick="startMultiplayer()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\u2694\uFE0F 1v1 Mode'+(isPro()?'':'<br><span style="font-size:.75em;color:#64748b">PRO</span>')+'</button><button onclick="startMCATRunner()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83C\uDFC3 MCAT Runner'+(isPro()?'':'<br><span style="font-size:.75em;color:#64748b">PRO</span>')+'</button>';
-    var svArea=document.getElementById('sv-area');
-    if(svArea)svArea.parentNode.insertBefore(toolsDiv2,svArea);
-  }
-},600);
 
 // === ANIMATED USER COUNTER ===
 (function(){
