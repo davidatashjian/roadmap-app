@@ -470,8 +470,12 @@ const QUESTIONS = {
   premed: [
     {q: 'What type of medical program are you targeting?', opts: ['MD (allopathic)','DO (osteopathic)','Both MD and DO','Not sure yet']},
     {q: 'Have you completed any science prerequisites?', opts: ['None yet','Some (1-2 courses)','Most of them','All of them']},
+    {q: 'Which courses have you completed?', opts: ['Gen Chem I & II','Organic Chem I & II','Biology I & II','Physics I & II','Biochemistry','A&P I & II'], multi:true, showIf: function(a){return a.q5 && !a.q5.includes('None')}},
     {q: 'When are you planning to take the MCAT?', opts: ['This year','Next year','2+ years from now','Haven\'t thought about it']},
     {q: 'Do you have clinical experience?', opts: ['None','Some volunteering','Shadowing only','Paid clinical work (CNA/EMT/etc)'], multi:true},
+    {q: 'How many shadowing hours do you have?', opts: ['None','Under 20 hours','20-50 hours','50+ hours']},
+    {q: 'Do you have research experience?', opts: ['None','Currently in a lab','1-2 semesters','Published or presented']},
+    {q: 'What is your approximate GPA?', opts: ['3.8+','3.5-3.79','3.0-3.49','Below 3.0','N/A (career changer)']},
   ],
   caa: [
     {q: 'Do you have anesthesia shadowing hours?', opts: ['None yet','Some (1-15 hrs)','Minimum met (16+ hrs)','Extensive (40+)']},
@@ -501,7 +505,9 @@ function startQuizWith(path) {
 }
 
 function renderQuizStep() {
-  const qs = [...QUESTIONS.common, ...(QUESTIONS[quizPath]||[])];
+  const allQs = [...QUESTIONS.common, ...(QUESTIONS[quizPath]||[])];
+  // Filter out conditional questions that shouldn't show
+  const qs = allQs.filter(function(q,i){return !q.showIf || q.showIf(quizAnswers)});
   const container = document.getElementById('quiz-container');
   
   if (quizStep >= qs.length) {
@@ -530,7 +536,8 @@ function renderQuizStep() {
 }
 
 function selectQuizOpt(btn, step, answer) {
-  const qs = [...QUESTIONS.common, ...(QUESTIONS[quizPath]||[])];
+  const allQs = [...QUESTIONS.common, ...(QUESTIONS[quizPath]||[])];
+  const qs = allQs.filter(function(q){return !q.showIf || q.showIf(quizAnswers)});
   const isMulti = qs[step] && qs[step].multi;
   if (isMulti) {
     btn.classList.toggle('selected');
@@ -556,17 +563,73 @@ function generateRoadmap() {
   const container = document.getElementById('quiz-container');
   
   const pathData = {
-    premed: {
-      title: 'Your Pre-Med Roadmap',
-      phases: [
-        {name:'Foundation',duration:'Months 1-6',items:['Complete prerequisite courses (Bio, Chem, Physics, Orgo)','Begin clinical volunteering','Start shadowing physicians','Join pre-health organizations']},
-        {name:'Building',duration:'Months 7-12',items:['Continue coursework (Biochem, A&P, upper levels)','Build clinical hours (150+ target)','Develop research experience','Begin MCAT content review']},
-        {name:'MCAT Prep',duration:'Months 13-16',items:['Full-time MCAT preparation','Practice exams weekly','Target: 510+ for MD, 500+ for DO','Maintain minimal ECs']},
-        {name:'Application',duration:'Months 17-22',items:['Write personal statement','Complete AMCAS/AACOMAS','Submit secondaries within 2 weeks','Prepare for interviews']},
-      ],
-      resources: ['Khan Academy MCAT','Anki flashcards (MilesDown)','AAMC official materials','Jack Westin CARS','Organic Chemistry Tutor (YouTube)','Ninja Nerd (YouTube)'],
-      schedule: 'During prereqs: 15-20 hrs/week coursework. During MCAT prep: 6-8 hrs/day full-time.',
-    },
+    premed: (function(){
+      var a=quizAnswers;
+      var completedCourses=(a.q6||'').split(', ').filter(Boolean);
+      var hasGenChem=completedCourses.some(function(c){return c.includes('Gen Chem')});
+      var hasOrgo=completedCourses.some(function(c){return c.includes('Organic')});
+      var hasBio=completedCourses.some(function(c){return c.includes('Biology')});
+      var hasPhysics=completedCourses.some(function(c){return c.includes('Physics')});
+      var hasBiochem=completedCourses.some(function(c){return c.includes('Biochem')});
+      var hasAP=completedCourses.some(function(c){return c.includes('A&P')});
+      var prereqsDone=(a.q5||'').includes('All');
+      var clinExp=(a.q8||'');
+      var shadowHrs=(a.q9||'');
+      var research=(a.q10||'');
+      var gpa=(a.q11||'');
+      var target=(a.q4||'');
+      // Build Foundation phase dynamically
+      var foundItems=[];
+      if(!hasGenChem)foundItems.push('Complete Gen Chem I & II + labs');
+      if(!hasBio)foundItems.push('Complete Biology I & II + labs');
+      if(!hasOrgo)foundItems.push('Complete Organic Chemistry I & II + labs');
+      if(!hasPhysics)foundItems.push('Complete Physics I & II + labs');
+      if(!hasBiochem)foundItems.push('Complete Biochemistry');
+      if(!hasAP)foundItems.push('Complete Anatomy & Physiology I & II');
+      if(clinExp.includes('None'))foundItems.push('Begin clinical volunteering (target 150+ hours)');
+      if(shadowHrs.includes('None')||shadowHrs.includes('Under'))foundItems.push('Start physician shadowing (target 50+ hours across specialties)');
+      foundItems.push('Join pre-health organizations on campus');
+      if(gpa&&(gpa.includes('3.0')||gpa.includes('Below')))foundItems.push('Focus on GPA improvement — aim for upward trend');
+      // Build phases
+      var phases=[];
+      if(foundItems.length>2){
+        var dur=prereqsDone?'Months 1-3':'Months 1-6';
+        phases.push({name:'Foundation',duration:dur,items:foundItems});
+      }
+      var buildItems=['Build clinical hours toward 150+ total'];
+      if(research.includes('None'))buildItems.push('Find a research lab (ask professors, check lab websites)');
+      if(!clinExp.includes('Paid'))buildItems.push('Consider paid clinical work (CNA, EMT, scribe)');
+      buildItems.push('Begin MCAT content review (Kaplan books or Khan Academy)');
+      buildItems.push('Get strong recommendation letters (start relationships now)');
+      if(!shadowHrs.includes('50+'))buildItems.push('Continue shadowing across multiple specialties');
+      var buildDur=prereqsDone?'Months 1-6':'Months 7-12';
+      phases.push({name:'Building',duration:buildDur,items:buildItems});
+      var mcatTarget=target.includes('MD')?'510+':'500+';
+      phases.push({name:'MCAT Prep',duration:prereqsDone?'Months 7-10':'Months 13-16',items:[
+        'Full-time MCAT preparation (6-8 hrs/day if possible)',
+        'Content review all subjects (3 months)',
+        'AAMC Qpacks + Section Bank',
+        'Full-length practice exams every Saturday',
+        'Target: '+mcatTarget+' ('+(target.includes('MD')?'competitive for MD':'competitive for DO/CAA')+')',
+        'Review every wrong answer the next day',
+        'Anki flashcards 30 min/day (MilesDown deck)'
+      ]});
+      phases.push({name:'Application',duration:prereqsDone?'Months 11-16':'Months 17-22',items:[
+        'Write personal statement (start 3 months early, 15+ drafts)',
+        target.includes('DO')?'Complete AACOMAS application':'Complete AMCAS application'+(target.includes('Both')?' + AACOMAS':''),
+        'Submit primary application day 1 (late May/early June)',
+        'Pre-write secondary essays for top 10 schools',
+        'Submit secondaries within 2 weeks of receiving them',
+        'Prepare for interviews (MMI + traditional format)',
+        'Send update letters to schools after interview'
+      ]});
+      return {
+        title:'Your Pre-Med Roadmap'+(target.includes('DO')?' (DO Focus)':target.includes('MD')?' (MD Focus)':''),
+        phases:phases,
+        resources:['Khan Academy MCAT (free)','Anki MilesDown deck','AAMC official materials','Jack Westin CARS (free daily)','Organic Chemistry Tutor (YouTube)','Ninja Nerd (YouTube)','MSAR (med school database)','r/premed subreddit'],
+        schedule:prereqsDone?'Focus: MCAT prep 6-8 hrs/day. ECs on weekends.':'During prereqs: 15-20 hrs/week coursework + 5-10 hrs/week ECs. During MCAT prep: 6-8 hrs/day full-time.'
+      };
+    })(),
     mcat: {
       title: 'Your MCAT Study Roadmap',
       phases: [
