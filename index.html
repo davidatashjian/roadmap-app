@@ -180,7 +180,6 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     <a href="#paths" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Paths</a>
     <a href="#features" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Features</a>
     <a href="#pricing" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Support</a>
-    <a href="#games" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">Games</a>
     <a href="#faq" onclick="if(document.getElementById('landing').style.display==='none'){event.preventDefault();location.reload()}">FAQ</a>
     <a href="#" id="auth-nav-btn" style="color:#94a3b8;text-decoration:none;font-size:.88em;cursor:pointer" onclick="event.preventDefault();showAuthModal()">Sign In</a>
     <a href="#" class="nav-cta" onclick="event.preventDefault();startQuiz()">Get Started</a>
@@ -298,27 +297,6 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     </div>
   </section>
 
-  <section class="fade-in" id="games" style="padding:80px 20px">
-    <div style="max-width:1100px;margin:0 auto;text-align:center">
-      <h2 style="font-size:2em;font-weight:800;margin-bottom:12px">Games</h2>
-      <p style="color:#64748b;margin-bottom:32px">Take a study break or sharpen your MCAT knowledge</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px;margin:0 auto">
-        <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
-          <div style="font-size:2.5em;margin-bottom:12px">🏓</div>
-          <h3 style="margin-bottom:6px">Brain Breaker</h3>
-          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Smash bricks, level up, don't lose your 3 lives. Gets faster each level. Move your paddle with the mouse.</p>
-          <button onclick="launchBrainBounce()" style="padding:10px 24px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play Free</button>
-        </div>
-        <div style="background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
-          <div style="font-size:2.5em;margin-bottom:12px">🧬</div>
-          <h3 style="margin-bottom:6px">MCAT Quiz Rush</h3>
-          <p style="font-size:.85em;color:#64748b;margin-bottom:16px">Rapid-fire MCAT questions. Pick the right answer before time runs out. Beat your high score.</p>
-          <button onclick="launchMCATDash()" style="padding:10px 24px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">Play Free</button>
-        </div>
-      </div>
-      <div id="game-area" style="display:none;margin-top:24px;background:#0f172a;border-radius:16px;position:relative;height:400px;overflow:hidden;cursor:pointer"></div>
-    </div>
-  </section>
 
   <section class="faq-section fade-in" id="faq">
     <h2 style="font-size:2em;font-weight:800;text-align:center;margin-bottom:32px">FAQ</h2>
@@ -834,8 +812,13 @@ function generateRoadmap() {
   // Pomodoro timer
   html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 8px;font-size:.95em;color:var(--text)">⏲ Pomodoro Timer</h4><div id="pomo-display" style="font-size:2.5em;font-weight:800;color:#2563eb;margin:8px 0">25:00</div><div style="display:flex;gap:8px;justify-content:center"><button onclick="pomoStart()" style="padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Start</button><button onclick="pomoReset()" style="padding:8px 20px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text)">Reset</button></div><p style="font-size:.78em;color:#94a3b8;margin-top:8px">25 min focus, 5 min break. Repeat.</p></div>';
 
-  // Simple flashcard area
-  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 12px;font-size:.95em;color:var(--text)">🃏 Quick Flashcards</h4><div id="fc-area" style="min-height:100px;border:2px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer;font-size:1.1em;font-weight:600;color:var(--text)" onclick="this.querySelector(\'span\').style.display=this.querySelector(\'span\').style.display===\'none\'?\'block\':\'none\'"><div><p id="fc-q-text">Click \"Add Card\" to create flashcards for this path</p><span style="display:none;color:#2563eb;margin-top:8px" id="fc-a-text"></span></div></div><div style="margin-top:10px"><button onclick="fcPromptAdd()" style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85em">+ Add Card</button> <button onclick="fcNext()" style="padding:6px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:.85em;color:var(--text)">Next →</button></div></div>';
+  // Flashcard area with subject selector
+  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;text-align:center">';
+  html += '<h4 style="margin:0 0 8px;font-size:.95em;color:var(--text)">\uD83C\uDCCF Flashcards</h4>';
+  html += '<div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;flex-wrap:wrap"><select id="fc-subject" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.82em"><option value="all">All Subjects</option><option value="chem">Gen Chem</option><option value="bio">Biology</option><option value="orgo">Orgo</option><option value="physics">Physics</option><option value="biochem">Biochem</option><option value="psych">Psych/Soc</option></select><button onclick="fcGenerate()" style="padding:6px 14px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:.82em;cursor:pointer">Generate Cards</button></div>';
+  html += '<div id="fc-area" style="min-height:80px;border:2px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;padding:20px;cursor:pointer;font-size:1em;font-weight:600;color:var(--text)" onclick="fcFlip()"><div><p id="fc-q-text">Select a subject and click Generate</p><span style="display:none;color:#2563eb;margin-top:8px;font-weight:400" id="fc-a-text"></span></div></div>';
+  html += '<div style="display:flex;gap:8px;justify-content:center;margin-top:10px"><button onclick="fcPrev()" style="padding:6px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:.85em;color:var(--text)">\u2190</button><span id="fc-count" style="font-size:.78em;color:#94a3b8;line-height:2.2">0/0</span><button onclick="fcNext()" style="padding:6px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:.85em;color:var(--text)">\u2192</button></div>';
+  html += '</div>';
 
   // === STUDY TOOLS (tabbed) ===
   html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;margin:14px 0;overflow:hidden">';
@@ -883,10 +866,11 @@ function generateRoadmap() {
   html += '<div id="gpa-result" style="margin-top:12px;padding:12px;background:#f0fdf4;border-radius:8px;text-align:center;font-size:1.2em;font-weight:700;color:#059669"></div>';
   html += '</div>';
 
-  // Quick Notes
+  // Quick Notes (list format)
   html += '<div id="tool-notes" class="tool-panel" style="padding:16px;display:none">';
   html += '<h4 style="margin:0 0 8px;font-size:.95em">Quick Notes</h4>';
-  html += '<textarea id="quick-notes" style="width:100%;height:150px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:.9em;font-family:inherit;resize:vertical" placeholder="Jot down anything — study notes, reminders, motivation..." oninput="localStorage.setItem(\'rm_notes\',this.value)">'+(localStorage.getItem('rm_notes')||'').replace(/</g,'&lt;')+'</textarea>';
+  html += '<div style="display:flex;gap:6px;margin-bottom:10px"><input id="note-input" type="text" placeholder="Write a note..." style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:.88em;background:var(--bg);color:var(--text)" onkeydown="if(event.key===\'Enter\')addNote()"><button onclick="addNote()" style="padding:8px 14px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:.85em;cursor:pointer">Add</button></div>';
+  html += '<div id="notes-list" style="max-height:200px;overflow-y:auto"></div>';
   html += '</div>';
 
   html += '</div>';
@@ -1043,24 +1027,54 @@ function pomoStart(){
 }
 function pomoReset(){clearInterval(pomoInt);pomoInt=null;pomoSecs=1500;const d=document.getElementById('pomo-display');if(d)d.textContent='25:00';}
 
-// Flashcards
-let fcCards=JSON.parse(localStorage.getItem('rm_flashcards')||'[]'), fcIdx=0;
-function fcPromptAdd(){
-  const front=prompt('Front (question/term):');if(!front)return;
-  const back=prompt('Back (answer/definition):');if(!back)return;
-  fcCards.push({q:front,a:back});
-  localStorage.setItem('rm_flashcards',JSON.stringify(fcCards));
-  fcShow();
+// Flashcards (subject-based)
+var fcCards=[],fcIdx=0;
+function fcGenerate(){
+  var subj=document.getElementById('fc-subject');
+  if(!subj)return;
+  var key=subj.value;
+  if(key==='all'){fcCards=[];Object.values(PREMED_QS).forEach(function(a){fcCards=fcCards.concat(a)})}
+  else{fcCards=(PREMED_QS[key]||[]).slice()}
+  fcCards.sort(function(){return Math.random()-0.5});
+  fcIdx=0;fcShow();
 }
-function fcNext(){if(!fcCards.length)return;fcIdx=(fcIdx+1)%fcCards.length;fcShow();}
+function fcFlip(){
+  var at=document.getElementById('fc-a-text');
+  if(at)at.style.display=at.style.display==='none'?'block':'none';
+}
+function fcPrev(){if(!fcCards.length)return;fcIdx=(fcIdx-1+fcCards.length)%fcCards.length;fcShow()}
+function fcNext(){if(!fcCards.length)return;fcIdx=(fcIdx+1)%fcCards.length;fcShow()}
 function fcShow(){
-  const qt=document.getElementById('fc-q-text');
-  const at=document.getElementById('fc-a-text');
-  if(!qt||!fcCards.length)return;
+  var qt=document.getElementById('fc-q-text');
+  var at=document.getElementById('fc-a-text');
+  var ct=document.getElementById('fc-count');
+  if(!qt||!fcCards.length){if(qt)qt.textContent='Select a subject and click Generate';return}
   qt.textContent=fcCards[fcIdx].q;
-  if(at){at.textContent=fcCards[fcIdx].a;at.style.display='none';}
+  if(at){at.textContent=fcCards[fcIdx].a;at.style.display='none'}
+  if(ct)ct.textContent=(fcIdx+1)+'/'+fcCards.length;
 }
-if(fcCards.length)setTimeout(fcShow,500);
+
+// Quick Notes (list)
+var notesList=JSON.parse(localStorage.getItem('rm_notes_list')||'[]');
+function addNote(){
+  var inp=document.getElementById('note-input');if(!inp||!inp.value.trim())return;
+  notesList.unshift({text:inp.value.trim(),time:new Date().toLocaleString()});
+  localStorage.setItem('rm_notes_list',JSON.stringify(notesList));
+  inp.value='';renderNotes();
+}
+function removeNote(i){
+  notesList.splice(i,1);
+  localStorage.setItem('rm_notes_list',JSON.stringify(notesList));
+  renderNotes();
+}
+function renderNotes(){
+  var el=document.getElementById('notes-list');if(!el)return;
+  if(!notesList.length){el.innerHTML='<p style="color:#94a3b8;font-size:.85em;text-align:center;padding:12px">No notes yet</p>';return}
+  el.innerHTML=notesList.map(function(n,i){
+    return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:.88em;color:var(--text)">'+n.text+'</div><div style="font-size:.7em;color:#94a3b8;margin-top:2px">'+n.time+'</div></div><button onclick="removeNote('+i+')" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:.9em;padding:0 4px">&times;</button></div>';
+  }).join('');
+}
+setTimeout(renderNotes,600);
 
 // === TAB SWITCHING ===
 function showToolTab(id){
@@ -1238,11 +1252,13 @@ document.addEventListener('change',function(e){if(e.target.type==='checkbox'&&e.
 
 // === CONFETTI ===
 function spawnConfetti(){
-  const colors=['#2563eb','#7c3aed','#10b981','#f59e0b','#ef4444','#ec4899'];
-  for(let i=0;i<20;i++){
-    const p=document.createElement('div');
+  var colors=['#2563eb','#7c3aed','#10b981','#f59e0b','#ef4444','#ec4899'];
+  for(var i=0;i<15;i++){
+    var p=document.createElement('div');
     p.style.cssText='position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:999;top:'+(Math.random()*40+10)+'%;left:'+(Math.random()*80+10)+'%;background:'+colors[Math.floor(Math.random()*6)]+';animation:confetti-fall .8s ease-out forwards';
-    document.body.appendChild(p);setTimeout(()=>p.remove(),900);
+    document.body.appendChild(p);
+    p.addEventListener('animationend',function(){this.remove()});
+    setTimeout(function(){p.parentNode&&p.remove()},1200);
   }
 }
 const confettiCSS=document.createElement('style');
@@ -1680,7 +1696,8 @@ function startMCATRunner(){
 
 // === BRAIN BOUNCE - Brick Breaker (Free game) ===
 function launchBrainBounce(){
-  var area=document.getElementById('game-area');
+  var area=document.getElementById('game-area-rm')||document.getElementById('game-area');
+  if(!area)return;
   area.style.display='block';area.style.height='450px';area.style.background='#0f172a';
   area.scrollIntoView({behavior:'smooth'});
   var W=area.offsetWidth,H=450;
@@ -1761,7 +1778,7 @@ function launchBrainBounce(){
 
 // === MCAT QUIZ RUSH (timed trivia game) ===
 function launchMCATDash(){
-  var area=document.getElementById('game-area');
+  var area=document.getElementById('game-area-rm')||document.getElementById('game-area');
   area.style.display='block';area.style.height='400px';area.style.background='#0f172a';
   area.scrollIntoView({behavior:'smooth'});
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
