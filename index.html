@@ -906,8 +906,9 @@ function generateRoadmap() {
   html += '<button onclick="startSurvival()" style="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;color:var(--text)">\u2694\uFE0F Survival</button>';
   html += '<button onclick="startMultiplayer()" style="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;color:var(--text)">\uD83E\uDD1C 1v1</button>';
   html += '</div>';
-  html += '<div id="game-area-rm" style="display:none;margin-top:12px;background:#0f172a;border-radius:12px;position:relative;height:400px;overflow:hidden;cursor:pointer"></div>';
-  html += '<div id="sv-area" style="display:none;margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px"></div>';
+  html += '<div style="margin-top:8px;text-align:center"><button id="game-pause-btn" onclick="pauseCurrentGame()" style="display:none;padding:6px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:.82em;cursor:pointer;color:var(--text)">\u23F8 Pause</button></div>';
+  html += '<div id="game-area-rm" style="display:none;margin-top:8px;background:#0f172a;border-radius:12px;position:relative;height:400px;overflow:hidden;cursor:pointer"></div>';
+  html += '<div id="sv-area" style="display:none;margin-top:8px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px"></div>';
   html += '</div>';
   }// end games
 
@@ -998,14 +999,17 @@ function toggleFocusMode(){
   var btn=document.getElementById('focus-btn');
   if(focusMode){
     document.querySelectorAll('.ad-slot').forEach(function(a){a.style.display='none'});
-    document.querySelectorAll('[data-roadmap] > div:not(.rm-phase):not([id])').forEach(function(el){
-      if(!el.querySelector('.rm-pct')&&!el.querySelector('h1')&&!el.querySelector('[data-roadmap]'))el.style.opacity='0.3';
-    });
-    if(btn)btn.style.background='#2563eb';if(btn)btn.style.color='#fff';
+    // Hide everything except phases and progress
+    document.querySelectorAll('[data-section]').forEach(function(el){el.style.display='none'});
+    document.querySelectorAll('.tool-panel').forEach(function(el){el.style.display='none'});
+    if(btn){btn.style.background='#2563eb';btn.style.color='#fff';btn.textContent='\uD83C\uDFAF Exit Focus'}
   } else {
     document.querySelectorAll('.ad-slot').forEach(function(a){a.style.display=''});
-    document.querySelectorAll('[data-roadmap] > div').forEach(function(el){el.style.opacity=''});
-    if(btn)btn.style.background='none';if(btn)btn.style.color='var(--text)';
+    document.querySelectorAll('[data-section]').forEach(function(el){
+      var id=el.getAttribute('data-section');
+      if(localStorage.getItem('rm_hide_'+id)!=='1')el.style.display='';
+    });
+    if(btn){btn.style.background='none';btn.style.color='var(--text)';btn.textContent='\uD83C\uDFAF Focus Mode'}
   }
 }
 // === SECTION CONTROLS (X dismiss + reorder) ===
@@ -1476,6 +1480,8 @@ function stopAmbient(){
 
 // === SURVIVAL MODE GAME (real game with hearts + streak) ===
 function startSurvival(){
+  hideAllGameAreas();
+  setActiveGame('survival');
   var area=document.getElementById('sv-area');
   if(!area)return;
   area.style.display='block';
@@ -1527,20 +1533,6 @@ setTimeout(function(){
     qDiv.style.cssText='background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border-left:3px solid #2563eb;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:.88em;font-style:italic;color:#475569';
     qDiv.innerHTML='"'+quote.t+'" <span style="display:block;font-style:normal;font-weight:600;margin-top:4px;font-size:.9em;color:#1e293b">— '+quote.a+'</span>';
     rmPct.parentNode.insertBefore(qDiv,rmPct);
-  }
-  // Add study games section to roadmap
-  var supportCard=document.querySelector('[href*="donate.stripe"]');
-  if(supportCard&&!document.getElementById('sv-area')){
-    var toolsDiv=document.createElement('div');
-    toolsDiv.style.cssText='margin:20px 0';
-    toolsDiv.innerHTML='<h3 style="margin-bottom:12px">\uD83C\uDFAE Study Games</h3>'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
-      '<button onclick="startSurvival()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\u2694\uFE0F Survival Mode</button>'+
-      '<button onclick="startMultiplayer()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83E\uDD1C 1v1 Mode</button>'+
-      '</div>'+
-      '<div style="margin-top:12px;padding:12px;background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:10px"><h4 style="margin:0 0 8px;font-size:.9em">\uD83C\uDFB5 Focus Sounds</h4><div style="display:flex;gap:6px;flex-wrap:wrap"><button onclick="playAmbient(\'rain\')" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:var(--text,#1e293b)">\uD83C\uDF27 Rain</button><button onclick="playAmbient(\'brown\')" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:var(--text,#1e293b)">\uD83C\uDF3F Brown Noise</button><button onclick="playAmbient(\'white\')" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:var(--text,#1e293b)">\u2601\uFE0F White Noise</button><button onclick="stopAmbient()" style="padding:6px 12px;border:1px solid #ef4444;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:#ef4444">\u23F9 Stop</button></div><div id="sound-indicator" style="display:none;margin-top:6px;font-size:.78em;color:#059669">\u266A Playing...</div></div>'+
-      '<div id="sv-area" style="display:none;margin-top:16px;background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:12px;padding:20px"></div>';
-    supportCard.closest('div').parentNode.insertBefore(toolsDiv,supportCard.closest('div'));
   }
 },500);
 
@@ -1706,6 +1698,8 @@ var PREMED_QS={
 
 // === MULTIPLAYER MODE ===
 function startMultiplayer(){
+  hideAllGameAreas();
+  setActiveGame('1v1');
   var area=document.getElementById('sv-area');if(!area)return;
   area.style.display='block';
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
@@ -1785,8 +1779,31 @@ function startMCATRunner(){
   setTimeout(function(){alive=true;render()},500);
 }
 
+// === GAME STATE MANAGER ===
+var activeGame=null,gamePaused=false;
+function setActiveGame(name){
+  activeGame=name;gamePaused=false;
+  var pb=document.getElementById('game-pause-btn');
+  if(pb){pb.style.display='inline-block';pb.textContent='\u23F8 Pause'}
+}
+function pauseCurrentGame(){
+  gamePaused=!gamePaused;
+  var pb=document.getElementById('game-pause-btn');
+  if(pb)pb.textContent=gamePaused?'\u25B6 Resume':'\u23F8 Pause';
+  // For brick breaker
+  if(activeGame==='brick'&&!gamePaused){var area=document.getElementById('game-area-rm');if(area&&area._tick)area._tick()}
+}
+function hideAllGameAreas(){
+  var ga=document.getElementById('game-area-rm');if(ga){ga.style.display='none';ga.innerHTML=''}
+  var sv=document.getElementById('sv-area');if(sv){sv.style.display='none';sv.innerHTML=''}
+  gamePaused=false;activeGame=null;
+  var pb=document.getElementById('game-pause-btn');if(pb)pb.style.display='none';
+}
+
 // === BRAIN BOUNCE - Brick Breaker (Free game) ===
 function launchBrainBounce(){
+  hideAllGameAreas();
+  setActiveGame('brick');
   var area=document.getElementById('game-area-rm')||document.getElementById('game-area');
   if(!area)return;
   area.style.display='block';area.style.height='450px';area.style.background='#0f172a';
@@ -1807,9 +1824,10 @@ function launchBrainBounce(){
   buildBricks();
   area.onmousemove=function(e){var r=area.getBoundingClientRect();padX=Math.max(0,Math.min(W-padW,e.clientX-r.left-padW/2))};
   area.ontouchmove=function(e){e.preventDefault();var r=area.getBoundingClientRect();padX=Math.max(0,Math.min(W-padW,e.touches[0].clientX-r.left-padW/2))};
+  area._tick=tick;
   function tick(){
     if(!alive)return;
-    if(paused){area.innerHTML+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);color:#fff;font-size:1.5em;font-weight:700;z-index:10">PAUSED (press P)</div>';return}
+    if(paused||gamePaused){area.innerHTML+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);color:#fff;font-size:1.5em;font-weight:700;z-index:10">PAUSED</div>';return}
     ballX+=bvx;ballY+=bvy;
     if(ballX<ballR||ballX>W-ballR)bvx*=-1;
     if(ballY<ballR)bvy*=-1;
@@ -1869,7 +1887,10 @@ function launchBrainBounce(){
 
 // === MCAT QUIZ RUSH (timed trivia game) ===
 function launchMCATDash(){
+  hideAllGameAreas();
+  setActiveGame('quiz');
   var area=document.getElementById('game-area-rm')||document.getElementById('game-area');
+  if(!area)return;
   area.style.display='block';area.style.height='400px';area.style.background='#0f172a';
   area.scrollIntoView({behavior:'smooth'});
   var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
