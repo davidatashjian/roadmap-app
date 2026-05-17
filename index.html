@@ -329,6 +329,9 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 // === PAGE INIT ===
 window.scrollTo(0,0);
 if(window.location.hash)history.replaceState(null,null,window.location.pathname);
+// Restore roadmap on reload if we were viewing one
+var _savedQuiz=localStorage.getItem('rm_quiz_state');
+if(_savedQuiz){try{var _sq=JSON.parse(_savedQuiz);window._restoreQuiz=_sq}catch(e){}}
 
 // === SUPABASE INIT ===
 const SUPABASE_URL='https://ddiklxucgprxkrobwfbj.supabase.co';
@@ -387,8 +390,8 @@ function showAuthModal(callback){
   authModal=document.createElement('div');
   authModal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center';
   var box=document.createElement('div');
-  box.style.cssText='background:#fff;border-radius:16px;padding:32px;max-width:380px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,.3)';
-  box.innerHTML='<h2 style="margin:0 0 4px;font-size:1.3em;color:#1e293b">Sign In / Sign Up</h2><p style="color:#64748b;font-size:.85em;margin:0 0 16px">Create an account or log in to save progress</p><input id="auth-email" type="email" placeholder="Email" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em;color:#1e293b"><input id="auth-pass" type="password" placeholder="Password (6+ chars)" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0;font-size:.95em;color:#1e293b"><p id="auth-msg" style="color:#ef4444;font-size:.82em;margin:4px 0;min-height:1.2em"></p><div style="display:flex;gap:8px;margin-top:8px"></div>';
+  box.style.cssText='background:var(--card);border-radius:16px;padding:32px;max-width:380px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,.3)';
+  box.innerHTML='<h2 style="margin:0 0 4px;font-size:1.3em;color:var(--text)">Sign In / Sign Up</h2><p style="color:#64748b;font-size:.85em;margin:0 0 16px">Create an account or log in to save progress across devices</p><input id="auth-email" type="email" placeholder="Email" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;margin:4px 0;font-size:.95em;color:var(--text);background:var(--bg)"><input id="auth-pass" type="password" placeholder="Password (6+ chars)" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;margin:4px 0;font-size:.95em;color:var(--text);background:var(--bg)"><p id="auth-msg" style="color:#ef4444;font-size:.82em;margin:4px 0;min-height:1.2em"></p><div style="display:flex;gap:8px;margin-top:8px"></div>';
   var btnRow=box.querySelector('div:last-child');
   var loginBtn=document.createElement('button');
   loginBtn.textContent='Log In';
@@ -536,6 +539,8 @@ function showLoading(){
   var container=document.getElementById('quiz-container');
   container.innerHTML='<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center"><div><div style="width:48px;height:48px;border:4px solid var(--border);border-top-color:#2563eb;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><h2 style="font-size:1.4em;margin-bottom:8px;color:var(--text)">Building Your Roadmap...</h2><p style="color:#64748b">Personalizing based on your answers</p></div></div>';
   if(!document.getElementById('spin-css')){var s=document.createElement('style');s.id='spin-css';s.textContent='@keyframes spin{to{transform:rotate(360deg)}}';document.head.appendChild(s)}
+  // Save quiz state for reload persistence
+  localStorage.setItem('rm_quiz_state',JSON.stringify({path:quizPath,answers:quizAnswers}));
   var count=parseInt(localStorage.getItem('rm_total_created'))||0;
   localStorage.setItem('rm_total_created',String(count+1));
   setTimeout(function(){generateRoadmap()},1500);
@@ -654,7 +659,7 @@ function generateRoadmap() {
   
   // Top toolbar
   html += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
-  html += '<button onclick="location.reload()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:var(--text);cursor:pointer;font-size:.85em">&larr; Home</button>';
+  html += '<button onclick="localStorage.removeItem(\'rm_quiz_state\');location.reload()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:var(--text);cursor:pointer;font-size:.85em">&larr; Home</button>';
   html += '<button onclick="if(confirm(\'Reset all progress?\')){for(var k in localStorage){if(k.startsWith(\'rm_\'+\''+path+'\')){localStorage.removeItem(k)}};location.reload()}" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:#ef4444;cursor:pointer;font-size:.85em">Reset</button>';
   html += '<button onclick="document.getElementById(\'rm-settings\').style.display=document.getElementById(\'rm-settings\').style.display===\'none\'?\'block\':\'none\'" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:var(--text);cursor:pointer;font-size:.85em">\u2699 Customize</button>';
   html += '<button onclick="toggleFocusMode()" id="focus-btn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 16px;color:var(--text);cursor:pointer;font-size:.85em">\uD83C\uDFAF Focus Mode</button>';
@@ -1914,6 +1919,14 @@ document.addEventListener('keydown',function(e){
     document.querySelectorAll('.levelup-overlay').forEach(function(el){el.remove()});
   }
 });
+
+// === RESTORE ROADMAP ON RELOAD ===
+if(window._restoreQuiz){
+  quizPath=window._restoreQuiz.path;
+  quizAnswers=window._restoreQuiz.answers;
+  document.getElementById('landing').style.display='none';
+  generateRoadmap();
+}
 
 </script>
 </body>
