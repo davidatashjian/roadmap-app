@@ -718,6 +718,60 @@ function generateRoadmap() {
   // Simple flashcard area
   html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:14px 0;text-align:center"><h4 style="margin:0 0 12px;font-size:.95em">🃏 Quick Flashcards</h4><div id="fc-area" style="min-height:100px;border:2px solid #e2e8f0;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer;font-size:1.1em;font-weight:600" onclick="this.querySelector(\'span\').style.display=this.querySelector(\'span\').style.display===\'none\'?\'block\':\'none\'"><div><p id="fc-q-text">Click \"Add Card\" to create flashcards for this path</p><span style="display:none;color:#2563eb;margin-top:8px" id="fc-a-text"></span></div></div><div style="margin-top:10px"><button onclick="fcPromptAdd()" style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85em">+ Add Card</button> <button onclick="fcNext()" style="padding:6px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:.85em">Next →</button></div></div>';
 
+  // === STUDY TOOLS (tabbed) ===
+  html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin:14px 0;overflow:hidden">';
+  html += '<div style="display:flex;border-bottom:1px solid #e2e8f0;overflow-x:auto">';
+  html += '<button class="tool-tab active" onclick="showToolTab(\'habits\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#2563eb;border-bottom:2px solid #2563eb;white-space:nowrap">Habits</button>';
+  html += '<button class="tool-tab" onclick="showToolTab(\'hours\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">Study Hours</button>';
+  html += '<button class="tool-tab" onclick="showToolTab(\'gpa\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">GPA Calc</button>';
+  html += '<button class="tool-tab" onclick="showToolTab(\'notes\')" style="padding:10px 16px;border:none;background:#fff;cursor:pointer;font-size:.82em;font-weight:600;color:#64748b;border-bottom:2px solid transparent;white-space:nowrap">Notes</button>';
+  html += '</div>';
+
+  // Habit Tracker
+  html += '<div id="tool-habits" class="tool-panel" style="padding:16px">';
+  html += '<h4 style="margin:0 0 12px;font-size:.95em">Daily Habits</h4>';
+  var habits=['Study 2+ hours','Review flashcards','Exercise','Drink water','Sleep 7+ hours','Read 30 min','Practice problems'];
+  var days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.8em"><thead><tr><th style="text-align:left;padding:4px 8px;color:#64748b">Habit</th>';
+  days.forEach(function(d){html+='<th style="padding:4px 6px;color:#64748b;font-weight:600">'+d+'</th>'});
+  html += '</tr></thead><tbody>';
+  habits.forEach(function(h,hi){
+    html += '<tr><td style="padding:4px 8px;font-size:.9em">'+h+'</td>';
+    days.forEach(function(d,di){
+      var hk='rm_habit_'+hi+'_'+di;
+      var hc=localStorage.getItem(hk)==='1';
+      html += '<td style="text-align:center;padding:4px"><input type="checkbox"'+(hc?' checked':'')+' onchange="localStorage.setItem(\''+hk+'\',this.checked?\'1\':\'0\')"></td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  // Study Hours Logger
+  html += '<div id="tool-hours" class="tool-panel" style="padding:16px;display:none">';
+  html += '<h4 style="margin:0 0 12px;font-size:.95em">Study Hours This Week</h4>';
+  html += '<div id="hours-chart" style="display:flex;align-items:flex-end;gap:8px;height:120px;margin-bottom:12px;padding:0 4px"></div>';
+  html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+  html += '<select id="hours-subj" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em"><option>Gen Chem</option><option>Orgo</option><option>Biology</option><option>Physics</option><option>Biochem</option><option>MCAT</option><option>Other</option></select>';
+  html += '<input id="hours-val" type="number" min="0.5" max="24" step="0.5" value="1" style="width:60px;padding:6px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em">';
+  html += '<button onclick="logStudyHours()" style="padding:6px 14px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:.85em;cursor:pointer">Log</button>';
+  html += '</div></div>';
+
+  // GPA Calculator
+  html += '<div id="tool-gpa" class="tool-panel" style="padding:16px;display:none">';
+  html += '<h4 style="margin:0 0 12px;font-size:.95em">GPA Calculator</h4>';
+  html += '<div id="gpa-courses"></div>';
+  html += '<button onclick="addGPACourse()" style="padding:6px 14px;background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:6px;font-size:.82em;cursor:pointer;color:#64748b;margin:8px 0">+ Add Course</button>';
+  html += '<div id="gpa-result" style="margin-top:12px;padding:12px;background:#f0fdf4;border-radius:8px;text-align:center;font-size:1.2em;font-weight:700;color:#059669"></div>';
+  html += '</div>';
+
+  // Quick Notes
+  html += '<div id="tool-notes" class="tool-panel" style="padding:16px;display:none">';
+  html += '<h4 style="margin:0 0 8px;font-size:.95em">Quick Notes</h4>';
+  html += '<textarea id="quick-notes" style="width:100%;height:150px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:.9em;font-family:inherit;resize:vertical" placeholder="Jot down anything — study notes, reminders, motivation..." oninput="localStorage.setItem(\'rm_notes\',this.value)">'+(localStorage.getItem('rm_notes')||'').replace(/</g,'&lt;')+'</textarea>';
+  html += '</div>';
+
+  html += '</div>';
+
   // Ad placement (bottom)
   html += '<div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;text-align:center;margin:20px 0;font-size:.78em;color:#94a3b8">Ad space — Ads help keep this tool free</div>';
 
@@ -771,6 +825,79 @@ function fcShow(){
   if(at){at.textContent=fcCards[fcIdx].a;at.style.display='none';}
 }
 if(fcCards.length)setTimeout(fcShow,500);
+
+// === TAB SWITCHING ===
+function showToolTab(id){
+  document.querySelectorAll('.tool-panel').forEach(function(p){p.style.display='none'});
+  document.querySelectorAll('.tool-tab').forEach(function(t){t.style.color='#64748b';t.style.borderBottomColor='transparent'});
+  var panel=document.getElementById('tool-'+id);
+  if(panel)panel.style.display='block';
+  event.target.style.color='#2563eb';event.target.style.borderBottomColor='#2563eb';
+  if(id==='hours')renderHoursChart();
+  if(id==='gpa')renderGPA();
+}
+
+// === STUDY HOURS LOGGER ===
+function getStudyHours(){return JSON.parse(localStorage.getItem('rm_study_hours')||'{}');}
+function logStudyHours(){
+  var subj=document.getElementById('hours-subj');
+  var val=document.getElementById('hours-val');
+  if(!subj||!val)return;
+  var hours=getStudyHours();
+  var key=subj.value;
+  hours[key]=(hours[key]||0)+parseFloat(val.value);
+  localStorage.setItem('rm_study_hours',JSON.stringify(hours));
+  renderHoursChart();
+  addXP(Math.floor(parseFloat(val.value)*5));
+}
+function renderHoursChart(){
+  var el=document.getElementById('hours-chart');if(!el)return;
+  var hours=getStudyHours();
+  var subjects=Object.keys(hours);
+  if(!subjects.length){el.innerHTML='<p style="color:#94a3b8;font-size:.85em;width:100%;text-align:center">Log study hours to see your chart</p>';return}
+  var max=Math.max.apply(null,subjects.map(function(s){return hours[s]}));
+  var colors=['#2563eb','#7c3aed','#059669','#f59e0b','#ef4444','#ec4899','#64748b'];
+  el.innerHTML=subjects.map(function(s,i){
+    var pct=max>0?Math.round((hours[s]/max)*100):0;
+    return '<div style="flex:1;text-align:center;min-width:40px"><div style="background:'+colors[i%7]+';height:'+pct+'%;min-height:4px;border-radius:4px 4px 0 0;margin:0 auto;width:80%"></div><div style="font-size:.7em;color:#64748b;margin-top:4px">'+s+'</div><div style="font-size:.75em;font-weight:700">'+hours[s].toFixed(1)+'h</div></div>';
+  }).join('');
+}
+
+// === GPA CALCULATOR ===
+var gpaCourses=JSON.parse(localStorage.getItem('rm_gpa_courses')||'[]');
+function addGPACourse(){
+  gpaCourses.push({name:'',grade:'A',credits:3});
+  localStorage.setItem('rm_gpa_courses',JSON.stringify(gpaCourses));
+  renderGPA();
+}
+function removeGPACourse(i){
+  gpaCourses.splice(i,1);
+  localStorage.setItem('rm_gpa_courses',JSON.stringify(gpaCourses));
+  renderGPA();
+}
+function updateGPACourse(i,field,val){
+  gpaCourses[i][field]=field==='credits'?parseInt(val):val;
+  localStorage.setItem('rm_gpa_courses',JSON.stringify(gpaCourses));
+  calcGPA();
+}
+function calcGPA(){
+  var gradeMap={'A+':4.0,'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'C-':1.7,'D+':1.3,'D':1.0,'F':0.0};
+  var totalPts=0,totalCreds=0;
+  gpaCourses.forEach(function(c){
+    if(c.credits&&gradeMap[c.grade]!==undefined){totalPts+=gradeMap[c.grade]*c.credits;totalCreds+=c.credits}
+  });
+  var gpa=totalCreds>0?(totalPts/totalCreds).toFixed(2):'0.00';
+  var el=document.getElementById('gpa-result');
+  if(el)el.innerHTML='GPA: <span style="font-size:1.4em">'+gpa+'</span> <span style="font-size:.6em;color:#64748b">('+totalCreds+' credits)</span>';
+}
+function renderGPA(){
+  var el=document.getElementById('gpa-courses');if(!el)return;
+  var grades=['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','F'];
+  el.innerHTML=gpaCourses.map(function(c,i){
+    return '<div style="display:flex;gap:6px;align-items:center;margin:4px 0"><input type="text" value="'+(c.name||'')+'" placeholder="Course name" oninput="updateGPACourse('+i+',\'name\',this.value)" style="flex:1;padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em"><select onchange="updateGPACourse('+i+',\'grade\',this.value)" style="padding:5px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em">'+grades.map(function(g){return '<option'+(c.grade===g?' selected':'')+'>'+g+'</option>'}).join('')+'</select><select onchange="updateGPACourse('+i+',\'credits\',this.value)" style="padding:5px;border:1px solid #e2e8f0;border-radius:6px;font-size:.85em"><option'+(c.credits===1?' selected':'')+'>1</option><option'+(c.credits===2?' selected':'')+'>2</option><option'+(c.credits===3?' selected':'')+'>3</option><option'+(c.credits===4?' selected':'')+'>4</option><option'+(c.credits===5?' selected':'')+'>5</option></select><button onclick="removeGPACourse('+i+')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:1.1em">&times;</button></div>';
+  }).join('');
+  calcGPA();
+}
 
 // Scroll animation observer - also check immediately for already-visible elements
 const observer = new IntersectionObserver((entries) => {
