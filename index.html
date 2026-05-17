@@ -42,7 +42,10 @@ body.dark .rm-phase{background:#1e293b!important}
 body.dark .rm-phase li{color:#e2e8f0!important}
 .rm-phase input[type="checkbox"]{width:16px;height:16px;accent-color:#2563eb}
 .test-section{padding:80px 20px;background:#fff}
-body.dark .test-section{background:#1e293b}
+body.dark .test-section{background:#0f172a}
+body.dark .test-section>div{background:#1e293b!important;border-color:#334155!important}
+body.dark .test-section h4{color:#e2e8f0!important}
+body.dark .test-section input,body.dark .test-section textarea{background:#0f172a!important;border-color:#334155!important;color:#e2e8f0!important}
 .test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;max-width:1100px;margin:0 auto}
 .test-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:24px}
 body.dark .test-card{background:#0f172a;border-color:#334155}
@@ -187,7 +190,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
 <div id="landing">
   <section class="hero">
     <h1>Pre-Med Roadmap</h1>
-    <p class="tagline">The only personalized pre-med planning tool you need. Answer questions about your situation, get a complete plan from prerequisites through acceptance.</p>
+    <p class="tagline">The only pre-med tool that calculates your Readiness Score and builds a personalized plan from prerequisites through acceptance.</p>
     <a href="#paths" class="cta">Build My Roadmap — Free</a>
     <span class="sub-cta">No signup required. Takes 2 minutes.</span>
     <div id="user-counter" style="margin-top:12px;font-size:.85em;color:#94a3b8"></div>
@@ -234,29 +237,29 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
     <div class="features-inner">
       <h2>What You Get</h2>
       <div class="feat-grid">
-        <div class="feat-card">
-          <h4>📋 Personalized Pre-Med Timeline</h4>
-          <p>Month-by-month plan from prerequisites through MCAT to med school acceptance, tailored to YOUR situation.</p>
+        <div class="feat-card" style="border-color:#2563eb;border-width:2px">
+          <h4>🎯 Pre-Med Readiness Score</h4>
+          <p>Get a 0-100 score based on your GPA, prerequisites, clinical hours, research, and shadowing. See exactly where you stand and what to work on. <strong>No other tool does this.</strong></p>
         </div>
         <div class="feat-card">
-          <h4>📅 Course-by-Course Study Plan</h4>
-          <p>Gen Chem, Orgo, Bio, Physics, Biochem, A&amp;P — specific resources and strategies for every pre-req.</p>
+          <h4>📋 Personalized Timeline</h4>
+          <p>Dynamic roadmap that adjusts to your specific situation — completed courses are excluded, timelines shift based on your answers.</p>
         </div>
         <div class="feat-card">
-          <h4>🎮 Study Games & Tools</h4>
-          <p>Flashcards, quizzes, survival mode — all adaptive to your performance.</p>
+          <h4>🎮 Study Games</h4>
+          <p>Brick Breaker, MCAT Quiz Rush, Survival Mode, 1v1 Multiplayer — 207 questions across 6 MCAT subjects.</p>
         </div>
         <div class="feat-card">
-          <h4>📊 Analytics Dashboard</h4>
-          <p>Track your progress with charts, streaks, and smart suggestions.</p>
+          <h4>📊 Study Tracker</h4>
+          <p>Log study hours by subject with bar charts, GPA calculator, habit tracker, countdown timers, and daily suggestions.</p>
         </div>
         <div class="feat-card">
-          <h4>🏆 XP & Achievements</h4>
-          <p>Level up as you complete tasks. Unlock badges. Make progress feel like a game.</p>
+          <h4>🏆 XP & Streaks</h4>
+          <p>Earn XP for completing tasks, playing games, and logging study hours. Build daily streaks. Level up.</p>
         </div>
         <div class="feat-card">
-          <h4>🧠 Neurodivergent-Friendly</h4>
-          <p>Built for brains that need structure. Pomodoro timer, focus sounds, one-thing prompts, and dopamine-friendly design.</p>
+          <h4>🧠 ADHD-Friendly Mode</h4>
+          <p>One-thing focus prompt, body doubling tips, break reminders, focus sounds (rain, brown noise, white noise), and task chunking.</p>
         </div>
       </div>
     </div>
@@ -687,6 +690,75 @@ function generateRoadmap() {
   html += '<h1 style="font-size:2.2em;font-weight:900;margin-bottom:8px">'+data.title+'</h1>';
   html += '<p style="color:#64748b;margin-bottom:12px">Personalized based on your answers. Your progress saves automatically.</p>';
   
+  // === PRE-MED READINESS SCORE (unique differentiator) ===
+  var readiness=0;var readMax=100;var readBreakdown=[];
+  // Prerequisites (30 pts)
+  var prereqPts=0;
+  if((quizAnswers.q5||'').includes('All')){prereqPts=30;readBreakdown.push('Prerequisites: 30/30')}
+  else if((quizAnswers.q5||'').includes('Most')){prereqPts=22;readBreakdown.push('Prerequisites: 22/30')}
+  else if((quizAnswers.q5||'').includes('Some')){prereqPts=10;readBreakdown.push('Prerequisites: 10/30')}
+  else{readBreakdown.push('Prerequisites: 0/30')}
+  readiness+=prereqPts;
+  // Clinical experience (15 pts)
+  var clinPts=0;
+  if((quizAnswers.q8||'').includes('Paid')){clinPts=15;readBreakdown.push('Clinical: 15/15')}
+  else if((quizAnswers.q8||'').includes('Shadowing')){clinPts=8;readBreakdown.push('Clinical: 8/15')}
+  else if((quizAnswers.q8||'').includes('volunteering')){clinPts=5;readBreakdown.push('Clinical: 5/15')}
+  else{readBreakdown.push('Clinical: 0/15')}
+  readiness+=clinPts;
+  // Research (10 pts)
+  var resPts=0;
+  if((quizAnswers.q10||'').includes('Published')){resPts=10;readBreakdown.push('Research: 10/10')}
+  else if((quizAnswers.q10||'').includes('1-2')){resPts=7;readBreakdown.push('Research: 7/10')}
+  else if((quizAnswers.q10||'').includes('Currently')){resPts=4;readBreakdown.push('Research: 4/10')}
+  else{readBreakdown.push('Research: 0/10')}
+  readiness+=resPts;
+  // GPA (20 pts)
+  var gpaPts=0;
+  if((quizAnswers.q11||'').includes('3.8')){gpaPts=20;readBreakdown.push('GPA: 20/20')}
+  else if((quizAnswers.q11||'').includes('3.5')){gpaPts=15;readBreakdown.push('GPA: 15/20')}
+  else if((quizAnswers.q11||'').includes('3.0')){gpaPts=8;readBreakdown.push('GPA: 8/20')}
+  else if((quizAnswers.q11||'').includes('Below')){gpaPts=3;readBreakdown.push('GPA: 3/20')}
+  else{gpaPts=0;readBreakdown.push('GPA: ?/20')}
+  readiness+=gpaPts;
+  // Shadowing (10 pts)
+  var shadPts=0;
+  if((quizAnswers.q9||'').includes('50+')){shadPts=10;readBreakdown.push('Shadowing: 10/10')}
+  else if((quizAnswers.q9||'').includes('20-50')){shadPts=6;readBreakdown.push('Shadowing: 6/10')}
+  else if((quizAnswers.q9||'').includes('Under')){shadPts=3;readBreakdown.push('Shadowing: 3/10')}
+  else{readBreakdown.push('Shadowing: 0/10')}
+  readiness+=shadPts;
+  // Progress completion (15 pts)
+  var progPts=Math.round(pct*0.15);
+  readiness+=progPts;
+  readBreakdown.push('Roadmap Progress: '+progPts+'/15');
+  var readColor=readiness>=70?'#059669':readiness>=40?'#f59e0b':'#ef4444';
+  var readLabel=readiness>=80?'Application Ready':readiness>=60?'Getting Close':readiness>=40?'Building':readiness>=20?'Early Stage':'Just Starting';
+  html += '<div style="background:var(--card,#fff);border:2px solid '+readColor+';border-radius:14px;padding:20px;margin:14px 0;text-align:center">';
+  html += '<h3 style="margin:0 0 4px;font-size:.95em;color:#64748b">Pre-Med Readiness Score</h3>';
+  html += '<div style="font-size:3em;font-weight:900;color:'+readColor+'">'+readiness+'<span style="font-size:.35em;color:#94a3b8">/100</span></div>';
+  html += '<div style="font-size:.9em;font-weight:600;color:'+readColor+';margin-bottom:12px">'+readLabel+'</div>';
+  html += '<div style="height:10px;background:#e2e8f0;border-radius:5px;overflow:hidden;max-width:300px;margin:0 auto 12px"><div style="height:100%;width:'+readiness+'%;background:'+readColor+';border-radius:5px;transition:width 1s"></div></div>';
+  html += '<div style="text-align:left;max-width:300px;margin:0 auto;font-size:.78em;color:#64748b;line-height:1.8">'+readBreakdown.join('<br>')+'</div>';
+  html += '</div>';
+
+  // Motivational quote
+  var quotes=[
+    {t:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+    {t:"A year from now you will wish you had started today.",a:"Karen Lamb"},
+    {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
+    {t:"Every expert was once a beginner.",a:"Helen Hayes"},
+    {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"},
+    {t:"You don\\'t have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},
+    {t:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln"},
+    {t:"Medicine is not only a science; it is also an art.",a:"Paracelsus"},
+    {t:"The greatest glory in living lies not in never falling, but in rising every time we fall.",a:"Nelson Mandela"},
+    {t:"Believe you can and you\\'re halfway there.",a:"Theodore Roosevelt"},
+  ];
+  var dq=quotes[Math.floor(Date.now()/86400000)%quotes.length];
+  html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border-left:3px solid #2563eb;border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0;font-size:.88em;font-style:italic;color:#475569">';
+  html += '"'+dq.t+'" <span style="display:block;font-style:normal;font-weight:600;margin-top:4px;font-size:.9em;color:#1e293b">\u2014 '+dq.a+'</span></div>';
+
   // Progress bar
   html += '<div class="rm-pct">'+pct+'% Complete</div>';
   html += '<div class="rm-progress"><div class="rm-progress-fill" id="rm-prog-fill" style="width:'+pct+'%"></div></div>';
