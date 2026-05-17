@@ -515,13 +515,12 @@ function renderQuizStep() {
   const container = document.getElementById('quiz-container');
   
   if (quizStep >= qs.length) {
-    // Show loading animation
-    container.innerHTML='<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center"><div><div style="width:48px;height:48px;border:4px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><h2 style="font-size:1.4em;margin-bottom:8px">Building Your Roadmap...</h2><p style="color:#64748b">Personalizing based on your answers</p></div></div>';
-    var spinCSS=document.createElement('style');spinCSS.textContent='@keyframes spin{to{transform:rotate(360deg)}}';document.head.appendChild(spinCSS);
-    // Track roadmap creation
-    var count=parseInt(localStorage.getItem('rm_total_created'))||0;
-    localStorage.setItem('rm_total_created',String(count+1));
-    setTimeout(function(){generateRoadmap()},1500);
+    // Prompt sign-up if not logged in (with skip)
+    if(!sbUser&&!localStorage.getItem('rm_skip_signup')){
+      container.innerHTML='<div style="min-height:80vh;display:flex;align-items:center;justify-content:center"><div style="text-align:center;max-width:400px;padding:40px 20px"><h2 style="font-size:1.6em;font-weight:800;margin-bottom:8px;color:var(--text)">Save Your Progress</h2><p style="color:#64748b;margin-bottom:24px">Create a free account to save your roadmap across devices. Takes 10 seconds.</p><button onclick="showAuthModal(function(){showLoading()})" style="display:block;width:100%;padding:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer;margin-bottom:12px">Create Account</button><button onclick="localStorage.setItem(\'rm_skip_signup\',\'1\');showLoading()" style="display:block;width:100%;padding:12px;background:none;border:1px solid var(--border);border-radius:10px;color:#64748b;cursor:pointer;font-size:.9em">Skip — I\'ll save locally</button></div></div>';
+      return;
+    }
+    showLoading();
     return;
   }
 
@@ -553,6 +552,15 @@ function selectQuizOpt(btn, step, answer) {
     btn.classList.add('selected');
     quizAnswers['q'+step] = answer;
   }
+}
+
+function showLoading(){
+  var container=document.getElementById('quiz-container');
+  container.innerHTML='<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center"><div><div style="width:48px;height:48px;border:4px solid var(--border);border-top-color:#2563eb;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px"></div><h2 style="font-size:1.4em;margin-bottom:8px;color:var(--text)">Building Your Roadmap...</h2><p style="color:#64748b">Personalizing based on your answers</p></div></div>';
+  if(!document.getElementById('spin-css')){var s=document.createElement('style');s.id='spin-css';s.textContent='@keyframes spin{to{transform:rotate(360deg)}}';document.head.appendChild(s)}
+  var count=parseInt(localStorage.getItem('rm_total_created'))||0;
+  localStorage.setItem('rm_total_created',String(count+1));
+  setTimeout(function(){generateRoadmap()},1500);
 }
 
 function quizNext() {
@@ -882,6 +890,9 @@ function generateRoadmap() {
   html += '<p style="color:rgba(255,255,255,.9);font-size:.92em;margin:0 0 16px">Built by a pre-med student. If this helps you, consider supporting my med school journey.</p>';
   html += '<a href="https://donate.stripe.com/8x228k0bqglHfa42id33W02" target="_blank" style="display:inline-block;padding:12px 32px;background:#fff;color:#d97706;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer;text-decoration:none">Buy Me a Coffee</a>';
   html += '</div>';
+
+  // Review prompt (subtle)
+  html += '<div style="text-align:center;padding:16px;margin:10px 0"><p style="color:#94a3b8;font-size:.85em;margin-bottom:8px">Finding this helpful?</p><button onclick="document.getElementById(\'inline-review\').style.display=document.getElementById(\'inline-review\').style.display===\'none\'?\'block\':\'none\'" style="padding:8px 20px;background:var(--card);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:.85em;color:var(--text)">Leave a Quick Review \u2B50</button><div id="inline-review" style="display:none;margin-top:16px;text-align:left;max-width:400px;margin-left:auto;margin-right:auto;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px"><div id="inline-stars" style="font-size:1.5em;cursor:pointer;margin-bottom:8px"></div><textarea id="inline-rev-text" placeholder="What do you think?" maxlength="200" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;height:60px;font-size:.88em;font-family:inherit;resize:none;background:var(--bg);color:var(--text)"></textarea><button onclick="submitInlineReview()" style="margin-top:8px;padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:.85em;cursor:pointer">Submit</button></div></div>';
 
   // Footer
   html += '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:.82em">2026 Roadmap | <a href="#" onclick="event.preventDefault();location.reload()" style="color:#2563eb">Create Another Roadmap</a></div>';
