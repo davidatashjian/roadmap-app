@@ -305,7 +305,7 @@ body.dark .ad-slot{background:#1e293b;border-color:#334155}
       <div style="margin-top:32px;background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center">
         <h3 style="margin:0 0 8px;font-size:1.1em">Support a Pre-Med Student</h3>
         <p style="color:#64748b;font-size:.9em;margin:0 0 16px">I built this tool while doing my own post-bacc. If it helps you, consider buying me a coffee to help me pay for med school.</p>
-        <a href="https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00" target="_blank" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;transition:transform .2s">Buy Me a Coffee</a>
+        <a href="https://donate.stripe.com/8x228k0bqglHfa42id33W02" target="_blank" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;transition:transform .2s">Buy Me a Coffee</a>
       </div>
     </div>
   </section>
@@ -693,7 +693,21 @@ function generateRoadmap() {
 
   // ADHD tip if applicable
   if (hasND) {
-    html += '<div style="background:#f0f9ff;border-left:4px solid #0ea5e9;border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0;font-size:.9em"><h4 style="color:#0369a1;margin:0 0 6px">🧠 Neurodivergent Mode Activated</h4><p style="color:#475569">Your roadmap includes extra structure, break reminders, and dopamine-friendly gamification. Focus on ONE phase at a time. Don\'t look ahead until you\'re ready.</p></div>';
+    html += '<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px;margin:14px 0;font-size:.9em">';
+    html += '<h4 style="color:#0369a1;margin:0 0 10px;font-size:1em">\uD83E\uDDE0 Neurodivergent Mode Active</h4>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
+    // One-thing focus card
+    html += '<div style="background:#fff;border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">YOUR ONE THING RIGHT NOW</div><div id="nd-one-thing" style="font-weight:700;color:#0369a1;font-size:.95em">Complete your first unchecked task</div></div>';
+    // Break reminder
+    html += '<div style="background:#fff;border:1px solid #e0f2fe;border-radius:8px;padding:12px;text-align:center"><div style="font-size:.78em;color:#64748b;margin-bottom:4px">BREAK REMINDER</div><div id="nd-break" style="font-weight:700;color:#0369a1;font-size:.95em">Every 25 min \u2192 5 min break</div></div>';
+    html += '</div>';
+    // Tips
+    html += '<div style="font-size:.85em;color:#475569;line-height:1.6">';
+    html += '<p style="margin:4px 0">\u2022 <strong>Focus on ONE phase at a time.</strong> Don\'t look ahead until ready.</p>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Body doubling:</strong> Study with a friend or on a video call for accountability.</p>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Reward yourself</strong> after completing each checkbox (snack, 5 min scroll, walk).</p>';
+    html += '<p style="margin:4px 0">\u2022 <strong>Task too big?</strong> Break it into 15-minute chunks. Just start with one chunk.</p>';
+    html += '</div></div>';
   }
 
   // Timeline visualization
@@ -809,7 +823,7 @@ function generateRoadmap() {
   html += '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:14px;padding:24px;text-align:center;color:#fff;margin:20px 0">';
   html += '<h3 style="margin:0 0 8px;color:#fff">Enjoying this tool?</h3>';
   html += '<p style="color:rgba(255,255,255,.9);font-size:.92em;margin:0 0 16px">Built by a pre-med student. If this helps you, consider supporting my med school journey.</p>';
-  html += '<a href="https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00" target="_blank" style="display:inline-block;padding:12px 32px;background:#fff;color:#d97706;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer;text-decoration:none">Buy Me a Coffee</a>';
+  html += '<a href="https://donate.stripe.com/8x228k0bqglHfa42id33W02" target="_blank" style="display:inline-block;padding:12px 32px;background:#fff;color:#d97706;border:none;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer;text-decoration:none">Buy Me a Coffee</a>';
   html += '</div>';
 
   // Footer
@@ -1066,7 +1080,7 @@ if(localStorage.getItem('rm_dark')==='1'){document.body.classList.add('dark');dm
 
 // === PRO SYSTEM ===
 var CODES=['FOUNDER2026','DAVIDPRO','FRIENDSRM','BETATEAM','PREMED1'];
-var STRIPE='https://buy.stripe.com/7sY9AM3nCglH4vq2id33W00';
+var STRIPE='https://donate.stripe.com/8x228k0bqglHfa42id33W02';
 function isPro(){return localStorage.getItem('rm_pro')==='1'}
 // Auto-activate from URL params
 (function(){
@@ -1126,30 +1140,70 @@ stt.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 document.body.appendChild(stt);
 window.addEventListener('scroll',()=>{stt.style.opacity=window.scrollY>400?'1':'0'});
 
-// === AMBIENT SOUNDS (Pro) ===
+// === AMBIENT SOUNDS (improved) ===
+var _ambPlaying=false;
 function playAmbient(type){
-  if(window._ambCtx){try{window._ambSrc.stop()}catch(e){}}
-  window._ambCtx=new(window.AudioContext||window.webkitAudioContext)();
-  const gain=window._ambCtx.createGain();gain.gain.value=0.3;gain.connect(window._ambCtx.destination);
-  const buf=window._ambCtx.createBuffer(1,2*window._ambCtx.sampleRate,window._ambCtx.sampleRate);
-  const d=buf.getChannelData(0);let b0=0;
-  for(let i=0;i<d.length;i++){const w=Math.random()*2-1;if(type==='white')d[i]=w;else if(type==='brown'){d[i]=(b0+(0.02*w))/1.02;b0=d[i];d[i]*=3.5;}else{d[i]=w*0.5;}}
-  window._ambSrc=window._ambCtx.createBufferSource();
-  window._ambSrc.buffer=buf;window._ambSrc.loop=true;window._ambSrc.connect(gain);window._ambSrc.start();
+  stopAmbient();
+  try{
+    window._ambCtx=new(window.AudioContext||window.webkitAudioContext)();
+    var gain=window._ambCtx.createGain();gain.gain.value=0.25;gain.connect(window._ambCtx.destination);
+    var dur=4;var sr=window._ambCtx.sampleRate;
+    var buf=window._ambCtx.createBuffer(2,dur*sr,sr);
+    for(var ch=0;ch<2;ch++){
+      var d=buf.getChannelData(ch);var b0=0,b1=0,b2=0;
+      for(var i=0;i<d.length;i++){
+        var w=Math.random()*2-1;
+        if(type==='rain'){b0+=(w-b0)*0.004;d[i]=b0*8+Math.sin(i*0.001)*0.02;}
+        else if(type==='brown'){d[i]=(b0+(0.02*w))/1.02;b0=d[i];d[i]*=3;}
+        else if(type==='white'){d[i]=w*0.3;}
+        else{b0+=(w-b0)*0.01;d[i]=b0*5;}
+      }
+    }
+    window._ambSrc=window._ambCtx.createBufferSource();
+    window._ambSrc.buffer=buf;window._ambSrc.loop=true;window._ambSrc.connect(gain);window._ambSrc.start();
+    _ambPlaying=true;
+    var ind=document.getElementById('sound-indicator');
+    if(ind)ind.style.display='block';
+  }catch(e){alert('Audio not supported in this browser.');}
 }
-function stopAmbient(){if(window._ambSrc)try{window._ambSrc.stop()}catch(e){}}
+function stopAmbient(){
+  _ambPlaying=false;
+  if(window._ambSrc)try{window._ambSrc.stop()}catch(e){}
+  if(window._ambCtx)try{window._ambCtx.close()}catch(e){}
+  window._ambSrc=null;window._ambCtx=null;
+  var ind=document.getElementById('sound-indicator');
+  if(ind)ind.style.display='none';
+}
 
-// === SURVIVAL MODE GAME (Pro) ===
+// === SURVIVAL MODE GAME (real game with hearts + streak) ===
 function startSurvival(){
   var area=document.getElementById('sv-area');
   if(!area)return;
   area.style.display='block';
-  area.innerHTML='<p style="text-align:center;padding:20px;color:#475569">Survival Mode loaded! Answer questions to earn XP.</p>';
-  var btn=document.createElement('button');
-  btn.style.cssText='display:block;margin:12px auto;padding:12px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600';
-  btn.textContent='Start Challenge';
-  btn.onclick=function(){addXP(10);spawnConfetti();this.textContent='Nice! +10 XP'};
-  area.appendChild(btn);
+  var allQs=[];Object.values(PREMED_QS).forEach(function(arr){allQs=allQs.concat(arr)});
+  allQs.sort(function(){return Math.random()-0.5});
+  var lives=3,streak=0,score=0,qi=0;
+  function svShow(){
+    if(lives<=0||qi>=allQs.length){svEnd();return}
+    var q=allQs[qi];
+    var wrongs=allQs.filter(function(x){return x.a!==q.a}).sort(function(){return Math.random()-0.5}).slice(0,3).map(function(x){return x.a});
+    var opts=[q.a].concat(wrongs).sort(function(){return Math.random()-0.5});
+    area.innerHTML='<div style="margin-bottom:8px;display:flex;justify-content:space-between;font-size:.9em"><span style="font-weight:700;color:#2563eb">Score: '+score+'</span><span>'+('\u2764\uFE0F'.repeat(lives))+'</span><span style="color:#f59e0b">Streak: '+streak+'x</span></div><h3 style="text-align:center;margin:12px 0;font-size:1.1em">'+q.q+'</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+opts.map(function(o){return '<button style="padding:12px;border:2px solid #e2e8f0;border-radius:8px;background:var(--card,#fff);cursor:pointer;font-size:.88em;color:var(--text,#1e293b)" onclick="svAnswer(this,'+(o===q.a?1:0)+')">'+o+'</button>'}).join('')+'</div>';
+  }
+  window.svAnswer=function(btn,correct){
+    area.querySelectorAll('button').forEach(function(b){b.style.pointerEvents='none'});
+    if(correct){btn.style.borderColor='#22c55e';btn.style.background='#f0fdf4';streak++;var pts=10*(1+Math.floor(streak/3));score+=pts;addXP(pts>10?3:1);}
+    else{btn.style.borderColor='#ef4444';btn.style.background='#fef2f2';lives--;streak=0;}
+    qi++;
+    setTimeout(svShow,400);
+  };
+  function svEnd(){
+    var high=parseInt(localStorage.getItem('rm_sv_high'))||0;
+    if(score>high)localStorage.setItem('rm_sv_high',String(score));
+    area.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:2.5em;font-weight:800;color:#2563eb">'+score+'</div><p style="margin:8px 0">'+(score>high?'\uD83C\uDF89 NEW HIGH SCORE!':'Game Over')+'</p><p style="font-size:.85em;color:#94a3b8">Questions: '+qi+' | Best: '+Math.max(score,high)+'</p><button onclick="startSurvival()" style="margin-top:12px;padding:10px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Play Again</button></div>';
+    addXP(Math.floor(score/5));if(score>high)spawnConfetti();
+  }
+  svShow();
 }
 
 // === CUSTOM SCROLLBAR ===
@@ -1176,17 +1230,16 @@ setTimeout(function(){
     rmPct.parentNode.insertBefore(qDiv,rmPct);
   }
   // Add study games section to roadmap
-  var supportCard=document.querySelector('[href*="buy.stripe"]');
+  var supportCard=document.querySelector('[href*="donate.stripe"]');
   if(supportCard&&!document.getElementById('sv-area')){
     var toolsDiv=document.createElement('div');
     toolsDiv.style.cssText='margin:20px 0';
     toolsDiv.innerHTML='<h3 style="margin-bottom:12px">\uD83C\uDFAE Study Games</h3>'+
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
       '<button onclick="startSurvival()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\u2694\uFE0F Survival Mode</button>'+
-      '<button onclick="startMultiplayer()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\u2694\uFE0F 1v1 Mode</button>'+
-      '<button onclick="playAmbient(\'brown\')" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83C\uDFB5 Focus Sounds</button>'+
-      '<button onclick="stopAmbient()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83D\uDD07 Stop Sounds</button>'+
+      '<button onclick="startMultiplayer()" style="padding:14px;background:var(--card,#fff);border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;color:var(--text,#1e293b)">\uD83E\uDD1C 1v1 Mode</button>'+
       '</div>'+
+      '<div style="margin-top:12px;padding:12px;background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:10px"><h4 style="margin:0 0 8px;font-size:.9em">\uD83C\uDFB5 Focus Sounds</h4><div style="display:flex;gap:6px;flex-wrap:wrap"><button onclick="playAmbient(\'rain\')" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:var(--text,#1e293b)">\uD83C\uDF27 Rain</button><button onclick="playAmbient(\'brown\')" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:var(--text,#1e293b)">\uD83C\uDF3F Brown Noise</button><button onclick="playAmbient(\'white\')" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:var(--text,#1e293b)">\u2601\uFE0F White Noise</button><button onclick="stopAmbient()" style="padding:6px 12px;border:1px solid #ef4444;border-radius:6px;background:var(--card,#fff);cursor:pointer;font-size:.82em;color:#ef4444">\u23F9 Stop</button></div><div id="sound-indicator" style="display:none;margin-top:6px;font-size:.78em;color:#059669">\u266A Playing...</div></div>'+
       '<div id="sv-area" style="display:none;margin-top:16px;background:var(--card,#fff);border:1px solid #e2e8f0;border-radius:12px;padding:20px"></div>';
     supportCard.closest('div').parentNode.insertBefore(toolsDiv,supportCard.closest('div'));
   }
