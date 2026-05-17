@@ -599,11 +599,11 @@ function generateRoadmap() {
 
   let html = '<div style="max-width:900px;margin:0 auto;padding:60px 20px 40px">';
   
-  // Back button
-  html += '<button onclick="location.reload()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 16px;color:#64748b;cursor:pointer;font-size:.85em;margin-bottom:16px">&larr; Back to Home</button>';
+  // Back button + reset
+  html += '<div style="display:flex;gap:8px;margin-bottom:16px"><button onclick="location.reload()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 16px;color:#64748b;cursor:pointer;font-size:.85em">&larr; Back to Home</button><button onclick="if(confirm(\'Reset all progress for this roadmap?\')){for(var k in localStorage){if(k.startsWith(\'rm_\'+\''+path+'\')){localStorage.removeItem(k)}};location.reload()}" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:6px 16px;color:#ef4444;cursor:pointer;font-size:.85em">Reset Progress</button></div>';
   
   // Ad placement (top)
-  html += '<div class="ad-slot">Sponsored &mdash; <a href="#" onclick="event.preventDefault();alert(\'Upgrade to Pro to remove ads! $9.99/mo\')" style="color:#2563eb">Go Pro for ad-free &rarr;</a></div>';
+  html += '<div class="ad-slot">Sponsored &mdash; Ads help keep this tool free</div>';
 
   html += '<h1 style="font-size:2.2em;font-weight:900;margin-bottom:8px">'+data.title+'</h1>';
   html += '<p style="color:#64748b;margin-bottom:12px">Personalized based on your answers. Your progress saves automatically.</p>';
