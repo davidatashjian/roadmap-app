@@ -667,16 +667,8 @@ function generateRoadmap() {
   html += '<label style="font-size:.82em;color:#64748b">Accent Color<br><input type="color" value="#2563eb" onchange="rmSetAccent(this.value)" style="width:40px;height:28px;border:none;cursor:pointer;border-radius:4px"></label>';
   html += '<label style="font-size:.82em;color:#64748b">Width<br><select onchange="rmSetWidth(this.value)" style="padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.9em"><option value="700px">Narrow</option><option value="900px" selected>Normal</option><option value="1100px">Wide</option><option value="100%">Full</option></select></label>';
   html += '</div>';
-  // Section manager
-  html += '<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">';
-  html += '<h5 style="font-size:.82em;color:#64748b;margin:0 0 8px">Show/Hide Sections</h5>';
-  html += '<div id="section-toggles" style="display:flex;gap:6px;flex-wrap:wrap">';
-  var sects=[{id:'games',label:'Games'},{id:'countdowns',label:'Countdowns'},{id:'whatnow',label:'What Now'}];
-  sects.forEach(function(sec){
-    var hidden=localStorage.getItem('rm_hide_'+sec.id)==='1';
-    html += '<button onclick="toggleSection(\''+sec.id+'\',this)" style="padding:4px 10px;border-radius:6px;font-size:.78em;cursor:pointer;border:1px solid var(--border);background:'+(hidden?'var(--bg)':'#2563eb')+';color:'+(hidden?'#94a3b8':'#fff')+'">'+sec.label+'</button>';
-  });
-  html += '</div></div>';
+  // Restore hidden sections link
+  html += '<div style="margin-top:8px;text-align:right"><button onclick="restoreAllSections()" style="background:none;border:none;color:#64748b;font-size:.75em;cursor:pointer;text-decoration:underline">Restore hidden sections</button></div>';
   html += '</div>';
   
   // Ad placement (top)
@@ -981,21 +973,48 @@ function toggleFocusMode(){
     if(btn)btn.style.background='none';if(btn)btn.style.color='var(--text)';
   }
 }
-// === SECTION TOGGLE ===
-function toggleSection(id,btn){
-  var el=document.querySelector('[data-section="'+id+'"]')||document.getElementById(id);
-  var isHidden=localStorage.getItem('rm_hide_'+id)==='1';
-  if(!isHidden){
-    if(!confirm('Hide this section? You can re-enable it from Customize.'))return;
+// === SECTION CONTROLS (X dismiss + reorder) ===
+function dismissSection(id){
+  showModal('Hide this section?','You can restore it from the Customize panel.',function(){
     localStorage.setItem('rm_hide_'+id,'1');
+    var el=document.querySelector('[data-section="'+id+'"]')||document.getElementById(id);
     if(el)el.style.display='none';
-    if(btn){btn.style.background='var(--bg)';btn.style.color='#94a3b8'}
-  } else {
-    localStorage.removeItem('rm_hide_'+id);
-    if(el)el.style.display='';
-    if(btn){btn.style.background='#2563eb';btn.style.color='#fff'}
-  }
+  });
 }
+function moveSection(id,dir){
+  var el=document.querySelector('[data-section="'+id+'"]');
+  if(!el)return;
+  var parent=el.parentNode;
+  if(dir==='up'&&el.previousElementSibling){parent.insertBefore(el,el.previousElementSibling)}
+  else if(dir==='down'&&el.nextElementSibling){parent.insertBefore(el.nextElementSibling,el)}
+}
+function restoreAllSections(){
+  ['games','countdowns','whatnow'].forEach(function(id){
+    localStorage.removeItem('rm_hide_'+id);
+    var el=document.querySelector('[data-section="'+id+'"]')||document.getElementById(id);
+    if(el)el.style.display='';
+  });
+}
+// Custom modal (dark-mode compatible, replaces confirm())
+function showModal(title,msg,onOk){
+  var overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center';
+  overlay.innerHTML='<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:360px;width:90%;text-align:center"><h3 style="margin:0 0 8px;font-size:1.05em;color:var(--text)">'+title+'</h3><p style="color:#64748b;font-size:.88em;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:8px;justify-content:center"><button onclick="this.closest(\'div[style*=fixed]\').remove()" style="padding:8px 20px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text);font-size:.9em">Cancel</button><button id="modal-ok" style="padding:8px 20px;background:#ef4444;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9em">Hide</button></div></div>';
+  document.body.appendChild(overlay);
+  overlay.querySelector('#modal-ok').onclick=function(){overlay.remove();if(onOk)onOk()};
+  overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove()});
+}
+// Inject section controls after roadmap renders
+setTimeout(function(){
+  document.querySelectorAll('[data-section]').forEach(function(sec){
+    var id=sec.getAttribute('data-section');
+    sec.style.position='relative';
+    var ctrl=document.createElement('div');
+    ctrl.style.cssText='position:absolute;top:6px;right:6px;display:flex;gap:4px;z-index:5';
+    ctrl.innerHTML='<button onclick="moveSection(\''+id+'\',\'up\')" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:.7em;color:var(--text);display:flex;align-items:center;justify-content:center">\u25B2</button><button onclick="moveSection(\''+id+'\',\'down\')" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:.7em;color:var(--text);display:flex;align-items:center;justify-content:center">\u25BC</button><button onclick="dismissSection(\''+id+'\')" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:.8em;color:#94a3b8;display:flex;align-items:center;justify-content:center">\u2715</button>';
+    sec.appendChild(ctrl);
+  });
+},700);
 // Restore saved customization + hidden sections
 setTimeout(function(){
   var f=localStorage.getItem('rm_font');if(f)rmSetFont(f);
