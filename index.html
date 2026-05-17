@@ -661,11 +661,13 @@ function generateRoadmap() {
   data.phases.forEach((phase,i) => { phase.items.forEach((item,j) => { totalTasks++; if(localStorage.getItem('rm_'+path+'_'+i+'_'+j)==='1') checkedTasks++; }); });
   const pct = totalTasks > 0 ? Math.round((checkedTasks/totalTasks)*100) : 0;
 
-  // Parse selected features (find answer containing feature names)
+  // Parse selected features - always default ALL on
   var allFeatureKeys=['Study Games','Flashcards','Pomodoro Timer','Habit Tracker','GPA Calculator','Study Hours Logger','Countdown Timers','Quick Notes','What Should I Do Now'];
   var featureAnswer='';
-  Object.values(quizAnswers).forEach(function(v){if(v&&allFeatureKeys.some(function(f){return v.indexOf(f)>=0}))featureAnswer=v});
+  Object.values(quizAnswers).forEach(function(v){if(typeof v==='string'&&v.indexOf('Study Games')>=0||v&&v.indexOf('Flashcards')>=0||v&&v.indexOf('Pomodoro')>=0)featureAnswer=v});
   var selectedFeatures=featureAnswer?featureAnswer.split(', ').filter(Boolean):allFeatureKeys;
+  // Always include all if nothing matched
+  if(selectedFeatures.length===0)selectedFeatures=allFeatureKeys;
   function hasFeature(name){return selectedFeatures.indexOf(name)>=0}
 
   let html = '<div data-roadmap style="max-width:900px;margin:0 auto;padding:60px 20px 40px">';
@@ -825,7 +827,13 @@ function generateRoadmap() {
 
   // Pomodoro timer
   if(hasFeature('Pomodoro Timer')){
-  html += '<div data-section="pomodoro" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;text-align:center;position:relative"><h4 style="margin:0 0 8px;font-size:.95em;color:var(--text)">⏲ Pomodoro Timer</h4><div id="pomo-display" style="font-size:2.5em;font-weight:800;color:#2563eb;margin:8px 0">25:00</div><div style="display:flex;gap:8px;justify-content:center"><button onclick="pomoStart()" style="padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Start</button><button onclick="pomoReset()" style="padding:8px 20px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text)">Reset</button></div><p style="font-size:.78em;color:#94a3b8;margin-top:8px">25 min focus, 5 min break. Repeat.</p></div>';
+  html += '<div data-section="pomodoro" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;text-align:center;position:relative"><h4 style="margin:0 0 8px;font-size:.95em;color:var(--text)">\u23F2 Pomodoro Timer</h4>';
+  html += '<div style="display:flex;gap:4px;justify-content:center;margin-bottom:8px;flex-wrap:wrap">';
+  [5,10,15,25,30,45,60].forEach(function(m){
+    html += '<button onclick="pomoSet('+m+')" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:'+(m===25?'#2563eb':'var(--bg)')+';color:'+(m===25?'#fff':'var(--text)')+';font-size:.75em;cursor:pointer">'+m+'m</button>';
+  });
+  html += '</div>';
+  html += '<div id="pomo-display" style="font-size:2.5em;font-weight:800;color:#2563eb;margin:8px 0">25:00</div><div style="display:flex;gap:8px;justify-content:center"><button onclick="pomoStart()" style="padding:8px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Start</button><button onclick="pomoReset()" style="padding:8px 20px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text)">Reset</button></div><p style="font-size:.78em;color:#94a3b8;margin-top:8px">Focus, then take a break. Repeat.</p></div>';
 
   }// end pomodoro
 
@@ -997,18 +1005,28 @@ var focusMode=false;
 function toggleFocusMode(){
   focusMode=!focusMode;
   var btn=document.getElementById('focus-btn');
+  // Focus mode shows: flashcards, pomodoro, games. Hides: phases, schedule, resources, countdowns, whatnow, ND
+  var focusSections=['pomodoro','flashcards','games'];
   if(focusMode){
-    document.querySelectorAll('.ad-slot').forEach(function(a){a.style.display='none'});
-    // Hide everything except phases and progress
-    document.querySelectorAll('[data-section]').forEach(function(el){el.style.display='none'});
-    document.querySelectorAll('.tool-panel').forEach(function(el){el.style.display='none'});
+    // Hide phases
+    document.querySelectorAll('.rm-phase').forEach(function(el){el.style.display='none'});
+    // Hide non-focus sections
+    document.querySelectorAll('[data-section]').forEach(function(el){
+      var id=el.getAttribute('data-section');
+      if(focusSections.indexOf(id)<0)el.style.display='none';
+    });
+    // Hide schedule, resources, timeline, readiness
+    document.querySelectorAll('[data-roadmap] > div').forEach(function(el){
+      if(el.style&&el.style.background&&(el.style.background.indexOf('f0fdf4')>=0||el.style.background.indexOf('fffbeb')>=0))el.style.display='none';
+    });
     if(btn){btn.style.background='#2563eb';btn.style.color='#fff';btn.textContent='\uD83C\uDFAF Exit Focus'}
   } else {
-    document.querySelectorAll('.ad-slot').forEach(function(a){a.style.display=''});
+    document.querySelectorAll('.rm-phase').forEach(function(el){el.style.display=''});
     document.querySelectorAll('[data-section]').forEach(function(el){
       var id=el.getAttribute('data-section');
       if(localStorage.getItem('rm_hide_'+id)!=='1')el.style.display='';
     });
+    document.querySelectorAll('[data-roadmap] > div').forEach(function(el){el.style.display=''});
     if(btn){btn.style.background='none';btn.style.color='var(--text)';btn.textContent='\uD83C\uDFAF Focus Mode'}
   }
 }
@@ -1024,8 +1042,15 @@ function moveSection(id,dir){
   var el=document.querySelector('[data-section="'+id+'"]');
   if(!el)return;
   var parent=el.parentNode;
-  if(dir==='up'&&el.previousElementSibling){parent.insertBefore(el,el.previousElementSibling)}
-  else if(dir==='down'&&el.nextElementSibling){parent.insertBefore(el.nextElementSibling,el)}
+  var prev=el.previousElementSibling;
+  var next=el.nextElementSibling;
+  // Don't move past toolbar or settings
+  if(dir==='up'&&prev&&!prev.querySelector('#rm-settings')&&!prev.querySelector('#focus-btn')){
+    parent.insertBefore(el,prev);
+  } else if(dir==='down'&&next){
+    parent.insertBefore(next,el);
+  }
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function restoreAllSections(){
   ['games','countdowns','whatnow'].forEach(function(id){
@@ -1088,8 +1113,14 @@ function ndResetBreakTimer(){clearInterval(ndBreakInt);ndBreakInt=null;ndBreakSe
 function ndUpdateOneThing(){
   var el=document.getElementById('nd-one-thing');if(!el)return;
   var unchecked=document.querySelectorAll('.rm-phase input[type=checkbox]:not(:checked)');
-  if(unchecked.length>0){var li=unchecked[0].parentElement;if(li)el.textContent=li.textContent.trim().substring(0,60)}
-  else{el.textContent='All tasks done! \uD83C\uDF89'}
+  if(unchecked.length>0){
+    var li=unchecked[0].parentElement;
+    if(li){var txt=li.textContent.trim();el.textContent=txt.length>55?txt.substring(0,55)+'...':txt}
+  } else {
+    var allChecks=document.querySelectorAll('.rm-phase input[type=checkbox]');
+    if(allChecks.length>0)el.textContent='All tasks done! \uD83C\uDF89';
+    else el.textContent='Start checking off tasks!';
+  }
 }
 function ndUpdateDoneCount(){
   var el=document.getElementById('nd-done-count');
@@ -1100,7 +1131,7 @@ function ndUpdateDoneCount(){
   var rewards=['','Keep going!','Nice streak!','You\'re on fire!','Unstoppable!','Take a reward break!'];
   if(reward)reward.textContent=rewards[Math.min(checked,5)]||'\uD83C\uDF1F Amazing!';
 }
-setTimeout(function(){ndUpdateOneThing();ndUpdateDoneCount()},800);
+setTimeout(function(){ndUpdateOneThing();ndUpdateDoneCount()},1500);
 document.addEventListener('change',function(e){
   if(e.target.type==='checkbox'){setTimeout(function(){ndUpdateOneThing();ndUpdateDoneCount()},100)}
 });
@@ -1109,18 +1140,32 @@ document.addEventListener('change',function(e){
 if(window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches) document.body.classList.add('dark');
 
 // Pomodoro Timer
-let pomoInt=null, pomoSecs=1500;
+var pomoInt=null,pomoSecs=1500,pomoDefault=1500;
+function pomoSet(min){
+  clearInterval(pomoInt);pomoInt=null;
+  pomoDefault=min*60;pomoSecs=pomoDefault;
+  var d=document.getElementById('pomo-display');
+  if(d)d.textContent=String(min).padStart(2,'0')+':00';
+  // Highlight selected button
+  document.querySelectorAll('[onclick^="pomoSet"]').forEach(function(b){b.style.background='var(--bg)';b.style.color='var(--text)'});
+  event.target.style.background='#2563eb';event.target.style.color='#fff';
+}
 function pomoStart(){
-  if(pomoInt){clearInterval(pomoInt);pomoInt=null;return;}
-  pomoInt=setInterval(()=>{
+  if(pomoInt){clearInterval(pomoInt);pomoInt=null;return}
+  pomoInt=setInterval(function(){
     pomoSecs--;
-    const m=Math.floor(pomoSecs/60),s=pomoSecs%60;
-    const d=document.getElementById('pomo-display');
+    var m=Math.floor(pomoSecs/60),s=pomoSecs%60;
+    var d=document.getElementById('pomo-display');
     if(d)d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    if(pomoSecs<=0){clearInterval(pomoInt);pomoInt=null;pomoSecs=300;var playGame=confirm('Time! Take a 5-min break.\n\nWant to play Brain Breaker during your break?');if(playGame){var ga=document.getElementById('game-area');if(ga){ga.scrollIntoView({behavior:"smooth"});setTimeout(launchBrainBounce,500)}}}
+    if(pomoSecs<=0){clearInterval(pomoInt);pomoInt=null;pomoSecs=pomoDefault;
+      var d2=document.getElementById('pomo-display');
+      if(d2){d2.textContent='BREAK!';d2.style.color='#059669'}
+      addXP(5);spawnConfetti();
+      setTimeout(function(){pomoReset()},3000);
+    }
   },1000);
 }
-function pomoReset(){clearInterval(pomoInt);pomoInt=null;pomoSecs=1500;const d=document.getElementById('pomo-display');if(d)d.textContent='25:00';}
+function pomoReset(){clearInterval(pomoInt);pomoInt=null;pomoSecs=pomoDefault;var m=Math.floor(pomoDefault/60);var d=document.getElementById('pomo-display');if(d){d.textContent=String(m).padStart(2,'0')+':00';d.style.color='#2563eb'}}
 
 // Flashcards (subject-based)
 var fcCards=[],fcIdx=0;
