@@ -1149,7 +1149,19 @@ var PREMED_QS={
     {q:'Le Chatelier\'s principle?',a:'System shifts to oppose stress'},{q:'Molarity formula?',a:'mol/L'},
     {q:'What is entropy?',a:'Measure of disorder'},{q:'Electronegativity trend?',a:'Increases up and right'},
     {q:'Strong acid example?',a:'HCl'},{q:'What is a catalyst?',a:'Speeds reaction, not consumed'},
-    {q:'Hess\'s Law?',a:'Total enthalpy is path independent'}
+    {q:'Hess\'s Law?',a:'Total enthalpy is path independent'},
+    {q:'What is a mole?',a:'6.022 x 10^23 particles'},{q:'Henderson-Hasselbalch equation?',a:'pH = pKa + log([A-]/[HA])'},
+    {q:'First law of thermodynamics?',a:'Energy is conserved'},{q:'Gibbs free energy sign for spontaneous?',a:'Negative (G < 0)'},
+    {q:'What is an isotope?',a:'Same element, different neutrons'},{q:'Ionization energy trend?',a:'Increases up and right'},
+    {q:'What is a Lewis acid?',a:'Electron pair acceptor'},{q:'What is a Lewis base?',a:'Electron pair donor'},
+    {q:'Dilution equation?',a:'M1V1 = M2V2'},{q:'What is an exothermic reaction?',a:'Releases heat (negative H)'},
+    {q:'Electron configuration of Carbon?',a:'1s2 2s2 2p2'},{q:'What determines reaction rate?',a:'Activation energy'},
+    {q:'What is a galvanic cell?',a:'Spontaneous redox produces electricity'},{q:'STP conditions?',a:'0C, 1 atm'},
+    {q:'Ka vs Kb relationship?',a:'Ka x Kb = Kw = 10^-14'},{q:'What is partial pressure?',a:'Pressure from one gas in mixture'},
+    {q:'Boiling point elevation formula?',a:'dT = Kb x m x i'},{q:'What is an electrolyte?',a:'Dissolves to form ions'},
+    {q:'Common ion effect?',a:'Reduces solubility of ionic compound'},{q:'What is a dipole moment?',a:'Measure of polarity'},
+    {q:'Rate law general form?',a:'Rate = k[A]^m[B]^n'},{q:'Nernst equation use?',a:'Cell potential at non-standard conditions'},
+    {q:'What is sublimation?',a:'Solid to gas directly'},{q:'pH + pOH = ?',a:'14'}
   ],
   bio:[
     {q:'Powerhouse of the cell?',a:'Mitochondria'},{q:'DNA bases?',a:'A, T, G, C'},{q:'What is ATP?',a:'Energy currency'},
@@ -1157,35 +1169,84 @@ var PREMED_QS={
     {q:'What is mitosis?',a:'Cell division \u2192 2 identical cells'},{q:'Meiosis produces?',a:'4 haploid gametes'},
     {q:'Cell membrane structure?',a:'Phospholipid bilayer'},{q:'What is an enzyme?',a:'Biological catalyst'},
     {q:'Dominant vs recessive?',a:'Dominant masks recessive'},{q:'What is diffusion?',a:'High to low concentration'},
-    {q:'Krebs cycle location?',a:'Mitochondrial matrix'}
+    {q:'Krebs cycle location?',a:'Mitochondrial matrix'},
+    {q:'What is crossing over?',a:'Exchange of genetic material in meiosis'},{q:'Function of lysosomes?',a:'Cellular digestion'},
+    {q:'What is the Hardy-Weinberg equation?',a:'p2 + 2pq + q2 = 1'},{q:'Function of Golgi apparatus?',a:'Modify and package proteins'},
+    {q:'What is apoptosis?',a:'Programmed cell death'},{q:'RNA bases?',a:'A, U, G, C'},
+    {q:'What is a codon?',a:'3 nucleotides coding for amino acid'},{q:'Function of tRNA?',a:'Carries amino acids to ribosome'},
+    {q:'What is PCR?',a:'Amplifies DNA segments'},{q:'Endosymbiotic theory?',a:'Mitochondria/chloroplasts were bacteria'},
+    {q:'What is epistasis?',a:'One gene masks another'},{q:'Function of smooth ER?',a:'Lipid synthesis, detox'},
+    {q:'What is a frameshift mutation?',a:'Insertion/deletion shifts reading frame'},{q:'Where does transcription occur?',a:'Nucleus'},
+    {q:'What is a plasmid?',a:'Small circular DNA in bacteria'},{q:'Function of telomeres?',a:'Protect chromosome ends'},
+    {q:'What is natural selection?',a:'Survival of fittest traits'},{q:'Passive vs active transport?',a:'No ATP vs requires ATP'},
+    {q:'What is a promoter?',a:'DNA sequence where RNA pol binds'},{q:'Sickle cell is what type of mutation?',a:'Point mutation (missense)'},
+    {q:'What is gel electrophoresis?',a:'Separates DNA/proteins by size'},{q:'Function of hemoglobin?',a:'Oxygen transport in blood'},
+    {q:'What is homeostasis?',a:'Maintaining stable internal conditions'},{q:'Sympathetic vs parasympathetic?',a:'Fight-or-flight vs rest-and-digest'}
   ],
   orgo:[
     {q:'SN2 mechanism?',a:'Backside attack, inversion'},{q:'SN1 intermediate?',a:'Carbocation'},
     {q:'Markovnikov\'s rule?',a:'H adds to more H\'s'},{q:'What is a chiral center?',a:'4 different groups on C'},
     {q:'E2 requirement?',a:'Anti-periplanar geometry'},{q:'Nucleophile definition?',a:'Electron donor'},
     {q:'Electrophile definition?',a:'Electron acceptor'},{q:'R vs S determined by?',a:'CIP priority rules'},
-    {q:'What is a leaving group?',a:'Group that departs with electrons'},{q:'Zaitsev\'s rule?',a:'Most substituted alkene forms'}
+    {q:'What is a leaving group?',a:'Group that departs with electrons'},{q:'Zaitsev\'s rule?',a:'Most substituted alkene forms'},
+    {q:'What is a racemic mixture?',a:'Equal R and S enantiomers'},{q:'E vs Z configuration?',a:'E = opposite sides, Z = same side'},
+    {q:'What is an aldehyde?',a:'R-CHO (carbonyl at end)'},{q:'What is a ketone?',a:'R-CO-R (carbonyl in middle)'},
+    {q:'Fischer projection rules?',a:'Horizontal = wedge, vertical = dash'},{q:'What is hydrogenation?',a:'Adding H2 across double bond'},
+    {q:'Grignard reagent formula?',a:'RMgX'},{q:'What is an ester?',a:'R-COO-R (acid + alcohol)'},
+    {q:'Alcohol oxidation order?',a:'Primary\u2192aldehyde\u2192acid'},{q:'What is a protecting group?',a:'Temporarily blocks reactive site'},
+    {q:'What is tautomerism?',a:'Keto-enol equilibrium'},{q:'What makes a good nucleophile?',a:'Negative charge, large, polarizable'},
+    {q:'Diels-Alder reaction type?',a:'[4+2] cycloaddition'},{q:'What is an amide?',a:'R-CO-NR2'},
+    {q:'What is an anhydride?',a:'R-CO-O-CO-R'},{q:'Claisen condensation product?',a:'Beta-keto ester'},
+    {q:'What is decarboxylation?',a:'Loss of CO2'},{q:'Aldol condensation product?',a:'Beta-hydroxy carbonyl'}
   ],
   physics:[
     {q:'Newton\'s 2nd law?',a:'F = ma'},{q:'Kinetic energy?',a:'KE = 1/2 mv\u00B2'},{q:'Ohm\'s law?',a:'V = IR'},
     {q:'What is momentum?',a:'p = mv'},{q:'Work formula?',a:'W = Fd cos\u03B8'},
     {q:'Conservation of energy?',a:'Energy cannot be created/destroyed'},{q:'What is frequency?',a:'Cycles per second (Hz)'},
     {q:'Coulomb\'s law?',a:'F = kq1q2/r\u00B2'},{q:'Snell\'s law?',a:'n1 sin\u03B81 = n2 sin\u03B82'},
-    {q:'Bernoulli\'s principle?',a:'Fast flow = low pressure'}
+    {q:'Bernoulli\'s principle?',a:'Fast flow = low pressure'},
+    {q:'Speed of light?',a:'3 x 10^8 m/s'},{q:'Gravitational PE?',a:'PE = mgh'},
+    {q:'What is capacitance?',a:'C = Q/V (charge storage)'},{q:'Power formula?',a:'P = W/t or P = IV'},
+    {q:'What is diffraction?',a:'Wave bending around obstacles'},{q:'Doppler effect?',a:'Frequency shift from motion'},
+    {q:'Continuity equation (fluids)?',a:'A1v1 = A2v2'},{q:'What is torque?',a:'T = rF sin\u03B8'},
+    {q:'Lens equation?',a:'1/f = 1/do + 1/di'},{q:'What is an EMF?',a:'Electromotive force (voltage source)'},
+    {q:'Impulse equals?',a:'Change in momentum (F\u0394t)'},{q:'What is interference?',a:'Waves combining constructively/destructively'},
+    {q:'Resistors in series?',a:'R_total = R1 + R2 + ...'},{q:'Resistors in parallel?',a:'1/R = 1/R1 + 1/R2 + ...'},
+    {q:'Hooke\'s law?',a:'F = -kx'},{q:'What is half-life?',a:'Time for half to decay'},
+    {q:'Magnetic force on charge?',a:'F = qvB sin\u03B8'},{q:'What is focal length?',a:'Distance from lens to focus point'}
   ],
   biochem:[
     {q:'Essential amino acids count?',a:'9'},{q:'Enzyme inhibition types?',a:'Competitive, non-competitive, uncompetitive'},
     {q:'Glycolysis net ATP?',a:'2 ATP'},{q:'ETC location?',a:'Inner mitochondrial membrane'},
     {q:'Km meaning?',a:'Substrate conc at half Vmax'},{q:'What is Vmax?',a:'Maximum reaction rate'},
     {q:'DNA replication enzyme?',a:'DNA polymerase'},{q:'Transcription enzyme?',a:'RNA polymerase'},
-    {q:'Translation location?',a:'Ribosome'},{q:'Beta oxidation does what?',a:'Breaks down fatty acids'}
+    {q:'Translation location?',a:'Ribosome'},{q:'Beta oxidation does what?',a:'Breaks down fatty acids'},
+    {q:'Citric acid cycle net yield?',a:'2 GTP, 6 NADH, 2 FADH2'},{q:'Total ATP from glucose?',a:'30-32 ATP'},
+    {q:'What is allosteric regulation?',a:'Binding at non-active site changes activity'},{q:'Gluconeogenesis location?',a:'Liver (mostly)'},
+    {q:'What is a zymogen?',a:'Inactive enzyme precursor'},{q:'Michaelis-Menten assumption?',a:'Steady state [ES]'},
+    {q:'Competitive inhibitor effect on Km?',a:'Increases Km'},{q:'Non-competitive effect on Vmax?',a:'Decreases Vmax'},
+    {q:'What is the pentose phosphate pathway?',a:'Makes NADPH and ribose-5-P'},{q:'Urea cycle location?',a:'Liver mitochondria + cytosol'},
+    {q:'What are ketone bodies?',a:'Acetoacetate, BHB, acetone'},{q:'Fatty acid synthesis location?',a:'Cytosol'},
+    {q:'What is a disulfide bond?',a:'Covalent bond between cysteines'},{q:'Protein primary structure?',a:'Amino acid sequence'},
+    {q:'Protein secondary structure?',a:'Alpha helices, beta sheets'},{q:'What denatures a protein?',a:'Heat, pH, urea (disrupts 3D shape)'},
+    {q:'Lineweaver-Burk x-intercept?',a:'-1/Km'},{q:'What is feedback inhibition?',a:'Product inhibits earlier enzyme'}
   ],
   psych:[
     {q:'Classical conditioning?',a:'Pavlov - associate stimulus with response'},{q:'Operant conditioning?',a:'Skinner - consequences shape behavior'},
     {q:'Maslow\'s top need?',a:'Self-actualization'},{q:'Id vs Superego?',a:'Id=desires, Superego=morality'},
     {q:'What is groupthink?',a:'Conformity suppresses dissent'},{q:'Bystander effect?',a:'Less help with more people'},
     {q:'Piaget stages count?',a:'4 (sensorimotor, preop, concrete, formal)'},{q:'Erikson\'s identity stage?',a:'Adolescence'},
-    {q:'What is schema?',a:'Mental framework for organizing info'},{q:'Confirmation bias?',a:'Seeking info that confirms beliefs'}
+    {q:'What is schema?',a:'Mental framework for organizing info'},{q:'Confirmation bias?',a:'Seeking info that confirms beliefs'},
+    {q:'Kohlberg\'s moral stages?',a:'Pre-conventional, conventional, post-conventional'},{q:'What is cognitive dissonance?',a:'Discomfort from conflicting beliefs'},
+    {q:'Fundamental attribution error?',a:'Overattribute behavior to personality'},{q:'Self-serving bias?',a:'Credit self for success, blame others for failure'},
+    {q:'What is habituation?',a:'Decreased response to repeated stimulus'},{q:'What is sensory adaptation?',a:'Reduced sensitivity over time'},
+    {q:'Broca\'s area function?',a:'Speech production'},{q:'Wernicke\'s area function?',a:'Language comprehension'},
+    {q:'What is the James-Lange theory?',a:'Body reaction \u2192 then feel emotion'},{q:'What is learned helplessness?',a:'Giving up after repeated failure'},
+    {q:'Social facilitation?',a:'Better performance with audience (easy tasks)'},{q:'Social loafing?',a:'Less effort in groups'},
+    {q:'What is deindividuation?',a:'Loss of self-awareness in groups'},{q:'Gate control theory?',a:'Spinal cord gates pain signals'},
+    {q:'Symbolic interactionism?',a:'Meaning through social interaction'},{q:'What is the Thomas Theorem?',a:'If perceived as real, real in consequences'},
+    {q:'Median vs mean?',a:'Median = middle value, mean = average'},{q:'What is validity?',a:'Test measures what it claims to'},
+    {q:'What is reliability?',a:'Consistent results over time'},{q:'Type I error?',a:'False positive (reject true null)'}
   ]
 };
 
